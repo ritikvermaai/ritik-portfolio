@@ -1,6 +1,6 @@
 {
-  "totalAmount": 261,
-  "totalDonors": 4,
+  "totalAmount": 262,
+  "totalDonors": 5,
   "donations": [
     {
       "name": "Ritik Verma",
@@ -25,6 +25,12 @@
       "email": "rajputritik985@gmail.com",
       "amount": 11,
       "date": "2026-03-03T08:59:38.696Z"
+    },
+    {
+      "name": "Ritik Verma",
+      "email": "rajputritik985@gmail.com",
+      "amount": 1,
+      "date": "2026-03-05T16:39:58.999Z"
     }
   ]
 }

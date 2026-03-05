@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gallery - Ritik Verma</title>
+    <title>Gallery</title>
 
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins';
             background: #0f172a;
             color: white;
         }
@@ -83,7 +83,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 40px;
+    padding: 15px 10px;
     box-sizing: border-box;   /* IMPORTANT */
     z-index: 1000;
 }
@@ -102,11 +102,18 @@
     border: 2px solid #00f7ff;
 }
 
-.menu-btn {
-    font-size: 30px;
-    cursor: pointer;
-    color: #00f7ff;
-    z-index: 1100;
+.menu-btn{
+position:fixed;
+top:20px;
+right:20px;
+font-size:28px;
+color:#12c3c3;
+cursor:pointer;
+background:transparent;
+border:none;
+outline:none;
+padding:0;
+box-shadow:none;
 }
 
 /* ===== SIDEBAR ===== */
@@ -194,6 +201,7 @@ body {
     <a href="/coding.html" id="nav-coding">Compiler</a>
     <a href="/projects.html" id="nav-projects">Projects</a>
     <a href="/gallery.html" id="nav-gallery">Gallery</a>
+    <a href="/resume.html" id="nav-resume">Resume</a>
     <a href="/contact.html" id="nav-contact">Contact us</a>
     
 </div>
