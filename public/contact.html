@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ritik C/C++ Compiler</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<style> /* Hamburger */
+        .menu-btn{
+            position:fixed;
+            top:20px;
+            right:20px;
+            font-size:28px;
+            cursor:pointer;
+            z-index:1100;
+            color:white;
+        }
+
+        .sidebar{
+            position:fixed;
+            top:0;
+            right:-270px;
+            width:250px;
+            height:100%;
+            background:#111827;
+            padding:60px 20px;
+            transition:0.4s ease;
+            z-index:1050;
+        }
+
+        .sidebar a{
+            display:block;
+            color:white;
+            text-decoration:none;
+            margin:20px 0;
+            font-size:18px;
+        }
+
+        .sidebar.active{
+            right:0;
+        }
+        .sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    margin:20px 0;
+    font-size:18px;
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+    color:#00f7ff;
+}
+
+.sidebar a.active{
+    color:#00f7ff;
+    font-weight:600;
+}
+         /* Top bar */
+.top-bar{
+    position:fixed;
+    top:0;
+    left:-19px;
+    width:100%;
+    height:70px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 30px;
+    background:#0f172a;
+    z-index:3000;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:600;
+    font-size:18px;
+}
+
+.brand img{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    border:2px solid #b8b8b8;
+}
+.menu-btn{
+    background:none;
+    border:none;
+    font-size:28px;
+    color:#12c3c3;
+    cursor:pointer;
+    display:block;
+}
+ *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background:#0f172a;
+            color:white;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            flex-direction:column;
+        }
+
+        h1{
+            margin-bottom:40px;
+            color:#00f7ff;
+        }
+
+        .contact-container{
+            display:flex;
+            flex-direction:column;
+            gap:20px;
+            width:300px;
+        }
+
+        .btn{
+            text-decoration:none;
+            padding:14px;
+            text-align:center;
+            background:#00f7ff;
+            color:#0f172a;
+            font-weight:600;
+            border-radius:8px;
+            transition:0.3s;
+        }
+
+        .btn:hover{
+            background:#00c4cc;
+            transform:translateY(-3px);
+        }
+        </style>
+<!-- Hamburger -->
+<div class="top-bar">
+    <div class="brand">
+        <img src="images/main.png">
+        <span>Ritik Verma</span>
+    </div>
+
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+</div>
+
+<div class="sidebar" id="sidebar">
+    <a href="/" id="nav-home">Home</a>
+    <a href="/coding.html" id="nav-coding">Compiler</a>
+    <a href="/projects.html" id="nav-projects">Projects</a>
+    <a href="/gallery.html" id="nav-gallery">Gallery</a>
+    <a href="/contact.html" id="nav-contact">Contact us</a>
+    
+</div>
+<body>
+    <h1>🚀 Your's Ritik Verma  🚀</h1>
+    <h1>Contact Me</h1>
+
+    <div class="contact-container">
+        <a class="btn" href="vermaritik9911@gmail.com" target="_blank">📧  Email  </a>
+
+        <a class="btn" href="https://www.linkedin.com/in/yourprofile/" target="_blank">💼  LinkedIn</a>
+
+        <a class="btn" href="https://github.com/yourusername" target="_blank">🐙  GitHub</a>
+
+        <a class="btn" href="https://www.instagram.com/its__ritikverma/" target="_blank">📸  Instagram</a>
+    </div>
+
+</body>
+
+<script src="script.js"></script>
+
+</body>
+</html>

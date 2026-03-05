@@ -1,0 +1,30 @@
+{
+  "totalAmount": 261,
+  "totalDonors": 4,
+  "donations": [
+    {
+      "name": "Ritik Verma",
+      "email": "pubg",
+      "amount": 100,
+      "date": "2026-03-02T20:33:11.392Z"
+    },
+    {
+      "name": "Ankit",
+      "email": "rajputritik9854@gmail.com",
+      "amount": 100,
+      "date": "2026-03-03T03:42:13.645Z"
+    },
+    {
+      "name": "Ansh",
+      "email": "rajputritik985@gmail.com",
+      "amount": 50,
+      "date": "2026-03-03T04:02:41.380Z"
+    },
+    {
+      "name": "Rahul",
+      "email": "rajputritik985@gmail.com",
+      "amount": 11,
+      "date": "2026-03-03T08:59:38.696Z"
+    }
+  ]
+}

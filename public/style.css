@@ -1,0 +1,208 @@
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Segoe UI;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    color:#00f7ff;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+}
+
+select, textarea{
+    width:100%;
+    margin-top:10px;
+    padding:10px;
+    font-size:14px;
+}
+
+textarea{
+    height:250px;
+    background:#111827;
+    color:#00f7ff;
+}
+
+.buttons{
+    margin-top:10px;
+}
+
+button{
+    padding:10px 15px;
+    margin-right:10px;
+    border:none;
+    background:#00f7ff;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+pre{
+    background:black;
+    padding:15px;
+    min-height:100px;
+    margin-top:10px;
+}
+body{
+    opacity:0;
+    transition:opacity 0.4s ease;
+}
+
+body.loaded{
+    opacity:1;
+}
+/* ===== SIMPLE VS CODE STYLE EDITOR ===== */
+
+#code {
+    width: 100%;
+    height: 400px;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    border: none;
+    outline: none;
+    resize: vertical;
+    padding: 15px;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    border-radius: 6px;
+}
+
+/* Buttons */
+button {
+    background: #007acc;
+    border: none;
+    padding: 8px 16px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+button:hover {
+    background: #005f9e;
+}
+
+/* Terminal */
+.terminal {
+    margin-top: 20px;
+    background: #000000;
+    border-radius: 6px;
+    padding: 15px;
+    font-family: monospace;
+    font-size: 14px;
+    color: #00ff88;
+}
+/* Run Button Animation */
+#runBtn {
+    position: relative;
+    background: #007acc;
+    border: none;
+    padding: 8px 20px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#runBtn:disabled {
+    background: #444;
+    cursor: not-allowed;
+}
+
+.loader {
+    display: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid white;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+/* Terminal Box */
+.terminal {
+    margin-top: 20px;
+    background: #000000;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Terminal Header */
+.terminal-header {
+    background: #1e1e1e;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #aaaaaa;
+    border-bottom: 1px solid #333;
+    letter-spacing: 1px;
+}
+
+/* Terminal Output */
+.terminal pre {
+    padding: 15px;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    color: #00ff88;
+}
+
+.input-box {
+    margin-top: 20px;
+}
+
+#userInput {
+    width: 100%;
+    height: 80px;
+    background: #1e1e1e;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-family: monospace;
+}
+/* ===== Editor with Line Numbers (Aligned Version) ===== */
+
+.editor-container {
+    display: flex;
+    background: #1e1e1e;
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: Consolas, monospace;
+}
+
+/* Line Numbers */
+#lineNumbers {
+    background: #252526;
+    color: #858585;
+    padding: 15px 10px;
+    text-align: right;
+    font-size: 18px;
+    line-height: 1.5;
+    user-select: none;
+}
+
+/* Code Area */
+#code {
+    flex: 1;
+    height: 400px;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    border: none;
+    outline: none;
+    resize: none;
+    padding: 15px;
+    font-size: 18px;
+    line-height: 1.5;
+}
+#lineNumbers {
+    min-width: 10px;
+}

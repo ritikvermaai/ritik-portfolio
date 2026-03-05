@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Saved Projects</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body{
+            background:#0f172a;
+            color:white;
+            font-family:'Poppins',sans-serif;
+            padding:100px 20px;
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:40px;
+            color:#00f7ff;
+        }
+
+        #projectList{
+            max-width:800px;
+            margin:auto;
+        }
+
+        .project-card{
+            background:#111827;
+            padding:20px;
+            margin-bottom:20px;
+            border-radius:12px;
+            border:1px solid rgba(0,247,255,0.1);
+        }
+
+        .project-card h3{
+            margin-bottom:15px;
+        }
+
+        .project-card button{
+            margin-right:10px;
+            padding:8px 15px;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        .open-btn{
+            background:#00f7ff;
+            color:black;
+        }
+
+        .download-btn{
+            background:#1e293b;
+            color:white;
+        }
+
+        .delete-btn{
+            background:#ef4444;
+            color:white;
+        }
+
+        
+        .sidebar{
+            position:fixed;
+            top:0;
+            right:-290px;
+            width:250px;
+            height:100%;
+            background:#111827;
+            padding:60px 20px;
+            transition:0.4s ease;
+            z-index:1050;
+        }
+
+        .sidebar a{
+            display:block;
+            color:white;
+            text-decoration:none;
+            margin:20px 0;
+            font-size:18px;
+        }
+
+        .sidebar.active{
+            right:0;
+        }
+        .sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    margin:20px 0;
+    font-size:18px;
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+    color:#00f7ff;
+}
+
+.sidebar a.active{
+    color:#00f7ff;
+    font-weight:600;
+}
+
+        /* Top bar */
+.top-bar{
+    position:fixed;
+    top:0;
+    left:-19px;
+    width:100%;
+    height:70px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 30px;
+    background:#0f172a;
+    z-index:3000;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:600;
+    font-size:18px;
+}
+
+.brand img{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    border:2px solid #e4e7e7;
+}
+
+.menu-btn{
+    background:none;
+    border:none;
+    font-size:28px;
+    color:#12c3c3;
+    cursor:pointer;
+    display:block;
+}
+body{
+    padding-top:80px;
+}
+    </style>
+</head>
+<body>
+
+<!-- Hamburger -->
+<div class="top-bar">
+    <div class="brand">
+        <img src="images/main.png">
+        <span>Ritik Verma</span>
+    </div>
+
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+</div>
+
+<div class="sidebar" id="sidebar">
+    <a href="/" id="nav-home">Home</a>
+    <a href="/coding.html" id="nav-coding">Compiler</a>
+    <a href="/projects.html" id="nav-projects">Projects</a>
+    <a href="/gallery.html" id="nav-gallery">Gallery</a>
+    <a href="/contact.html" id="nav-contact us">Contact us</a>
+    
+</div>
+
+<h1>Saved Projects 📂</h1>
+
+<div id="projectList"></div>
+
+
+
+<script src="/script.js"></script>
+
+<script>
+async function loadProjects(){
+    const res = await fetch("/projects");
+    const projects = await res.json();
+
+    const container = document.getElementById("projectList");
+    container.innerHTML = "";
+
+    projects.forEach(p => {
+        const div = document.createElement("div");
+        div.classList.add("project-card");
+
+        div.innerHTML = `
+            <h3>${p.title}</h3>
+            <button class="open-btn" onclick="openProject('${p.title}','${p.language}')">Open</button>
+            <button class="download-btn" onclick="downloadProject('${p.title}','${p.language}')">Download</button>
+            <button class="delete-btn" onclick="deleteProject('${p.title}','${p.language}')">Delete</button>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function downloadProject(title, lang){
+    window.location.href = `/download/${title}/${lang}`;
+}
+
+function openProject(title, lang){
+    fetch(`/download/${title}/${lang}`)
+    .then(res => res.text())
+    .then(code => {
+        localStorage.setItem("openedCode", code);
+        localStorage.setItem("openedLang", lang);
+        window.location.href = "/coding.html";
+    });
+}
+
+async function deleteProject(title, lang){
+
+    const password = prompt("Enter Admin Password:");
+
+    if(!password) return;
+
+    const response = await fetch(`/delete/${title}/${lang}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ password })
+    });
+
+    const data = await response.json();
+
+    if(response.status === 403){
+        alert("Wrong Password!");
+        return;
+    }
+
+    if(response.status === 404){
+        alert("File Not Found!");
+        return;
+    }
+
+    alert("Deleted Successfully!");
+    loadProjects();
+}
+
+loadProjects();
+</script>
+
+</body>
+</html>
