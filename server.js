@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const Razorpay = require("razorpay");
+const mongoose = require("mongoose");
 const crypto = require("crypto");
 const fs = require("fs");
 const { execFile } = require("child_process");
@@ -10,6 +11,9 @@ const path = require("path");
 
 const app = express();
 
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.error("MongoDB Connection Error:", err));
 
 
 app.use(cors());
@@ -17,17 +21,46 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static("public"));
 
+const projectSchema = new mongoose.Schema({
+    title: String,
+    code: String,
+    language: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
 
-const codesDir = path.join(__dirname, "codes");
-const dbPath = path.join(__dirname, "database.json");
+const Project = mongoose.model("Project", projectSchema);
 
-// Ensure folders/files exist
-if (!fs.existsSync(codesDir)) {
-    fs.mkdirSync(codesDir);
-}
-if (!fs.existsSync(dbPath)) {
-    fs.writeFileSync(dbPath, "[]");
-}
+
+const visitorSchema = new mongoose.Schema({
+    _id: {
+        type: String,
+        default: "main"
+    },
+    count: {
+        type: Number,
+        default: 0
+    }
+});
+
+const Visitor = mongoose.model("Visitor", visitorSchema);
+
+
+const donationSchema = new mongoose.Schema({
+    name: String,
+    email: String,
+    amount: Number,
+    date: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const Donation = mongoose.model("Donation", donationSchema);
+
+
 
 // ================= RUN CODE =================
 const { spawn } = require("child_process");
@@ -71,89 +104,155 @@ app.post("/run", (req, res) => {
 });
 
 // ================= SAVE PROJECT =================
-app.post("/save", (req, res) => {
-    const { title, code, language } = req.body;
+app.post("/save", async (req, res) => {
+    try {
+        const { title, code, language } = req.body;
 
-    if (!title) {
-        return res.json({ message: "Project title required" });
+        if (!title || !code || !language) {
+            return res.status(400).json({
+                message: "Project details required"
+            });
+        }
+
+        const project = await Project.create({
+            title,
+            code,
+            language
+        });
+
+        res.json({
+            message: "Project Saved Successfully",
+            project
+        });
+
+    } catch (error) {
+        console.error("Save Project Error:", error);
+
+        res.status(500).json({
+            message: "Failed to save project"
+        });
     }
-
-    const extension = language === "cpp" ? "cpp" : "c";
-    const fileName = `${title}.${extension}`;
-    const filePath = path.join(codesDir, fileName);
-
-    fs.writeFileSync(filePath, code);
-
-    let db = JSON.parse(fs.readFileSync(dbPath));
-    db.push({ title, language });
-
-    fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
-
-    res.json({ message: "Project Saved Successfully" });
 });
 
+
 // ================= GET PROJECTS =================
-app.get("/projects", (req, res) => {
-    const db = JSON.parse(fs.readFileSync(dbPath));
-    res.json(db);
+app.get("/projects", async (req, res) => {
+    try {
+        const projects = await Project.find()
+            .select("title language createdAt")
+            .sort({ createdAt: -1 });
+
+        res.json(projects);
+
+    } catch (error) {
+        console.error("Get Projects Error:", error);
+
+        res.status(500).json({
+            message: "Failed to load projects"
+        });
+    }
 });
 
 // ================= DOWNLOAD PROJECT =================
-app.get("/download/:title/:lang", (req, res) => {
-    const filePath = path.join(codesDir, `${req.params.title}.${req.params.lang}`);
-    res.download(filePath);
+app.get("/download/:title/:lang", async (req, res) => {
+    try {
+        const { title, lang } = req.params;
+
+        const project = await Project.findOne({
+            title: title,
+            language: lang
+        });
+
+        if (!project) {
+            return res.status(404).send("Project not found");
+        }
+
+        const extension = lang === "cpp" ? "cpp" : "c";
+        const fileName = `${project.title}.${extension}`;
+
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${fileName}"`
+        );
+
+        res.setHeader(
+            "Content-Type",
+            "text/plain"
+        );
+
+        res.send(project.code);
+
+    } catch (error) {
+        console.error("Download Project Error:", error);
+
+        res.status(500).send("Failed to download project");
+    }
 });
 
 
 // ================= DELETE PROJECT =================
-const ADMIN_PASSWORD = "ritik123";
-app.delete("/delete/:title/:lang", (req, res) => {
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-    const title = req.params.title;
-    const lang = req.params.lang;
-    const { password } = req.body;
-     if (!password || password !== ADMIN_PASSWORD) {
-        return res.status(403).json({ message: "Wrong Password" });
-    }
-    else
-    {
+app.delete("/delete/:title/:lang", async (req, res) => {
+    try {
+        const { title, lang } = req.params;
+        const { password } = req.body;
 
-    const filePath = path.join(codesDir, `${title}.${lang}`);
-
-    // Delete file from codes folder
-    if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-    }
-
-    // Remove from database.json
-    let db = JSON.parse(fs.readFileSync(dbPath));
-
-    db = db.filter(p => !(p.title === title && p.language === lang));
-
-    fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
-
-    res.json({ message: "Project Deleted Successfully" });}
-});
-app.get("/visitor-count", (req, res) => {
-    const filePath = "visitor.json";
-
-    fs.readFile(filePath, "utf8", (err, data) => {
-        if (err) {
-            return res.json({ count: 0 });
+        // Check admin password
+        if (!password || password !== ADMIN_PASSWORD) {
+            return res.status(403).json({
+                message: "Wrong Password"
+            });
         }
 
-        let visitorData = JSON.parse(data);
-
-        visitorData.count += 1;
-
-        fs.writeFile(filePath, JSON.stringify(visitorData), (err) => {
-            if (err) {
-                console.error("Error saving visitor count");
-            }
+        // Find and delete project from MongoDB
+        const project = await Project.findOneAndDelete({
+            title: title,
+            language: lang
         });
 
-        res.json({ count: visitorData.count });
-    });
+        if (!project) {
+            return res.status(404).json({
+                message: "Project not found"
+            });
+        }
+
+        res.json({
+            message: "Project Deleted Successfully"
+        });
+
+    } catch (error) {
+        console.error("Delete Project Error:", error);
+
+        res.status(500).json({
+            message: "Failed to delete project"
+        });
+    }
+});
+
+// ================= VISITOR COUNT =================
+app.get("/visitor-count", async (req, res) => {
+    try {
+        const visitor = await Visitor.findOneAndUpdate(
+    { _id: "main" },
+    { $inc: { count: 1 } },
+    {
+        returnDocument: "after",
+        upsert: true
+    }
+);
+
+        res.json({
+            count: visitor.count
+        });
+
+    } catch (error) {
+        console.error("Visitor Count Error:", error);
+
+        res.status(500).json({
+            count: 0
+        });
+    }
 });
 
 
@@ -180,8 +279,8 @@ app.post("/create-order", async (req, res) => {
     }
 });
 
-// VERIFY PAYMENT
-app.post("/verify-payment", (req, res) => {
+// ================= VERIFY PAYMENT =================
+app.post("/verify-payment", async (req, res) => {
     const {
         razorpay_order_id,
         razorpay_payment_id,
@@ -191,43 +290,71 @@ app.post("/verify-payment", (req, res) => {
         email
     } = req.body;
 
-    const body = razorpay_order_id + "|" + razorpay_payment_id;
+    try {
+        const body = razorpay_order_id + "|" + razorpay_payment_id;
 
-    const expectedSignature = crypto
-        .createHmac("sha256", process.env.RAZORPAY_SECRET)
-        .update(body)
-        .digest("hex");
+        const expectedSignature = crypto
+            .createHmac("sha256", process.env.RAZORPAY_SECRET)
+            .update(body)
+            .digest("hex");
 
-    if (expectedSignature === razorpay_signature) {
-
-        const data = JSON.parse(fs.readFileSync("donations.json"));
+        if (expectedSignature !== razorpay_signature) {
+            return res.status(400).json({
+                success: false
+            });
+        }
 
         const realAmount = amount / 100;
 
-        data.totalAmount += realAmount;
-        data.totalDonors += 1;
-
-        data.donations.push({
+        await Donation.create({
             name,
             email,
             amount: realAmount,
             date: new Date()
         });
 
-         fs.writeFileSync("donations.json", JSON.stringify(data, null, 2));
+        res.json({
+            success: true
+        });
 
-        res.json({ success: true });
+    } catch (error) {
+        console.error("Payment Verification Error:", error);
 
-    } else {
-        res.status(400).json({ success: false });
+        res.status(500).json({
+            success: false
+        });
     }
 });
 
-// GET STATS
-app.get("/donation-stats", (req, res) => {
-    const data = JSON.parse(fs.readFileSync("donations.json"));
-    res.json(data);
+// ================= DONATION STATS =================
+app.get("/donation-stats", async (req, res) => {
+    try {
+        const donations = await Donation.find();
+
+        const totalAmount = donations.reduce(
+            (total, donation) => total + donation.amount,
+            0
+        );
+
+        const totalDonors = donations.length;
+
+        res.json({
+            totalAmount,
+            totalDonors,
+            donations
+        });
+
+    } catch (error) {
+        console.error("Donation Stats Error:", error);
+
+        res.status(500).json({
+            totalAmount: 0,
+            totalDonors: 0,
+            donations: []
+        });
+    }
 });
+
 
 const PORT = process.env.PORT || 5000;
 
