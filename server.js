@@ -60,6 +60,7 @@ app.use(bodyParser.json());
 
 app.use(express.json());
 
+app.set("trust proxy", 1);
 
 /* =====================================================
    ADMIN SESSION
@@ -467,15 +468,23 @@ app.post(
 
         req.session.isAdmin = true;
 
+req.session.save((err) => {
+
+    if (err) {
+        console.error("Session save error:", err);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to create login session."
+        });
+    }
 
         res.json({
+        success: true
+    });
 
-            success: true
-
-        });
-
-    }
-);
+});
+});
 
 
 /* ================= SESSION CHECK ================= */
