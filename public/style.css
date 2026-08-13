@@ -206,3 +206,467 @@ button:hover {
 #lineNumbers {
     min-width: 10px;
 }
+
+
+
+/* ================= ATTENDANCE CALCULATOR ================= */
+
+.attendance-page {
+    min-height: 100vh;
+    padding: 120px 20px 70px;
+    background: #0f172a;
+    color: white;
+}
+
+.attendance-header {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.attendance-header h1 {
+    color: #00f7ff;
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.attendance-header p {
+    color: #cbd5e1;
+    font-size: 16px;
+}
+
+
+/* ================= CARDS ================= */
+
+.attendance-card {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 30px;
+    padding: 30px;
+    box-sizing: border-box;
+
+    background: #111827;
+    border: 1px solid rgba(0, 247, 255, 0.15);
+    border-radius: 18px;
+
+    box-shadow:
+        0 0 25px rgba(0, 247, 255, 0.08);
+
+    transition: 0.3s ease;
+}
+
+.attendance-card:hover {
+    border-color: rgba(0, 247, 255, 0.35);
+
+    box-shadow:
+        0 0 35px rgba(0, 247, 255, 0.13);
+}
+
+.attendance-card h2 {
+    color: #00f7ff;
+    margin-bottom: 20px;
+}
+
+.card-description {
+    color: #94a3b8;
+    margin-bottom: 25px;
+}
+
+
+/* ================= INPUT GRID ================= */
+
+.attendance-input-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, 1fr);
+    gap: 18px;
+}
+
+.attendance-input-grid label {
+    display: block;
+    margin-bottom: 8px;
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.attendance-input-grid input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 13px 14px;
+
+    background: #0f172a;
+    color: white;
+
+    border: 1px solid #334155;
+    border-radius: 8px;
+
+    font-size: 15px;
+}
+
+.attendance-input-grid input:focus {
+    outline: none;
+
+    border-color: #00f7ff;
+
+    box-shadow:
+        0 0 10px rgba(0, 247, 255, 0.15);
+}
+
+
+/* ================= BUTTON ================= */
+
+.attendance-btn {
+    margin-top: 25px;
+
+    padding: 13px 22px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #00f7ff;
+    color: #0f172a;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.25s ease;
+}
+
+.attendance-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 0 20px rgba(0, 247, 255, 0.35);
+}
+
+.attendance-btn.small {
+    margin-top: 0;
+}
+
+
+/* ================= RESULT ================= */
+
+.attendance-result {
+    margin-top: 25px;
+    padding: 25px;
+
+    background: #0f172a;
+
+    border-radius: 14px;
+
+    text-align: center;
+
+    color: #cbd5e1;
+}
+
+.attendance-result strong {
+    color: white;
+}
+
+
+/* ================= PERCENTAGE ================= */
+
+.percentage-circle {
+    width: 150px;
+    height: 150px;
+
+    margin: 0 auto 20px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle,
+            #0f172a 58%,
+            #00f7ff 59%,
+            #00f7ff 64%,
+            #0f172a 65%
+        );
+
+    color: #00f7ff;
+
+    font-size: 32px;
+    font-weight: 800;
+}
+
+
+/* ================= STATUS ================= */
+
+.excellent {
+    color: #22c55e;
+}
+
+.very-good {
+    color: #38bdf8;
+}
+
+.good {
+    color: #4ade80;
+}
+
+.satisfactory {
+    color: #a3e635;
+}
+
+.average {
+    color: #facc15;
+}
+
+.low {
+    color: #fb923c;
+}
+
+.critical {
+    color: #ef4444;
+}
+
+
+/* ================= PROGRESS ================= */
+
+.attendance-progress {
+    width: 100%;
+    height: 12px;
+
+    margin: 20px 0;
+
+    background: #1e293b;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+.attendance-progress div {
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        #00f7ff,
+        #06b6d4
+    );
+
+    border-radius: 20px;
+
+    transition: width 0.7s ease;
+}
+
+.safety-text {
+    margin-top: 15px;
+}
+
+
+/* ================= FUTURE ================= */
+
+.future-results {
+    margin-top: 25px;
+}
+
+.future-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 20px;
+}
+
+.future-box {
+    padding: 25px;
+
+    background: #0f172a;
+
+    border: 1px solid
+        rgba(0, 247, 255, 0.12);
+
+    border-radius: 12px;
+
+    text-align: center;
+}
+
+.future-box span {
+    display: block;
+
+    color: #cbd5e1;
+
+    margin-bottom: 15px;
+}
+
+.future-box strong {
+    display: block;
+
+    font-size: 32px;
+
+    color: #00f7ff;
+
+    margin-bottom: 8px;
+}
+
+.future-box small {
+    color: #94a3b8;
+}
+
+
+/* ================= TARGET ================= */
+
+.target-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+}
+
+.target-row label {
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.target-row select {
+    padding: 12px 18px;
+
+    background: #0f172a;
+    color: white;
+
+    border: 1px solid #334155;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+}
+
+
+/* ================= WHAT IF ================= */
+
+.what-if-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 12px;
+}
+
+.what-if-grid button {
+    padding: 13px;
+
+    border: 1px solid
+        rgba(0, 247, 255, 0.2);
+
+    border-radius: 8px;
+
+    background: #0f172a;
+
+    color: #00f7ff;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.what-if-grid button:hover {
+    background: #00f7ff;
+    color: #0f172a;
+
+    transform: translateY(-2px);
+}
+
+
+/* ================= RESET ================= */
+
+.reset-attendance {
+    display: block;
+
+    margin: 10px auto 0;
+
+    padding: 12px 25px;
+
+    border: 1px solid
+        rgba(239, 68, 68, 0.4);
+
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #f87171;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: 0.25s;
+}
+
+.reset-attendance:hover {
+    background: #ef4444;
+    color: white;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 700px) {
+
+    .attendance-page {
+        padding:
+            100px 15px 50px;
+    }
+
+    .attendance-header h1 {
+        font-size: 30px;
+    }
+
+    .attendance-card {
+        padding: 20px;
+    }
+
+    .attendance-input-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .future-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .what-if-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .target-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .attendance-btn.small {
+        width: 100%;
+    }
+
+}
+
+
+/* ================= ATTENDANCE VISIBILITY FIX ================= */
+
+.attendance-page {
+    display: block !important;
+}
+
+.attendance-page .attendance-header,
+.attendance-page .attendance-card {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.attendance-page .attendance-card {
+    min-height: 100px;
+}

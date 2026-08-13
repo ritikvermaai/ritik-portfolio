@@ -544,6 +544,44 @@ body{
   100% { transform: scale(1); opacity: 1; }
 }
 
+
+/* ================= ADMIN DASHBOARD BUTTON ================= */
+
+.admin-access {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+}
+
+.admin-access a {
+    display: inline-block;
+    padding: 10px 18px;
+
+    background: rgba(15, 23, 42, 0.95);
+    color: #00f7ff;
+
+    border: 1px solid #00f7ff;
+    border-radius: 20px;
+
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+
+    box-shadow: 0 0 15px rgba(0, 247, 255, 0.15);
+
+    transition: all 0.3s ease;
+}
+
+.admin-access a:hover {
+    background: #00f7ff;
+    color: #0f172a;
+
+    transform: translateY(-3px);
+
+    box-shadow: 0 0 25px rgba(0, 247, 255, 0.5);
+}
+
     </style>
 </head>
 <body>
@@ -568,6 +606,7 @@ body{
     <a href="/coding.html" id="nav-coding">Compiler</a>
     <a href="/projects.html" id="nav-projects">Projects</a>
     <a href="/gallery.html" id="nav-gallery">Gallery</a>
+    <a href="/attendance.html" id="nav-attendance">Attendance Calculator</a>
     <a href="/resume.html" id="nav-resume">Resume</a>
     <a href="/contact.html" id="nav-contact us">Contact us</a>
 </div>
@@ -590,6 +629,14 @@ body{
 <div class="floating-badge" id="badge">
     <img src="images/img1.png">
     <span>Ritik Verma</span>
+</div>
+
+<!-- ================= ADMIN BUTTON ================= -->
+
+<div class="admin-access">
+    <a href="/admin/admin.html">
+        🔐 Admin Dashboard
+    </a>
 </div>
 
 <div class="visitor-box">
@@ -1095,17 +1142,62 @@ fetch("/visitor-count")
   emailjs.init("YdF3cIidCNShSf1pj");
 })();
 
-document.getElementById("contact-form").addEventListener("submit", function(e){
-  e.preventDefault();
+document.getElementById("contact-form").addEventListener("submit", async function(e) {
 
-  emailjs.sendForm("service_mr5m3i3", "template_9zywgyh", this)
-    .then(function(){
-      alert("Message Sent Successfully 🚀");
-    }, function(error){
-      alert("Failed to send message ❌");
-    });
+    e.preventDefault();
 
-  this.reset();
+    const form = this;
+
+    const name = form.querySelector('[name="from_name"]').value.trim();
+    const email = form.querySelector('[name="from_email"]').value.trim();
+    const message = form.querySelector('[name="message"]').value.trim();
+
+    if (!name || !email || !message) {
+        alert("Please fill all fields.");
+        return;
+    }
+
+    try {
+
+        // Save message to MongoDB
+        const dbResponse = await fetch("/api/messages", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                message: message
+            })
+        });
+
+        const dbResult = await dbResponse.json();
+
+        if (!dbResponse.ok || !dbResult.success) {
+            console.error("MongoDB Error:", dbResult);
+            alert("Message could not be saved ❌");
+            return;
+        }
+
+        // Send message to your email using EmailJS
+        await emailjs.sendForm(
+            "service_mr5m3i3",
+            "template_9zywgyh",
+            form
+        );
+
+        alert("Message Sent Successfully 🚀");
+
+        form.reset();
+
+    } catch (error) {
+
+        console.error("Contact Form Error:", error);
+
+        alert("Something went wrong ❌");
+    }
+
 });
 </script>
 

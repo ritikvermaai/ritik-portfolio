@@ -201,6 +201,7 @@ body {
     <a href="/coding.html" id="nav-coding">Compiler</a>
     <a href="/projects.html" id="nav-projects">Projects</a>
     <a href="/gallery.html" id="nav-gallery">Gallery</a>
+    <a href="/attendance.html" id="nav-attendance">Attendance Calculator</a>
     <a href="/resume.html" id="nav-resume">Resume</a>
     <a href="/contact.html" id="nav-contact">Contact us</a>
     
@@ -211,49 +212,151 @@ body {
 
 <h1>My Gallery</h1>
 
-<section class="gallery">
-
-    <!-- Section 1 -->
+<section class="gallery" id="galleryContainer">
     <div class="row">
         <div class="text">
-            <h2>ITS ME </h2>
-            <p>Ritik verma</p>
+            <h2>Loading gallery...</h2>
+            <p>Please wait...</p>
         </div>
         <div class="image">
-            <img src="images/img1.png" alt="Project 1">
+            <div class="dummy-img"></div>
         </div>
     </div>
-
-    <!-- Section 2 -->
-    <div class="row reverse">
-        <div class="text">
-            <h2>PSIT </h2>
-            <p>In elevate 2k26 at PSIT ground.</p>
-        </div>
-        <div class="image">
-            <img src="images/img2.png" alt="Project 2">
-        </div>
-    </div>
-
 </section>
 
 <script>
-    function reveal() {
-        const rows = document.querySelectorAll(".row");
+async function loadPublicGallery() {
+    const container =
+        document.getElementById(
+            "galleryContainer"
+        );
 
-        rows.forEach(row => {
-            const rect = row.getBoundingClientRect();
-            if (rect.top < window.innerHeight - 100) {
-                row.classList.add("show");
-            }
-        });
+    try {
+        const response =
+            await fetch("/api/gallery");
+
+        const data =
+            await response.json();
+
+        if (!data.success ||
+            !data.images ||
+            !data.images.length) {
+            container.innerHTML = `
+                <div class="row show">
+                    <div class="text">
+                        <h2>No gallery images yet</h2>
+                        <p>New images will appear here.</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML =
+            data.images.map(
+                (image, index) => `
+                    <div class="
+                        row
+                        ${index % 2
+                            ? "reverse"
+                            : ""}
+                    ">
+                        <div class="text">
+                            <h2>
+                                ${escapeHTML(
+                                    image.title
+                                )}
+                            </h2>
+                            <p>
+                                ${escapeHTML(
+                                    image.description ||
+                                    ""
+                                )}
+                            </p>
+                        </div>
+
+                        <div class="image">
+                            <img
+                                src="${escapeHTML(
+                                    image.imageUrl
+                                )}"
+                                alt="${escapeHTML(
+                                    image.title
+                                )}"
+                                loading="lazy"
+                            >
+                        </div>
+                    </div>
+                `
+            ).join("");
+
+        reveal();
+
+    } catch (error) {
+        console.error(
+            "Public gallery error:",
+            error
+        );
+
+        container.innerHTML = `
+            <div class="row show">
+                <div class="text">
+                    <h2>Gallery unavailable</h2>
+                    <p>Please try again later.</p>
+                </div>
+            </div>
+        `;
     }
+}
 
-    window.addEventListener("scroll", reveal);
-    window.addEventListener("load", reveal);
-    function toggleMenu() {
-    document.getElementById("sidebar").classList.toggle("show");
-    document.getElementById("overlay").classList.toggle("show");
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function reveal() {
+    const rows =
+        document.querySelectorAll(
+            ".row"
+        );
+
+    rows.forEach(row => {
+        const rect =
+            row.getBoundingClientRect();
+
+        if (
+            rect.top <
+            window.innerHeight - 100
+        ) {
+            row.classList.add("show");
+        }
+    });
+}
+
+window.addEventListener(
+    "scroll",
+    reveal
+);
+
+window.addEventListener(
+    "load",
+    () => {
+        loadPublicGallery();
+    }
+);
+
+function toggleMenu() {
+    document
+        .getElementById("sidebar")
+        .classList.toggle("show");
+
+    document
+        .getElementById("overlay")
+        .classList.toggle("show");
 }
 </script>
 
