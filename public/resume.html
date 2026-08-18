@@ -185,6 +185,245 @@ grid-template-columns:1fr;
 
 }
 
+
+/* =====================================================
+   RESUME PROFESSIONAL MODAL
+===================================================== */
+
+.resume-modal-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 999999;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.72);
+
+    backdrop-filter: blur(8px);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease;
+}
+
+
+.resume-modal-overlay.active {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
+}
+
+
+.resume-modal {
+
+    width: min(480px, 100%);
+
+    background:
+        linear-gradient(
+            145deg,
+            #111827,
+            #0f172a
+        );
+
+    border:
+        1px solid
+        rgba(0, 247, 255, 0.22);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 25px 80px
+        rgba(0, 0, 0, 0.6);
+
+    transform:
+        translateY(15px)
+        scale(0.97);
+
+    transition:
+        transform 0.2s ease;
+
+    overflow: hidden;
+}
+
+
+.resume-modal-overlay.active
+.resume-modal {
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+.resume-modal-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    padding: 20px;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.resume-modal-title-area {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+}
+
+
+.resume-modal-icon {
+
+    width: 44px;
+
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(0, 247, 255, 0.10);
+
+    color: #00f7ff;
+
+    font-size: 21px;
+}
+
+
+.resume-modal h3 {
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 18px;
+}
+
+
+.resume-modal-header p {
+
+    margin: 4px 0 0;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+
+.resume-modal-close {
+
+    width: 34px;
+
+    height: 34px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background:
+        rgba(255, 255, 255, 0.06);
+
+    color: #94a3b8;
+
+    font-size: 23px;
+
+    cursor: pointer;
+}
+
+
+.resume-modal-close:hover {
+
+    background:
+        rgba(239, 68, 68, 0.15);
+
+    color: #ffffff;
+}
+
+
+.resume-modal-body {
+
+    padding: 22px;
+
+    color: #cbd5e1;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+.resume-modal-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    padding: 16px 22px 22px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.resume-modal-btn {
+
+    min-width: 90px;
+
+    padding: 10px 20px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #00e5f5;
+
+    color: #06121a;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.resume-modal-btn:hover {
+
+    opacity: 0.9;
+
+}
+
 </style>
 
 </head>
@@ -256,7 +495,165 @@ grid-template-columns:1fr;
 
 </div>
 
+
+<!-- =====================================================
+     RESUME PROFESSIONAL MODAL
+===================================================== -->
+
+<div
+    id="resumeModalOverlay"
+    class="resume-modal-overlay"
+>
+
+    <div class="resume-modal">
+
+        <div class="resume-modal-header">
+
+            <div class="resume-modal-title-area">
+
+                <div
+                    id="resumeModalIcon"
+                    class="resume-modal-icon"
+                >
+                    📄
+                </div>
+
+                <div>
+
+                    <h3 id="resumeModalTitle">
+                        Resume Saved
+                    </h3>
+
+                    <p id="resumeModalSubtitle">
+                        Your resume has been saved.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="resumeModalClose"
+                class="resume-modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            id="resumeModalBody"
+            class="resume-modal-body"
+        ></div>
+
+        <div class="resume-modal-actions">
+
+            <button
+                type="button"
+                id="resumeModalOK"
+                class="resume-modal-btn"
+            >
+                OK
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <script>
+
+
+
+/* =====================================================
+   RESUME PROFESSIONAL NOTICE
+===================================================== */
+
+function resumeNotice({
+
+    title = "Notification",
+
+    subtitle = "",
+
+    message = "",
+
+    icon = "📄"
+
+} = {}) {
+
+    const overlay =
+        document.getElementById(
+            "resumeModalOverlay"
+        );
+
+    const titleElement =
+        document.getElementById(
+            "resumeModalTitle"
+        );
+
+    const subtitleElement =
+        document.getElementById(
+            "resumeModalSubtitle"
+        );
+
+    const messageElement =
+        document.getElementById(
+            "resumeModalBody"
+        );
+
+    const iconElement =
+        document.getElementById(
+            "resumeModalIcon"
+        );
+
+    const okButton =
+        document.getElementById(
+            "resumeModalOK"
+        );
+
+    const closeButton =
+        document.getElementById(
+            "resumeModalClose"
+        );
+
+
+    titleElement.textContent =
+        title;
+
+    subtitleElement.textContent =
+        subtitle;
+
+    messageElement.textContent =
+        message;
+
+    iconElement.textContent =
+        icon;
+
+
+    overlay.classList.add(
+        "active"
+    );
+
+
+    const close = () => {
+
+        overlay.classList.remove(
+            "active"
+        );
+
+    };
+
+
+    okButton.onclick =
+        close;
+
+    closeButton.onclick =
+        close;
+
+}
 
 function toggleMenu(){
 document.getElementById("sidebar").classList.toggle("active")
@@ -313,22 +710,58 @@ document.getElementById("preview").innerHTML=`
 
 }
 
-function saveResume(){
+async function saveResume(){
 
-const data={
-name:name.value,
-title:title.value,
-email:email.value,
-phone:phone.value,
-about:about.value,
-skills:skills.value,
-education:education.value,
-projects:projects.value
-}
+    const data = {
 
-localStorage.setItem("resumeData",JSON.stringify(data))
+        name:
+            name.value,
 
-alert("Resume Saved")
+        title:
+            title.value,
+
+        email:
+            email.value,
+
+        phone:
+            phone.value,
+
+        about:
+            about.value,
+
+        skills:
+            skills.value,
+
+        education:
+            education.value,
+
+        projects:
+            projects.value
+
+    };
+
+
+    localStorage.setItem(
+        "resumeData",
+        JSON.stringify(data)
+    );
+
+
+    resumeNotice({
+
+        title:
+            "Resume Saved",
+
+        subtitle:
+            "Your resume has been saved successfully.",
+
+        message:
+            "Your resume information is now stored in your browser.",
+
+        icon:
+            "📄"
+
+    });
 
 }
 

@@ -60,12 +60,12 @@ app.use(bodyParser.json());
 
 app.use(express.json());
 
-app.set("trust proxy", 1);
+
 
 /* =====================================================
    ADMIN SESSION
 ===================================================== */
-
+app.set("trust proxy", 1);
 app.use(
     session({
 
@@ -91,6 +91,20 @@ app.use(
     })
 );
 
+/* ================= MAIN WEBSITE ================= */
+
+app.get("/", (req, res) => {
+
+    res.sendFile(
+        path.join(
+            __dirname,
+            "public",
+            "index.html"
+        )
+    );
+
+});
+
 
 /* =====================================================
    STATIC WEBSITE
@@ -98,7 +112,8 @@ app.use(
 
 app.use(
     express.static(
-        path.join(__dirname, "public")
+        path.join(__dirname, "public"),
+        { index: false }
     )
 );
 
@@ -253,6 +268,11 @@ const settingsSchema = new mongoose.Schema({
         default: ""
     },
 
+    profileImage: {
+    type: String,
+    default: "images/photoweb.jpg"
+},
+
     contactEmail: {
         type: String,
         default: ""
@@ -281,6 +301,239 @@ const Settings =
         settingsSchema
     );
 
+
+    /* =====================================================
+   PORTFOLIO WEBSITE BUILDER
+===================================================== */
+
+const portfolioContentSchema = new mongoose.Schema({
+
+    profileImage: {
+        type: String,
+        default: "images/photoweb.jpg"
+    },
+
+    hero: {
+        name: {
+            type: String,
+            default: "Ritik Verma"
+        },
+
+        typing: {
+            type: String,
+            default:
+                "B.Tech CSE Student | Future Software Developer 🚀"
+        },
+
+        tagline: {
+            type: String,
+            default:
+                "Learn. Build. Improve. Repeat."
+        }
+    },
+
+
+    education: {
+        type: [
+            {
+                title: String,
+                institute: String,
+                status: String
+            }
+        ],
+
+        default: [
+            {
+                title:
+                    "B.Tech Computer Science Engineering",
+
+                institute:
+                    "PSIT Kanpur",
+
+                status:
+                    "1st Year Student"
+            }
+        ]
+    },
+
+
+    counters: {
+
+        problemsSolved: {
+            type: Number,
+            default: 500
+        },
+
+        problemsLabel: {
+            type: String,
+            default: "Problems Solved"
+        },
+
+        yearsLabel: {
+            type: String,
+            default: "Years Coding"
+        },
+
+        projectsLabel: {
+            type: String,
+            default: "Projects Completed"
+        },
+
+        hoursLabel: {
+            type: String,
+            default: "Hours on Website"
+        },
+
+        startDate: {
+            type: String,
+            default: "2024-05-01"
+        }
+    },
+
+
+    skills: {
+        type: [String],
+
+        default: [
+            "C",
+            "C++",
+            "Data Structures",
+            "Problem Solving",
+            "Git"
+        ]
+    },
+
+
+    progressSkills: {
+
+        type: [
+            {
+                name: String,
+                percentage: Number
+            }
+        ],
+
+        default: [
+            {
+                name: "C",
+                percentage: 100
+            },
+            {
+                name: "C++",
+                percentage: 80
+            },
+            {
+                name: "Data Structures",
+                percentage: 75
+            }
+        ]
+    },
+
+
+    about: {
+
+        title: {
+            type: String,
+            default: "About Me"
+        },
+
+        text: {
+            type: String,
+            default:
+                "I'm a passionate B.Tech Computer Science student who loves building real-world projects and solving problems using C and C++. Currently exploring Data Structures, Algorithms, and Backend Development."
+        }
+    },
+
+
+    contact: {
+
+        title: {
+            type: String,
+            default: "Send Me a Message"
+        },
+
+        namePlaceholder: {
+            type: String,
+            default: "Your Name"
+        },
+
+        emailPlaceholder: {
+            type: String,
+            default: "Your Email"
+        },
+
+        messagePlaceholder: {
+            type: String,
+            default: "Your Message"
+        },
+
+        buttonText: {
+            type: String,
+            default: "Send Message"
+        }
+    },
+
+
+    donation: {
+
+        title: {
+            type: String,
+            default: "Support My Work 💙"
+        },
+
+        goal: {
+            type: Number,
+            default: 10000
+        },
+
+        donorNamePlaceholder: {
+            type: String,
+            default: "Your Name"
+        },
+
+        donorEmailPlaceholder: {
+            type: String,
+            default: "Your Email"
+        },
+
+        customAmountPlaceholder: {
+            type: String,
+            default: "Enter custom amount"
+        },
+
+        buttonText: {
+            type: String,
+            default: "Donate Now"
+        },
+
+        leaderboardTitle: {
+            type: String,
+            default: "🏆 Top Supporters"
+        },
+
+        milestoneTitle: {
+            type: String,
+            default: "🎯 Support Goal"
+        }
+    },
+
+
+    thankYou: {
+
+        title: {
+            type: String,
+            default: "THANK YOU FOR VISITING"
+        }
+    }
+
+});
+
+
+const PortfolioContent =
+    mongoose.model(
+        "PortfolioContent",
+        portfolioContentSchema
+    );
 
 
 
@@ -409,6 +662,381 @@ app.put(
 
     }
 );
+
+
+/* =====================================================
+   HOMEPAGE EDITOR + PROFILE IMAGE
+===================================================== */
+
+async function getHomepageDocument() {
+
+    let homepage =
+        await Homepage.findOne();
+
+    if (!homepage) {
+
+        const fs =
+            require("fs");
+
+        const indexPath =
+            path.join(
+                __dirname,
+                "public",
+                "index.html"
+            );
+
+        const html =
+            fs.readFileSync(
+                indexPath,
+                "utf8"
+            );
+
+        homepage =
+            await Homepage.create({
+                html: html
+            });
+    }
+
+    return homepage;
+}
+
+
+/* ================= GET HOMEPAGE ================= */
+
+app.get(
+    "/admin/api/homepage",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            const homepage =
+                await getHomepageDocument();
+
+            res.json({
+                success: true,
+                homepage: homepage
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Homepage Load Error:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                message:
+                    "Failed to load homepage."
+            });
+        }
+    }
+);
+
+
+/* ================= SAVE HOMEPAGE ================= */
+
+app.put(
+    "/admin/api/homepage",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            const html =
+                req.body?.html;
+
+            if (
+                typeof html !== "string" ||
+                !html.trim()
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Homepage HTML cannot be empty."
+                });
+            }
+
+            const homepage =
+                await getHomepageDocument();
+
+            homepage.html =
+                html;
+
+            homepage.updatedAt =
+                new Date();
+
+            await homepage.save();
+
+            res.json({
+                success: true,
+                message:
+                    "Homepage saved successfully."
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Homepage Save Error:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                message:
+                    "Failed to save homepage."
+            });
+        }
+    }
+);
+
+
+/* =====================================================
+   PROFILE IMAGE UPLOAD
+===================================================== */
+
+app.post(
+    "/admin/api/profile-image",
+    requireAdmin,
+    upload.single("image"),
+    async (req, res) => {
+
+        try {
+
+            if (!req.file) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "No image file received."
+                });
+            }
+
+            if (
+                !process.env.CLOUDINARY_CLOUD_NAME ||
+                !process.env.CLOUDINARY_API_KEY ||
+                !process.env.CLOUDINARY_API_SECRET
+            ) {
+
+                return res.status(500).json({
+                    success: false,
+                    message:
+                        "Cloudinary environment variables are missing."
+                });
+            }
+
+            const result =
+                await new Promise(
+                    (resolve, reject) => {
+
+                        const stream =
+                            cloudinary.uploader.upload_stream(
+                                {
+                                    folder:
+                                        "ritik-portfolio/profile",
+
+                                    resource_type:
+                                        "image",
+
+                                    public_id:
+                                        "profile",
+
+                                    overwrite:
+                                        true,
+
+                                    invalidate:
+                                        true
+                                },
+
+                                (error, uploaded) => {
+
+                                    if (error) {
+
+                                        reject(error);
+
+                                    } else {
+
+                                        resolve(
+                                            uploaded
+                                        );
+                                    }
+                                }
+                            );
+
+                        stream.end(
+                            req.file.buffer
+                        );
+                    }
+                );
+
+            const imageUrl =
+                result.secure_url;
+
+
+            /* SAVE IMAGE URL */
+
+            let settings =
+                await Settings.findOne();
+
+            if (!settings) {
+
+                settings =
+                    new Settings();
+
+            }
+
+            settings.profileImage =
+                imageUrl;
+
+            await settings.save();
+
+            
+            /* UPDATE PORTFOLIO CONTENT */
+
+let content =
+    await PortfolioContent.findOne();
+
+if (!content) {
+
+    content =
+        new PortfolioContent();
+
+}
+
+content.profileImage =
+    imageUrl;
+
+await content.save();
+           
+
+
+            res.json({
+
+                success: true,
+
+                message:
+                    "Profile picture updated successfully.",
+
+                imageUrl:
+                    imageUrl
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Profile Image Upload Error:",
+                error
+            );
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    error.message ||
+                    "Profile picture upload failed."
+
+            });
+        }
+    }
+);
+
+
+
+/* =====================================================
+   DELETE PROFILE IMAGE
+===================================================== */
+
+app.delete(
+    "/admin/api/profile-image",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            /* DELETE FROM CLOUDINARY */
+
+            await cloudinary.uploader.destroy(
+                "ritik-portfolio/profile/profile",
+                {
+                    resource_type: "image",
+                    invalidate: true
+                }
+            );
+
+
+            /* RESET SETTINGS */
+
+            let settings =
+                await Settings.findOne();
+
+            if (!settings) {
+
+                settings =
+                    new Settings();
+
+            }
+
+            settings.profileImage =
+                "/images/photoweb.jpg";
+
+            await settings.save();
+
+
+            /* RESET PORTFOLIO CONTENT */
+
+            let content =
+                await PortfolioContent.findOne();
+
+            if (!content) {
+
+                content =
+                    new PortfolioContent();
+
+            }
+
+            content.profileImage =
+                "/images/photoweb.jpg";
+
+            await content.save();
+
+
+            res.json({
+
+                success: true,
+
+                message:
+                    "Profile picture deleted successfully."
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Profile Image Delete Error:",
+                error
+            );
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    error.message ||
+                    "Failed to delete profile picture."
+
+            });
+
+        }
+
+    }
+);
+
+
 
 /* ================= ADMIN PAGE ================= */
 
@@ -567,6 +1195,240 @@ function requireAdmin(
     });
 
 }
+
+/* =====================================================
+   WEBSITE BUILDER API
+===================================================== */
+
+async function getPortfolioContent() {
+
+    let content =
+        await PortfolioContent.findOne();
+
+    if (!content) {
+
+        content =
+            await PortfolioContent.create({});
+
+    }
+
+    return content;
+}
+
+
+/* ================= GET WEBSITE CONTENT ================= */
+
+app.get(
+    "/admin/api/portfolio-content",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            const content =
+                await getPortfolioContent();
+
+            res.json({
+                success: true,
+                content: content
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Portfolio Content Load Error:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                message:
+                    "Failed to load website content."
+            });
+
+        }
+
+    }
+);
+
+
+/* ================= SAVE WEBSITE CONTENT ================= */
+
+app.put(
+    "/admin/api/portfolio-content",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            const data =
+                req.body || {};
+
+            let content =
+                await PortfolioContent.findOne();
+
+            if (!content) {
+
+                content =
+                    new PortfolioContent();
+
+            }
+
+
+            if (data.hero) {
+
+                content.hero =
+                    data.hero;
+
+            }
+
+
+            if (
+                Array.isArray(
+                    data.education
+                )
+            ) {
+
+                content.education =
+                    data.education;
+
+            }
+
+
+            if (data.counters) {
+
+                content.counters =
+                    data.counters;
+
+            }
+
+
+            if (
+                Array.isArray(
+                    data.skills
+                )
+            ) {
+
+                content.skills =
+                    data.skills;
+
+            }
+
+
+            if (
+                Array.isArray(
+                    data.progressSkills
+                )
+            ) {
+
+                content.progressSkills =
+                    data.progressSkills;
+
+            }
+
+
+            if (data.about) {
+
+                content.about =
+                    data.about;
+
+            }
+
+
+            if (data.contact) {
+
+                content.contact =
+                    data.contact;
+
+            }
+
+
+            if (data.donation) {
+
+                content.donation =
+                    data.donation;
+
+            }
+
+
+            if (data.thankYou) {
+
+                content.thankYou =
+                    data.thankYou;
+
+            }
+
+
+            await content.save();
+
+
+            res.json({
+
+                success: true,
+
+                message:
+                    "Website updated successfully."
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Portfolio Content Save Error:",
+                error
+            );
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "Failed to save website content."
+
+            });
+
+        }
+
+    }
+);
+
+
+/* ================= PUBLIC WEBSITE CONTENT ================= */
+
+app.get(
+    "/api/portfolio-content",
+    async (req, res) => {
+
+        try {
+
+            const content =
+                await getPortfolioContent();
+
+            res.json({
+
+                success: true,
+
+                content: content
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Public Portfolio Content Error:",
+                error
+            );
+
+            res.status(500).json({
+
+                success: false
+
+            });
+
+        }
+
+    }
+);
 
 
 /* ================= PUBLIC GALLERY ================= */
@@ -2016,6 +2878,92 @@ app.get(
     }
 );
 
+
+/* =====================================================
+   UPDATE VISITOR COUNT
+===================================================== */
+
+app.put(
+    "/admin/visitor-count",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            const count =
+                Number(req.body.count);
+
+            if (
+                !Number.isInteger(count) ||
+                count < 0
+            ) {
+
+                return res.status(400).json({
+
+                    success: false,
+
+                    message:
+                        "Visitor count must be a valid number greater than or equal to 0."
+
+                });
+
+            }
+
+
+            const visitor =
+                await Visitor.findOneAndUpdate(
+
+                    {
+                        _id: "main"
+                    },
+
+                    {
+                        $set: {
+                            count: count
+                        }
+                    },
+
+                    {
+    returnDocument: "after",
+    upsert: true
+}
+
+                );
+
+
+            res.json({
+
+                success: true,
+
+                count:
+                    visitor.count,
+
+                message:
+                    "Visitor count updated successfully."
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Update Visitor Count Error:",
+                error
+            );
+
+            res.status(500).json({
+
+                success: false,
+
+                message:
+                    "Failed to update visitor count."
+
+            });
+
+        }
+
+    }
+);
 
 /* =====================================================
    RAZORPAY

@@ -725,6 +725,128 @@
                 grid-template-columns: 1fr 1fr;
             }
         }
+    
+/* ================= PROFESSIONAL NOTICE ================= */
+
+.attendance-notice-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.attendance-notice-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.attendance-notice {
+    width: min(460px, 100%);
+    background: linear-gradient(145deg, #111827, #0f172a);
+    border: 1px solid rgba(0, 247, 255, 0.25);
+    border-radius: 18px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.65);
+    overflow: hidden;
+    transform: translateY(15px) scale(0.97);
+    transition: transform 0.2s ease;
+}
+
+.attendance-notice-overlay.active .attendance-notice {
+    transform: translateY(0) scale(1);
+}
+
+.attendance-notice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.attendance-notice-title-area {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.attendance-notice-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(0, 247, 255, 0.10);
+    font-size: 21px;
+}
+
+.attendance-notice h3 {
+    margin: 0;
+    color: white;
+    font-size: 18px;
+}
+
+.attendance-notice-header p {
+    margin: 4px 0 0;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.attendance-notice-close {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    font-size: 23px;
+    cursor: pointer;
+}
+
+.attendance-notice-close:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: white;
+}
+
+.attendance-notice-message {
+    padding: 22px;
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.attendance-notice-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 22px 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.attendance-notice-btn {
+    min-width: 90px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 9px;
+    background: #00e5f5;
+    color: #06121a;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.attendance-notice-btn:hover {
+    opacity: 0.9;
+}
+
     </style>
 </head>
 
@@ -1351,7 +1473,76 @@
 </main>
 
 
+
+<!-- ================= PROFESSIONAL NOTICE ================= -->
+
+<div
+    id="attendanceNoticeOverlay"
+    class="attendance-notice-overlay"
+    onclick="if(event.target === this) closeAttendanceNotice()"
+>
+    <div class="attendance-notice">
+        <div class="attendance-notice-header">
+            <div class="attendance-notice-title-area">
+                <div id="attendanceNoticeIcon" class="attendance-notice-icon">⚠️</div>
+                <div>
+                    <h3 id="attendanceNoticeTitle">Notification</h3>
+                    <p id="attendanceNoticeSubtitle">Please review the information.</p>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                class="attendance-notice-close"
+                onclick="closeAttendanceNotice()"
+                aria-label="Close"
+            >×</button>
+        </div>
+
+        <div id="attendanceNoticeMessage" class="attendance-notice-message"></div>
+
+        <div class="attendance-notice-actions">
+            <button
+                type="button"
+                class="attendance-notice-btn"
+                onclick="closeAttendanceNotice()"
+            >OK</button>
+        </div>
+    </div>
+</div>
+
 <script>
+
+/* ================= PROFESSIONAL NOTICE ================= */
+
+function siteNotice({
+    title = "Notification",
+    subtitle = "Please review the information below.",
+    message = "",
+    icon = "ℹ️"
+} = {}) {
+    const overlay = document.getElementById("attendanceNoticeOverlay");
+    if (!overlay) return;
+
+    document.getElementById("attendanceNoticeIcon").textContent = icon;
+    document.getElementById("attendanceNoticeTitle").textContent = title;
+    document.getElementById("attendanceNoticeSubtitle").textContent = subtitle;
+    document.getElementById("attendanceNoticeMessage").textContent = message;
+
+    overlay.classList.add("active");
+}
+
+function closeAttendanceNotice() {
+    const overlay = document.getElementById("attendanceNoticeOverlay");
+    if (overlay) overlay.classList.remove("active");
+}
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        closeAttendanceNotice();
+    }
+});
+
 
 /* ================= MENU ================= */
 
@@ -1395,9 +1586,12 @@ function getAttendanceData() {
 
     if (total <= 0) {
 
-        alert(
-            "Please enter total lectures."
-        );
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Please enter total lectures."),
+    icon: "⚠️"
+});;
 
         return null;
 
@@ -1409,9 +1603,12 @@ function getAttendanceData() {
         absent < 0
     ) {
 
-        alert(
-            "Values cannot be negative."
-        );
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Values cannot be negative."),
+    icon: "⚠️"
+});;
 
         return null;
 
@@ -1422,9 +1619,12 @@ function getAttendanceData() {
         attended + absent !== total
     ) {
 
-        alert(
-            "Total lectures must equal attended + absent."
-        );
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Total lectures must equal attended + absent."),
+    icon: "⚠️"
+});;
 
         return null;
 
@@ -1681,7 +1881,12 @@ function simulateFuture() {
 
     if (future < 0) {
 
-        alert("Invalid future lectures.");
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Invalid future lectures."),
+    icon: "⚠️"
+});;
 
         return;
 
@@ -1693,9 +1898,12 @@ function simulateFuture() {
         futureMiss < 0
     ) {
 
-        alert(
-            "Future values cannot be negative."
-        );
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Future values cannot be negative."),
+    icon: "⚠️"
+});;
 
         return;
 
@@ -1706,9 +1914,12 @@ function simulateFuture() {
         futureAttend + futureMiss !== future
     ) {
 
-        alert(
-            "Future Lectures must equal Attend + Miss."
-        );
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Future Lectures must equal Attend + Miss."),
+    icon: "⚠️"
+});;
 
         return;
 
@@ -2177,9 +2388,12 @@ function semesterPlanner() {
         absences < 0
     ) {
 
-        alert(
-            "Enter valid values."
-        );
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Enter valid values."),
+    icon: "⚠️"
+});;
 
         return;
 
@@ -2193,9 +2407,12 @@ function semesterPlanner() {
 
     if (absences > remainingLectures) {
 
-        alert(
-            "Future absences cannot exceed future lectures."
-        );
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Future absences cannot exceed future lectures."),
+    icon: "⚠️"
+});;
 
         return;
 
@@ -2309,9 +2526,21 @@ function addSubject() {
 
     if (!name) {
 
-        alert(
-            "Enter subject name."
-        );
+    siteNotice({
+
+    title:
+        "Subject Name Required",
+
+    subtitle:
+        "Please enter a subject name.",
+
+    message:
+        "Enter subject name before adding the subject.",
+
+    icon:
+        "⚠️"
+
+});
 
         return;
 
@@ -2324,9 +2553,12 @@ function addSubject() {
         attended > total
     ) {
 
-        alert(
-            "Enter valid subject attendance."
-        );
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Enter valid subject attendance."),
+    icon: "⚠️"
+});;
 
         return;
 

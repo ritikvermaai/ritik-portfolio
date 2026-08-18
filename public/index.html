@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Ritik Verma</title>
+    <link rel="stylesheet" href="box.css">
     <div id="progress-bar"></div>
 <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
 
@@ -615,7 +616,7 @@ body{
 
 <!-- HERO SECTION -->
 <div class="container">
-    <img src="images/photoweb.jpg" class="profile-pic">
+    <img src="" class="profile-pic">
 
     <h1>Hello I'm <span class="highlight">Ritik Verma</span></h1>
 
@@ -627,7 +628,7 @@ body{
 </div>
 
 <div class="floating-badge" id="badge">
-    <img src="images/img1.png">
+    <img src="images/main.png">
     <span>Ritik Verma</span>
 </div>
 
@@ -914,7 +915,9 @@ loadLeaderboard();
 
 async function updateMilestone() {
 
-    const goal = 10000;
+    const goal =
+    window.portfolioDonationGoal ||
+    10000;
 
     const res = await fetch("/donation-stats");
     const data = await res.json();
@@ -985,16 +988,68 @@ function showPopup(name, amount) {
 
 <script>
     // Typing animation
-    const text = "B.Tech CSE Student | Future Software Developer 🚀";
+    /* ================= DYNAMIC TYPING ================= */
+
+let typingStarted = false;
+
+function startDynamicTyping() {
+
+    if (typingStarted) return;
+
+    typingStarted = true;
+
+    const typingElement =
+        document.getElementById("typing");
+
+    if (!typingElement) return;
+
+    const text =
+        window.portfolioTypingText ||
+        "B.Tech CSE Student | Future Software Developer 🚀";
+
+    typingElement.innerHTML = "";
+
     let i = 0;
-    function typeEffect(){
-        if(i < text.length){
-            document.getElementById("typing").innerHTML += text.charAt(i);
+
+    function typeEffect() {
+
+        if (i < text.length) {
+
+            typingElement.innerHTML +=
+                text.charAt(i);
+
             i++;
-            setTimeout(typeEffect,40);
+
+            setTimeout(
+                typeEffect,
+                40
+            );
+
         }
+
     }
+
     typeEffect();
+
+}
+
+
+/* Wait for Website Builder data */
+
+if (
+    window.portfolioTypingText
+) {
+
+    startDynamicTyping();
+
+} else {
+
+    window.addEventListener(
+        "portfolioContentLoaded",
+        startDynamicTyping
+    );
+
+}
 
     // Scroll fade animation
     window.addEventListener("scroll", function(){
@@ -1077,7 +1132,10 @@ if (section) {
 
     observer.observe(section);
 }
-const startDate = new Date("2024-05-01"); // change to your real start date
+const startDate = new Date(
+    window.portfolioStartDate ||
+    "2024-05-01"
+);
 const now = new Date();
 
 const diffYears = (now - startDate) / (1000 * 60 * 60 * 24 * 365);
@@ -1133,6 +1191,757 @@ fetch("/visitor-count")
     document.getElementById("visitorCount").innerText = data.count;
 });
 
+
+/* =====================================================
+   DYNAMIC PORTFOLIO CONTENT
+===================================================== */
+
+async function loadPortfolioContent() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/portfolio-content"
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            console.error(
+                "Portfolio content failed to load"
+            );
+
+            return;
+
+        }
+
+        const content =
+            data.content;
+
+            /* ================= PROFILE IMAGE ================= */
+
+if (content.profileImage) {
+
+    const profileImages =
+        document.querySelectorAll(
+            ".profile-pic"
+        );
+
+    profileImages.forEach(image => {
+
+        image.src =
+            content.profileImage +
+            "?v=" +
+            Date.now();
+
+    });
+
+}
+
+
+        /* ================= HERO ================= */
+
+        if (content.hero) {
+
+            const heroName =
+                document.querySelector(
+                    ".container h1 .highlight"
+                );
+
+            if (heroName) {
+
+                heroName.textContent =
+                    content.hero.name;
+
+            }
+
+
+            const tagline =
+                document.querySelector(
+                    ".container > p[style]"
+                );
+
+            if (tagline) {
+
+                tagline.textContent =
+                    content.hero.tagline;
+
+            }
+
+
+            window.portfolioTypingText =
+                content.hero.typing;
+
+                window.dispatchEvent(
+    new Event(
+        "portfolioContentLoaded"
+    )
+);
+
+        }
+
+
+        /* ================= EDUCATION ================= */
+
+        if (
+            Array.isArray(
+                content.education
+            )
+        ) {
+
+            const educationSection =
+                document.querySelector(
+                    ".section.fade:nth-of-type(1)"
+                );
+
+            if (educationSection) {
+
+                const heading =
+                    educationSection.querySelector(
+                        "h2"
+                    );
+
+                if (heading) {
+
+                    heading.textContent =
+                        "Education";
+
+                }
+
+
+                educationSection
+                    .querySelectorAll("p")
+                    .forEach(p => p.remove());
+
+
+                content.education
+                    .forEach(item => {
+
+                        const title =
+                            document.createElement(
+                                "p"
+                            );
+
+                        title.textContent =
+                            item.title || "";
+
+                        const institute =
+                            document.createElement(
+                                "p"
+                            );
+
+                        institute.textContent =
+                            item.institute || "";
+
+                        const status =
+                            document.createElement(
+                                "p"
+                            );
+
+                        status.textContent =
+                            item.status || "";
+
+
+                        educationSection
+                            .appendChild(title);
+
+                        educationSection
+                            .appendChild(institute);
+
+                        educationSection
+                            .appendChild(status);
+
+                    });
+
+            }
+
+        }
+
+
+        /* ================= COUNTERS ================= */
+
+        if (content.counters) {
+
+            const counters =
+                content.counters;
+
+
+            const counterBoxes =
+                document.querySelectorAll(
+                    ".counter-box"
+                );
+
+
+            if (counterBoxes.length >= 4) {
+
+                counterBoxes[0]
+                    .querySelector("p")
+                    .textContent =
+                    counters.yearsLabel ||
+                    "Years Coding";
+
+
+                counterBoxes[1]
+                    .querySelector("p")
+                    .textContent =
+                    counters.projectsLabel ||
+                    "Projects Completed";
+
+
+                counterBoxes[2]
+                    .querySelector("p")
+                    .textContent =
+                    counters.hoursLabel ||
+                    "Hours on Website";
+
+
+                counterBoxes[3]
+                    .querySelector("p")
+                    .textContent =
+                    counters.problemsLabel ||
+                    "Problems Solved";
+
+
+                const problemCounter =
+                    counterBoxes[3]
+                        .querySelector(
+                            ".counter"
+                        );
+
+
+                if (problemCounter) {
+
+                    problemCounter
+                        .setAttribute(
+                            "data-target",
+                            counters.problemsSolved || 0
+                        );
+
+                    problemCounter.textContent =
+                        "0";
+
+                }
+
+            }
+
+
+            if (
+                counters.startDate
+            ) {
+
+                window.portfolioStartDate =
+                    counters.startDate;
+
+            }
+
+        }
+
+
+        /* ================= SKILLS ================= */
+
+        if (
+            Array.isArray(
+                content.skills
+            )
+        ) {
+
+            const skillsContainer =
+                document.querySelector(
+                    ".skills-section"
+                );
+
+
+            const normalSkills =
+                document.querySelector(
+                    ".skills"
+                );
+
+
+            if (normalSkills) {
+
+                normalSkills.innerHTML =
+                    "";
+
+
+                content.skills
+                    .forEach(skill => {
+
+                        const span =
+                            document.createElement(
+                                "span"
+                            );
+
+                        span.textContent =
+                            skill;
+
+                        normalSkills
+                            .appendChild(span);
+
+                    });
+
+            }
+
+        }
+
+
+        /* ================= SKILL PROGRESS ================= */
+
+        if (
+            Array.isArray(
+                content.progressSkills
+            )
+        ) {
+
+            const progressSection =
+                document.querySelector(
+                    ".skills-section"
+                );
+
+
+            if (progressSection) {
+
+                const title =
+                    progressSection
+                        .querySelector(
+                            ".section-title"
+                        );
+
+
+                progressSection.innerHTML =
+                    "";
+
+
+                if (title) {
+
+                    progressSection
+                        .appendChild(title);
+
+                }
+
+
+                content.progressSkills
+                    .forEach(skill => {
+
+                        const skillBox =
+                            document.createElement(
+                                "div"
+                            );
+
+                        skillBox.className =
+                            "skill";
+
+
+                        const info =
+                            document.createElement(
+                                "div"
+                            );
+
+                        info.className =
+                            "skill-info";
+
+
+                        const name =
+                            document.createElement(
+                                "span"
+                            );
+
+                        name.textContent =
+                            skill.name;
+
+
+                        const percentage =
+                            document.createElement(
+                                "span"
+                            );
+
+                        percentage.textContent =
+                            skill.percentage + "%";
+
+
+                        info.appendChild(name);
+
+                        info.appendChild(
+                            percentage
+                        );
+
+
+                        const bar =
+                            document.createElement(
+                                "div"
+                            );
+
+                        bar.className =
+                            "skill-bar";
+
+
+                        const progress =
+                            document.createElement(
+                                "div"
+                            );
+
+                        progress.className =
+                            "skill-progress";
+
+
+                        progress.setAttribute(
+                            "data-progress",
+                            skill.percentage
+                        );
+
+
+                        bar.appendChild(
+                            progress
+                        );
+
+
+                        skillBox.appendChild(
+                            info
+                        );
+
+                        skillBox.appendChild(
+                            bar
+                        );
+
+
+                        progressSection
+                            .appendChild(
+                                skillBox
+                            );
+
+                    });
+
+
+                animateSkills();
+
+            }
+
+        }
+
+
+        /* ================= DONATION ================= */
+
+        if (content.donation) {
+
+            const donation =
+                content.donation;
+
+
+            const donationSection =
+                document.querySelector(
+                    ".donation-section"
+                );
+
+
+            if (donationSection) {
+
+                const heading =
+                    donationSection
+                        .querySelector("h2");
+
+                if (heading) {
+
+                    heading.textContent =
+                        donation.title;
+
+                }
+
+
+                const donorName =
+                    document.getElementById(
+                        "donorName"
+                    );
+
+                if (donorName) {
+
+                    donorName.placeholder =
+                        donation.donorNamePlaceholder;
+
+                }
+
+
+                const donorEmail =
+                    document.getElementById(
+                        "donorEmail"
+                    );
+
+                if (donorEmail) {
+
+                    donorEmail.placeholder =
+                        donation.donorEmailPlaceholder;
+
+                }
+
+
+                const customAmount =
+                    document.getElementById(
+                        "customAmount"
+                    );
+
+                if (customAmount) {
+
+                    customAmount.placeholder =
+                        donation.customAmountPlaceholder;
+
+                }
+
+
+                const donateButton =
+                    document.querySelector(
+                        ".donation-section button[onclick='payCustom()']"
+                    );
+
+                if (donateButton) {
+
+                    donateButton.textContent =
+                        donation.buttonText;
+
+                }
+
+
+                const leaderboard =
+                    donationSection
+                        .querySelector(
+                            ".leaderboard h2"
+                        );
+
+                if (leaderboard) {
+
+                    leaderboard.textContent =
+                        donation.leaderboardTitle;
+
+                }
+
+
+                const milestone =
+                    donationSection
+                        .querySelector(
+                            ".milestone-container h2"
+                        );
+
+                if (milestone) {
+
+                    milestone.textContent =
+                        donation.milestoneTitle;
+
+                }
+
+
+                window.portfolioDonationGoal =
+                    donation.goal || 10000;
+
+                    if (
+    typeof updateMilestone ===
+    "function"
+) {
+
+    updateMilestone();
+
+}
+
+            }
+
+        }
+
+
+        /* ================= ABOUT ================= */
+
+        if (content.about) {
+
+            const sections =
+                document.querySelectorAll(
+                    ".section.fade"
+                );
+
+
+            sections.forEach(section => {
+
+                const heading =
+                    section.querySelector("h2");
+
+
+                if (
+                    heading &&
+                    heading.textContent
+                        .trim()
+                        .toLowerCase()
+                        === "about me"
+                ) {
+
+                    heading.textContent =
+                        content.about.title;
+
+
+                    const paragraph =
+                        section.querySelector(
+                            "p"
+                        );
+
+
+                    if (paragraph) {
+
+                        paragraph.textContent =
+                            content.about.text;
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+        /* ================= THANK YOU ================= */
+
+        if (content.thankYou) {
+
+            const sections =
+                document.querySelectorAll(
+                    ".section.fade"
+                );
+
+
+            sections.forEach(section => {
+
+                const heading =
+                    section.querySelector("h2");
+
+
+                if (
+                    heading &&
+                    heading.textContent
+                        .trim()
+                        .toLowerCase()
+                        === "thank you for visiting"
+                ) {
+
+                    heading.textContent =
+                        content
+                            .thankYou
+                            .title;
+
+                }
+
+            });
+
+        }
+
+
+        /* ================= CONTACT ================= */
+
+        if (content.contact) {
+
+            const contact =
+                content.contact;
+
+
+            const contactSection =
+                document.querySelector(
+                    ".contact-section"
+                );
+
+
+            if (contactSection) {
+
+                const heading =
+                    contactSection
+                        .querySelector("h2");
+
+                if (heading) {
+
+                    heading.textContent =
+                        contact.title;
+
+                }
+
+
+                const name =
+                    contactSection
+                        .querySelector(
+                            '[name="from_name"]'
+                        );
+
+                if (name) {
+
+                    name.placeholder =
+                        contact.namePlaceholder;
+
+                }
+
+
+                const email =
+                    contactSection
+                        .querySelector(
+                            '[name="from_email"]'
+                        );
+
+                if (email) {
+
+                    email.placeholder =
+                        contact.emailPlaceholder;
+
+                }
+
+
+                const message =
+                    contactSection
+                        .querySelector(
+                            '[name="message"]'
+                        );
+
+                if (message) {
+
+                    message.placeholder =
+                        contact.messagePlaceholder;
+
+                }
+
+
+                const button =
+                    contactSection
+                        .querySelector(
+                            "button"
+                        );
+
+                if (button) {
+
+                    button.textContent =
+                        contact.buttonText;
+
+                }
+
+            }
+
+        }
+
+
+        console.log(
+            "Portfolio content loaded successfully."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Portfolio Content Error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* LOAD CONTENT */
+
+loadPortfolioContent();
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
@@ -1153,9 +1962,25 @@ document.getElementById("contact-form").addEventListener("submit", async functio
     const message = form.querySelector('[name="message"]').value.trim();
 
     if (!name || !email || !message) {
-        alert("Please fill all fields.");
-        return;
-    }
+
+    await siteNotice({
+
+        title:
+            "Missing Information",
+
+        subtitle:
+            "Please complete the contact form.",
+
+        message:
+            "Name, email and message are required.",
+
+        icon:
+            "⚠️"
+
+    });
+
+    return;
+}
 
     try {
 
@@ -1174,11 +1999,37 @@ document.getElementById("contact-form").addEventListener("submit", async functio
 
         const dbResult = await dbResponse.json();
 
-        if (!dbResponse.ok || !dbResult.success) {
-            console.error("MongoDB Error:", dbResult);
-            alert("Message could not be saved ❌");
-            return;
-        }
+        if (
+    !dbResponse.ok ||
+    !dbResult.success
+) {
+
+    console.error(
+        "MongoDB Error:",
+        dbResult
+    );
+
+    await siteNotice({
+
+        title:
+            "Message Not Sent",
+
+        subtitle:
+            "We couldn't save your message.",
+
+        message:
+            "Please try again in a moment.",
+
+        icon:
+            "❌",
+
+        type:
+            "danger"
+
+    });
+
+    return;
+}
 
         // Send message to your email using EmailJS
         await emailjs.sendForm(
@@ -1187,7 +2038,21 @@ document.getElementById("contact-form").addEventListener("submit", async functio
             form
         );
 
-        alert("Message Sent Successfully 🚀");
+        await siteNotice({
+
+    title:
+        "Message Sent",
+
+    subtitle:
+        "Thank you for contacting me.",
+
+    message:
+        "Your message has been sent successfully. I'll get back to you soon.",
+
+    icon:
+        "🚀"
+
+});
 
         form.reset();
 
@@ -1195,7 +2060,24 @@ document.getElementById("contact-form").addEventListener("submit", async functio
 
         console.error("Contact Form Error:", error);
 
-        alert("Something went wrong ❌");
+        await siteNotice({
+
+    title:
+        "Something Went Wrong",
+
+    subtitle:
+        "Your message could not be sent.",
+
+    message:
+        "Please try again later.",
+
+    icon:
+        "❌",
+
+    type:
+        "danger"
+
+});
     }
 
 });
@@ -1211,7 +2093,72 @@ document.getElementById("contact-form").addEventListener("submit", async functio
   <source src="/sounds/faaah.mp3" type="audio/mpeg">
 </audio>
 
+<!-- =====================================================
+     PROFESSIONAL WEBSITE MODAL
+===================================================== -->
+
+<div
+    id="siteModalOverlay"
+    class="site-modal-overlay"
+>
+
+    <div
+        id="siteModal"
+        class="site-modal"
+    >
+
+        <div class="site-modal-header">
+
+            <div class="site-modal-title-area">
+
+                <div
+                    id="siteModalIcon"
+                    class="site-modal-icon"
+                >
+                    ✨
+                </div>
+
+                <div>
+
+                    <h3 id="siteModalTitle">
+                        Information
+                    </h3>
+
+                    <p id="siteModalSubtitle">
+                        Please enter the required information.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="siteModalClose"
+                class="site-modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            id="siteModalBody"
+            class="site-modal-body"
+        ></div>
+
+        <div
+            id="siteModalActions"
+            class="site-modal-actions"
+        ></div>
+
+    </div>
+
+</div>
+
+
 <script src="script.js"></script>
+
 
 </body>
 </html>

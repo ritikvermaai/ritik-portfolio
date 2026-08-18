@@ -17,6 +17,8 @@
         href="/admin/dashboard.css"
     >
 
+    <link rel="stylesheet" href="/box.css">
+
 </head>
 
 <body>
@@ -100,6 +102,14 @@
                 📄
                 <span>Resume</span>
             </button>
+
+            <button
+    class="nav-item"
+    data-section="website-builder"
+>
+    🎨
+    <span>Website Builder</span>
+</button>
 
             <button
                 class="nav-item"
@@ -832,6 +842,95 @@
 
             </div>
 
+            <!-- =====================================================
+     EDIT VISITOR COUNT
+===================================================== -->
+
+<div style="
+    margin-top:25px;
+    padding:22px;
+    background:#0f172a;
+    border:1px solid rgba(0,247,255,.15);
+    border-radius:14px;
+">
+
+    <h3 style="
+        color:#00f7ff;
+        margin:0 0 8px 0;
+    ">
+        ✏️ Edit Visitor Count
+    </h3>
+
+    <p style="
+        color:#94a3b8;
+        margin-bottom:18px;
+        font-size:14px;
+    ">
+        Change the total visitor count shown on your website.
+    </p>
+
+
+    <div style="
+        display:flex;
+        gap:10px;
+        align-items:center;
+        flex-wrap:wrap;
+    ">
+
+        <input
+            type="number"
+            id="visitorCountInput"
+            min="0"
+            step="1"
+            placeholder="Visitor count"
+            style="
+                width:180px;
+                height:42px;
+                padding:0 12px;
+                box-sizing:border-box;
+                background:#111827;
+                color:#e2e8f0;
+                border:1px solid rgba(0,247,255,.25);
+                border-radius:8px;
+                outline:none;
+                font-size:14px;
+            "
+        >
+
+
+        <button
+            type="button"
+            id="saveVisitorCountBtn"
+            style="
+                width:auto;
+                min-width:0;
+                padding:10px 16px;
+                background:#00f7ff;
+                color:#0f172a;
+                border:none;
+                border-radius:8px;
+                cursor:pointer;
+                font-weight:700;
+                font-size:14px;
+            "
+        >
+            💾 Save Count
+        </button>
+
+    </div>
+
+
+    <p
+        id="visitorEditMessage"
+        style="
+            margin-top:14px;
+            font-size:14px;
+            font-weight:600;
+        "
+    ></p>
+
+</div>
+
         </section>
 
 
@@ -924,6 +1023,371 @@
         </section>
 
 
+
+        <!-- =====================================================
+     WEBSITE BUILDER
+===================================================== -->
+
+<section
+    id="website-builder"
+    class="section"
+>
+
+    <div class="page-title">
+
+        <h2>🎨 Website Builder</h2>
+
+        <p>
+            Edit your website without touching HTML.
+        </p>
+
+    </div>
+
+
+    <!-- ================= HERO ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>🏠 Hero Section</h3>
+
+        <label>Your Name</label>
+
+        <input
+            id="builderHeroName"
+            type="text"
+        >
+
+        <label>Typing Text</label>
+
+        <input
+            id="builderHeroTyping"
+            type="text"
+        >
+
+        <label>Tagline</label>
+
+        <input
+            id="builderHeroTagline"
+            type="text"
+        >
+
+    </div>
+
+
+    <!-- ================= EDUCATION ================= -->
+
+    <div class="panel builder-panel">
+
+        <div class="builder-heading">
+
+            <h3>🎓 Education</h3>
+
+            <button
+                type="button"
+                class="primary-btn"
+                id="addEducationBtn"
+            >
+                + Add Education
+            </button>
+
+        </div>
+
+        <div
+            id="educationEditor"
+        ></div>
+
+    </div>
+
+
+    <!-- ================= COUNTERS ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>📊 Counters</h3>
+
+        <label>Problems Solved</label>
+
+        <input
+            id="builderProblemsSolved"
+            type="number"
+            min="0"
+        >
+
+        <label>Problems Label</label>
+
+        <input
+            id="builderProblemsLabel"
+            type="text"
+        >
+
+        <label>Years Coding Label</label>
+
+        <input
+            id="builderYearsLabel"
+            type="text"
+        >
+
+        <label>Projects Label</label>
+
+        <input
+            id="builderProjectsLabel"
+            type="text"
+        >
+
+        <label>Hours Label</label>
+
+        <input
+            id="builderHoursLabel"
+            type="text"
+        >
+
+        <label>Coding Start Date</label>
+
+        <input
+            id="builderStartDate"
+            type="date"
+        >
+
+    </div>
+
+
+    <!-- ================= SKILLS ================= -->
+
+    <div class="panel builder-panel">
+
+        <div class="builder-heading">
+
+            <h3>🧩 Skills</h3>
+
+            <button
+                type="button"
+                class="primary-btn"
+                id="addSkillBtn"
+            >
+                + Add Skill
+            </button>
+
+        </div>
+
+        <div
+            id="skillsEditor"
+        ></div>
+
+    </div>
+
+
+    <!-- ================= SKILL PROGRESS ================= -->
+
+    <div class="panel builder-panel">
+
+        <div class="builder-heading">
+
+            <h3>📈 Skills Progress</h3>
+
+            <button
+                type="button"
+                class="primary-btn"
+                id="addProgressSkillBtn"
+            >
+                + Add Skill
+            </button>
+
+        </div>
+
+        <div
+            id="progressSkillsEditor"
+        ></div>
+
+    </div>
+
+
+    <!-- ================= ABOUT ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>👤 About Me</h3>
+
+        <label>Heading</label>
+
+        <input
+            id="builderAboutTitle"
+            type="text"
+        >
+
+        <label>About Text</label>
+
+        <textarea
+            id="builderAboutText"
+            rows="6"
+        ></textarea>
+
+    </div>
+
+
+    <!-- ================= DONATION ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>💙 Donation Section</h3>
+
+        <label>Title</label>
+
+        <input
+            id="builderDonationTitle"
+            type="text"
+        >
+
+        <label>Support Goal ₹</label>
+
+        <input
+            id="builderDonationGoal"
+            type="number"
+            min="1"
+        >
+
+        <label>Donor Name Placeholder</label>
+
+        <input
+            id="builderDonationName"
+            type="text"
+        >
+
+        <label>Donor Email Placeholder</label>
+
+        <input
+            id="builderDonationEmail"
+            type="text"
+        >
+
+        <label>Custom Amount Placeholder</label>
+
+        <input
+            id="builderDonationCustom"
+            type="text"
+        >
+
+        <label>Donate Button Text</label>
+
+        <input
+            id="builderDonationButton"
+            type="text"
+        >
+
+        <label>Leaderboard Title</label>
+
+        <input
+            id="builderLeaderboardTitle"
+            type="text"
+        >
+
+        <label>Support Goal Title</label>
+
+        <input
+            id="builderMilestoneTitle"
+            type="text"
+        >
+
+    </div>
+
+
+    <!-- ================= CONTACT ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>✉️ Contact Section</h3>
+
+        <label>Heading</label>
+
+        <input
+            id="builderContactTitle"
+            type="text"
+        >
+
+        <label>Name Placeholder</label>
+
+        <input
+            id="builderContactName"
+            type="text"
+        >
+
+        <label>Email Placeholder</label>
+
+        <input
+            id="builderContactEmail"
+            type="text"
+        >
+
+        <label>Message Placeholder</label>
+
+        <input
+            id="builderContactMessage"
+            type="text"
+        >
+
+        <label>Button Text</label>
+
+        <input
+            id="builderContactButton"
+            type="text"
+        >
+
+    </div>
+
+
+    <!-- ================= THANK YOU ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>🙏 Thank You Section</h3>
+
+        <label>Heading</label>
+
+        <input
+            id="builderThankYouTitle"
+            type="text"
+        >
+
+    </div>
+
+
+    <!-- ================= SAVE ================= -->
+
+    <div
+        class="panel"
+        style="
+            position:sticky;
+            bottom:20px;
+            z-index:10;
+        "
+    >
+
+        <button
+            type="button"
+            class="primary-btn"
+            id="saveWebsiteBuilderBtn"
+            style="
+                width:100%;
+                font-size:18px;
+                padding:16px;
+            "
+        >
+            💾 SAVE ALL WEBSITE CHANGES
+        </button>
+
+        <p
+            id="websiteBuilderMessage"
+            style="
+                text-align:center;
+                margin-top:12px;
+                font-weight:600;
+            "
+        ></p>
+
+    </div>
+
+</section>
+
+
         <section id="settings" class="section">
 
             <div class="page-title">
@@ -944,6 +1408,124 @@
     <h3>Website Settings</h3>
 
     <div class="settings-form">
+
+        <!-- =====================================================
+     PROFILE PICTURE
+===================================================== -->
+
+<div style="
+    margin-bottom:28px;
+    padding:22px;
+    border:1px solid rgba(0,247,255,.14);
+    border-radius:14px;
+    background:rgba(255,255,255,.02);
+">
+
+    <h3 style="
+        margin-bottom:8px;
+        color:#00f7ff;
+    ">
+        🖼️ Profile Picture
+    </h3>
+
+    <p style="
+        margin-bottom:18px;
+        color:#94a3b8;
+    ">
+        This picture is used on your portfolio homepage.
+    </p>
+
+
+    <img
+        id="profileImagePreview"
+        src="/images/photoweb.jpg"
+        alt="Profile preview"
+        style="
+            width:140px;
+            height:140px;
+            object-fit:cover;
+            border-radius:50%;
+            display:block;
+            margin-bottom:18px;
+            border:3px solid rgba(0,247,255,.35);
+        "
+    >
+
+
+    <input
+        type="file"
+        id="profileImageInput"
+        accept="image/png,image/jpeg,image/webp"
+        style="
+            margin-bottom:12px;
+            display:block;
+        "
+    >
+
+
+    <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+    ">
+
+       <div style="
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+">
+
+    <button
+        type="button"
+        class="primary-btn"
+        id="uploadProfileImageBtn"
+        style="
+            width:auto;
+            min-width:0;
+            padding:10px 16px;
+            margin:0;
+            font-size:14px;
+        "
+    >
+        📤 Upload New Picture
+    </button>
+
+
+    <button
+        type="button"
+        id="deleteProfileImageBtn"
+        style="
+            width:auto;
+            min-width:0;
+            padding:10px 16px;
+            margin:0;
+            background:#ef4444;
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:600;
+            font-size:14px;
+        "
+    >
+        🗑️ Delete Picture
+    </button>
+
+</div>
+
+    </div>
+
+
+    <p
+        id="profileImageMessage"
+        style="
+            margin-top:14px;
+            font-weight:600;
+        "
+    ></p>
+
+</div>
 
         <label>
             Website Title
@@ -1028,7 +1610,130 @@
     </main>
 
 
+
+    <!-- PROFESSIONAL SITE MODAL -->
+<div id="siteModalOverlay" class="site-modal-overlay">
+
+    <div class="site-modal">
+
+        <div class="site-modal-header">
+
+            <div class="site-modal-title-area">
+
+                <div id="siteModalIcon" class="site-modal-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <h3 id="siteModalTitle">
+                        Success
+                    </h3>
+
+                    <p id="siteModalSubtitle">
+                        Operation completed successfully.
+                    </p>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="siteModalClose"
+                class="site-modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            id="siteModalBody"
+            class="site-modal-body"
+        ></div>
+
+        <div
+            id="siteModalActions"
+            class="site-modal-actions"
+        ></div>
+
+    </div>
+
+</div>
+
     <script src="/admin/dashboard.js"></script>
+
+
+
+    <!-- =====================================================
+     PROFESSIONAL MODAL
+===================================================== -->
+
+<div
+    id="appModalOverlay"
+    class="app-modal-overlay"
+    aria-hidden="true"
+>
+
+    <div
+        id="appModal"
+        class="app-modal"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <div class="app-modal-header">
+
+            <div class="app-modal-title-wrap">
+
+                <div
+                    id="appModalIcon"
+                    class="app-modal-icon"
+                >
+                    ✨
+                </div>
+
+                <div>
+
+                    <h3 id="appModalTitle">
+                        Confirmation
+                    </h3>
+
+                    <p id="appModalSubtitle">
+                        Please review your action.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="appModalClose"
+                class="app-modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="appModalBody"
+            class="app-modal-body"
+        >
+        </div>
+
+
+        <div
+            id="appModalActions"
+            class="app-modal-actions"
+        >
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 

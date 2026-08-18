@@ -3,6 +3,7 @@
 <head>
     <title>Saved Projects</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="box.css">
 
     <style>
         body{
@@ -177,6 +178,71 @@ body{
 <div id="projectList"></div>
 
 
+<!-- =====================================================
+     PROFESSIONAL MODAL
+===================================================== -->
+
+<div
+    id="siteModalOverlay"
+    class="site-modal-overlay"
+>
+
+    <div
+        id="siteModal"
+        class="site-modal"
+    >
+
+        <div class="site-modal-header">
+
+            <div class="site-modal-title-area">
+
+                <div
+                    id="siteModalIcon"
+                    class="site-modal-icon"
+                >
+                    🔐
+                </div>
+
+                <div>
+
+                    <h3 id="siteModalTitle">
+                        Enter Information
+                    </h3>
+
+                    <p id="siteModalSubtitle">
+                        Please enter the required information.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="siteModalClose"
+                class="site-modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="siteModalBody"
+            class="site-modal-body"
+        ></div>
+
+
+        <div
+            id="siteModalActions"
+            class="site-modal-actions"
+        ></div>
+
+    </div>
+
+</div>
+
 
 <script src="/script.js"></script>
 
@@ -217,34 +283,242 @@ function openProject(title, lang){
     });
 }
 
-async function deleteProject(title, lang){
+async function deleteProject(title, lang) {
 
-    const password = prompt("Enter Admin Password:");
+    const password =
+        await sitePrompt({
 
-    if(!password) return;
+            title:
+                "Admin Verification",
 
-    const response = await fetch(`/delete/${title}/${lang}`, {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ password })
-    });
+            subtitle:
+                "Enter your admin password to delete this project.",
 
-    const data = await response.json();
+            label:
+                "Admin Password",
 
-    if(response.status === 403){
-        alert("Wrong Password!");
+            placeholder:
+                "Enter admin password",
+
+            type:
+                "password",
+
+            icon:
+                "🔐"
+
+        });
+
+
+    /* User clicked Cancel */
+
+    if (
+        password === null
+    ) {
+
         return;
+
     }
 
-    if(response.status === 404){
-        alert("File Not Found!");
+
+    /* Empty password */
+
+    if (
+        !password.trim()
+    ) {
+
+        await siteNotice({
+
+            title:
+                "Password Required",
+
+            subtitle:
+                "Project was not deleted.",
+
+            message:
+                "Please enter your admin password.",
+
+            icon:
+                "⚠️"
+
+        });
+
         return;
+
     }
 
-    alert("Deleted Successfully!");
-    loadProjects();
+
+    try {
+
+        const response =
+            await fetch(
+                `/delete/${encodeURIComponent(title)}/${encodeURIComponent(lang)}`,
+                {
+
+                    method:
+                        "DELETE",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            password:
+                                password
+
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        /* WRONG PASSWORD */
+
+        if (
+            response.status === 403
+        ) {
+
+            await siteNotice({
+
+                title:
+                    "Incorrect Password",
+
+                subtitle:
+                    "Authorization failed.",
+
+                message:
+                    "The admin password you entered is incorrect.",
+
+                icon:
+                    "🔒",
+
+                type:
+                    "danger"
+
+            });
+
+            return;
+
+        }
+
+
+        /* PROJECT NOT FOUND */
+
+        if (
+            response.status === 404
+        ) {
+
+            await siteNotice({
+
+                title:
+                    "Project Not Found",
+
+                subtitle:
+                    "The project could not be deleted.",
+
+                message:
+                    "This project may have already been deleted.",
+
+                icon:
+                    "⚠️"
+
+            });
+
+            return;
+
+        }
+
+
+        /* OTHER SERVER ERROR */
+
+        if (
+            !response.ok
+        ) {
+
+            await siteNotice({
+
+                title:
+                    "Delete Failed",
+
+                subtitle:
+                    "The project could not be deleted.",
+
+                message:
+                    data.message ||
+                    "Please try again.",
+
+                icon:
+                    "❌",
+
+                type:
+                    "danger"
+
+            });
+
+            return;
+
+        }
+
+
+        /* SUCCESS */
+
+        await siteNotice({
+
+            title:
+                "Project Deleted",
+
+            subtitle:
+                "The project has been removed.",
+
+            message:
+                `"${title}" was deleted successfully.`,
+
+            icon:
+                "🗑️"
+
+        });
+
+
+        loadProjects();
+
+
+    } catch (error) {
+
+        console.error(
+            "Delete project error:",
+            error
+        );
+
+
+        await siteNotice({
+
+            title:
+                "Connection Error",
+
+            subtitle:
+                "Unable to delete the project.",
+
+            message:
+                "Please check your connection and try again.",
+
+            icon:
+                "❌",
+
+            type:
+                "danger"
+
+        });
+
+    }
+
 }
 
 loadProjects();

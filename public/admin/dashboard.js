@@ -121,6 +121,12 @@ function showSection(sectionName) {
 
 }
 
+   if (sectionName === "website-builder") {
+
+    loadWebsiteBuilder();
+
+}
+
     if (sectionName === "messages") {
     loadMessages();
 }
@@ -514,7 +520,7 @@ async function editProject(id) {
 
         if (!data.success) {
 
-            alert(
+            adminAlert(
                 data.message ||
                 "Failed to load project."
             );
@@ -576,7 +582,7 @@ async function editProject(id) {
 
         console.error(error);
 
-        alert(
+        adminAlert(
             "Failed to load project."
         );
 
@@ -603,7 +609,7 @@ async function viewProject(id) {
 
         if (!data.success) {
 
-            alert(
+            adminAlert(
                 data.message ||
                 "Failed to load project."
             );
@@ -680,7 +686,7 @@ async function viewProject(id) {
 
             } catch {
 
-                alert(
+                adminAlert(
                     "Unable to copy code."
                 );
 
@@ -698,7 +704,7 @@ async function viewProject(id) {
 
         console.error(error);
 
-        alert(
+        adminAlert(
             "Failed to load project."
         );
 
@@ -725,7 +731,7 @@ async function downloadProject(id) {
 
         if (!data.success) {
 
-            alert(
+            adminAlert(
                 data.message ||
                 "Project not found."
             );
@@ -794,7 +800,7 @@ async function downloadProject(id) {
 
         console.error(error);
 
-        alert(
+        adminAlert(
             "Download failed."
         );
 
@@ -822,9 +828,21 @@ async function deleteProject(id) {
 
 
     const confirmed =
-        confirm(
-            `Delete "${project.title}"?\n\nThis cannot be undone.`
-        );
+        await appConfirm({
+
+            title:
+                "Delete Project?",
+
+            subtitle:
+                "This action cannot be undone.",
+
+            message:
+                `Are you sure you want to delete "${project.title}"?`,
+
+            icon:
+                "🗑️"
+
+        });
 
 
     if (!confirmed) {
@@ -862,7 +880,7 @@ async function deleteProject(id) {
 
         if (!data.success) {
 
-            alert(
+            adminAlert(
                 data.message ||
                 "Failed to delete project."
             );
@@ -875,7 +893,7 @@ async function deleteProject(id) {
         await loadProjects();
 
 
-        alert(
+        adminAlert(
             "Project deleted successfully."
         );
 
@@ -884,7 +902,7 @@ async function deleteProject(id) {
 
         console.error(error);
 
-        alert(
+        adminAlert(
             "Delete failed."
         );
 
@@ -1012,7 +1030,7 @@ document
                 await loadProjects();
 
 
-                alert(
+                adminAlert(
                     isEdit
                         ? "Project updated successfully."
                         : "Project added successfully."
@@ -1363,105 +1381,304 @@ async function loadGallery() {
 /* ================= EDIT GALLERY ================= */
 
 async function editGalleryImage(id) {
+
     try {
+
         const response =
             await fetch(
                 `/admin/api/gallery/${id}`
             );
 
-        if (response.status === 401) {
+
+        if (
+            response.status === 401
+        ) {
+
             window.location.href =
                 "/admin/admin.html";
+
             return;
+
         }
+
 
         const data =
             await response.json();
 
+
         if (!data.success) {
-            alert(
-                data.message ||
-                "Failed to load gallery image."
-            );
+
+            await appNotice({
+
+                title:
+                    "Unable to Load Image",
+
+                subtitle:
+                    "Gallery information could not be loaded.",
+
+                message:
+                    data.message ||
+                    "Please try again.",
+
+                icon:
+                    "❌",
+
+                type:
+                    "danger"
+
+            });
+
             return;
+
         }
+
 
         const image =
             data.image;
 
-        const title =
-            prompt(
-                "Edit image title:",
-                image.title || ""
-            );
 
-        if (title === null) {
+        const result =
+            await openAppModal({
+
+                title:
+                    "Edit Gallery Image",
+
+                subtitle:
+                    "Update the image information.",
+
+                icon:
+                    "🖼️",
+
+                body: `
+
+                    <div class="app-modal-field">
+
+                        <label>
+                            Image Title
+                        </label>
+
+                        <input
+                            id="editGalleryTitle"
+                            type="text"
+                            value="${escapeHTML(
+                                image.title || ""
+                            )}"
+                            placeholder="Enter image title"
+                        >
+
+                    </div>
+
+
+                    <div class="app-modal-field">
+
+                        <label>
+                            Description
+                        </label>
+
+                        <textarea
+                            id="editGalleryDescription"
+                            placeholder="Enter image description"
+                        >${escapeHTML(
+                            image.description || ""
+                        )}</textarea>
+
+                    </div>
+
+                `,
+
+                buttons: [
+
+                    {
+                        text:
+                            "Cancel",
+
+                        type:
+                            "cancel",
+
+                        value:
+                            null
+
+                    },
+
+                    {
+                        text:
+                            "Save Changes",
+
+                        type:
+                            "primary",
+
+                        value:
+                            "save"
+
+                    }
+
+                ]
+
+            });
+
+
+        if (
+            result !==
+            "save"
+        ) {
+
             return;
+
         }
+
+
+        const title =
+            document
+                .getElementById(
+                    "editGalleryTitle"
+                )
+                .value
+                .trim();
+
 
         const description =
-            prompt(
-                "Edit image description:",
-                image.description || ""
-            );
+            document
+                .getElementById(
+                    "editGalleryDescription"
+                )
+                .value
+                .trim();
 
-        if (description === null) {
+
+        if (!title) {
+
+            await appNotice({
+
+                title:
+                    "Title Required",
+
+                subtitle:
+                    "The image title cannot be empty.",
+
+                message:
+                    "Please enter a title for this image.",
+
+                icon:
+                    "⚠️"
+
+            });
+
             return;
+
         }
 
-        if (!title.trim()) {
-            alert(
-                "Image title cannot be empty."
-            );
-            return;
-        }
 
         const updateResponse =
             await fetch(
                 `/admin/api/gallery/${id}`,
                 {
-                    method: "PUT",
+
+                    method:
+                        "PUT",
+
                     headers: {
+
                         "Content-Type":
                             "application/json"
+
                     },
-                    body: JSON.stringify({
-                        title:
-                            title.trim(),
-                        description:
-                            description.trim()
-                    })
+
+                    body:
+                        JSON.stringify({
+
+                            title,
+
+                            description
+
+                        })
+
                 }
             );
 
-        const result =
+
+        const updateResult =
             await updateResponse.json();
 
-        if (!updateResponse.ok ||
-            !result.success) {
-            alert(
-                result.message ||
-                "Failed to update image."
-            );
+
+        if (
+            !updateResponse.ok ||
+            !updateResult.success
+        ) {
+
+            await appNotice({
+
+                title:
+                    "Update Failed",
+
+                subtitle:
+                    "Gallery image could not be updated.",
+
+                message:
+                    updateResult.message ||
+                    "Please try again.",
+
+                icon:
+                    "❌",
+
+                type:
+                    "danger"
+
+            });
+
             return;
+
         }
+
 
         await loadGallery();
 
-        alert(
-            "Image details updated successfully."
-        );
+
+        await appNotice({
+
+            title:
+                "Image Updated",
+
+            subtitle:
+                "Your changes have been saved.",
+
+            message:
+                "Gallery image details updated successfully.",
+
+            icon:
+                "✅"
+
+        });
+
 
     } catch (error) {
+
         console.error(
             "Gallery edit error:",
             error
         );
 
-        alert(
-            "Failed to edit image."
-        );
+
+        await appNotice({
+
+            title:
+                "Something Went Wrong",
+
+            subtitle:
+                "Unable to edit the gallery image.",
+
+            message:
+                "Please try again.",
+
+            icon:
+                "❌",
+
+            type:
+                "danger"
+
+        });
+
     }
+
 }
 
 
@@ -1478,7 +1695,7 @@ async function viewGalleryImage(id) {
             await response.json();
 
         if (!data.success) {
-            alert(
+            adminAlert(
                 data.message ||
                 "Image not found."
             );
@@ -1492,7 +1709,7 @@ async function viewGalleryImage(id) {
 
     } catch (error) {
         console.error(error);
-        alert(
+        adminAlert(
             "Unable to open image."
         );
     }
@@ -1509,7 +1726,7 @@ async function downloadGalleryImage(id) {
             );
 
         if (!response.ok) {
-            alert("Download failed.");
+            adminAlert("Download failed.");
             return;
         }
 
@@ -1536,7 +1753,7 @@ async function downloadGalleryImage(id) {
 
     } catch (error) {
         console.error(error);
-        alert(
+        adminAlert(
             "Download failed."
         );
     }
@@ -1547,11 +1764,21 @@ async function downloadGalleryImage(id) {
 
 async function deleteGalleryImage(id) {
     const confirmed =
-        confirm(
-            "Delete this image?\n\n" +
-            "This will remove it from " +
-            "both MongoDB and Cloudinary."
-        );
+    await appConfirm({
+
+        title:
+            "Delete Gallery Image?",
+
+        subtitle:
+            "This will remove the image permanently.",
+
+        message:
+            "The image will be removed from both MongoDB and Cloudinary.",
+
+        icon:
+            "🗑️"
+
+    });
 
     if (!confirmed) {
         return;
@@ -1576,7 +1803,7 @@ async function deleteGalleryImage(id) {
             await response.json();
 
         if (!data.success) {
-            alert(
+            adminAlert(
                 data.message ||
                 "Failed to delete image."
             );
@@ -1585,7 +1812,7 @@ async function deleteGalleryImage(id) {
 
         await loadGallery();
 
-        alert(
+        adminAlert(
             "Image deleted successfully."
         );
 
@@ -1595,7 +1822,7 @@ async function deleteGalleryImage(id) {
             error
         );
 
-        alert(
+        adminAlert(
             "Delete failed."
         );
     }
@@ -1934,9 +2161,22 @@ async function loadDonations() {
 
 async function deleteDonation(id) {
 
-    const confirmed = confirm(
-        "Are you sure you want to delete this donation?"
-    );
+    const confirmed =
+    await appConfirm({
+
+        title:
+            "Delete Donation?",
+
+        subtitle:
+            "This action cannot be undone.",
+
+        message:
+            "Are you sure you want to permanently delete this donation?",
+
+        icon:
+            "🗑️"
+
+    });
 
     if (!confirmed) {
         return;
@@ -1957,7 +2197,7 @@ async function deleteDonation(id) {
 
         if (!response.ok || !data.success) {
 
-            alert(
+            adminAlert(
                 data.message ||
                 "Failed to delete donation."
             );
@@ -1965,7 +2205,7 @@ async function deleteDonation(id) {
             return;
         }
 
-        alert("Donation deleted successfully.");
+        adminAlert("Donation deleted successfully.");
 
         await loadDonations();
 
@@ -1976,12 +2216,11 @@ async function deleteDonation(id) {
             error
         );
 
-        alert(
+        adminAlert(
             "Unable to delete donation."
         );
     }
 }
-
 
 async function editDonation(
     id,
@@ -1990,87 +2229,314 @@ async function editDonation(
     currentAmount
 ) {
 
-    const name = prompt(
-        "Donor name:",
-        currentName
-    );
+    const result =
+        await openAppModal({
 
-    if (name === null) {
+            title:
+                "Edit Donation",
+
+            subtitle:
+                "Update the donor information and donation amount.",
+
+            icon:
+                "💙",
+
+            body: `
+
+                <div class="app-modal-field">
+
+                    <label>
+                        Donor Name
+                    </label>
+
+                    <input
+                        id="editDonationName"
+                        type="text"
+                        value="${escapeHTML(
+                            currentName || ""
+                        )}"
+                        placeholder="Enter donor name"
+                    >
+
+                </div>
+
+
+                <div class="app-modal-field">
+
+                    <label>
+                        Donor Email
+                    </label>
+
+                    <input
+                        id="editDonationEmail"
+                        type="email"
+                        value="${escapeHTML(
+                            currentEmail || ""
+                        )}"
+                        placeholder="Enter donor email"
+                    >
+
+                </div>
+
+
+                <div class="app-modal-field">
+
+                    <label>
+                        Donation Amount
+                    </label>
+
+                    <input
+                        id="editDonationAmount"
+                        type="number"
+                        min="1"
+                        value="${Number(
+                            currentAmount || 0
+                        )}"
+                        placeholder="Enter amount"
+                    >
+
+                </div>
+
+            `,
+
+            buttons: [
+
+                {
+                    text:
+                        "Cancel",
+
+                    type:
+                        "cancel",
+
+                    value:
+                        null
+
+                },
+
+                {
+                    text:
+                        "Save Changes",
+
+                    type:
+                        "primary",
+
+                    value:
+                        "save"
+
+                }
+
+            ]
+
+        });
+
+
+    if (
+        result !==
+        "save"
+    ) {
+
         return;
+
     }
 
-    const email = prompt(
-        "Donor email:",
-        currentEmail
-    );
 
-    if (email === null) {
+    const name =
+        document
+            .getElementById(
+                "editDonationName"
+            )
+            .value
+            .trim();
+
+
+    const email =
+        document
+            .getElementById(
+                "editDonationEmail"
+            )
+            .value
+            .trim();
+
+
+    const amount =
+        Number(
+            document
+                .getElementById(
+                    "editDonationAmount"
+                )
+                .value
+        );
+
+
+    if (!name) {
+
+        await appNotice({
+
+            title:
+                "Name Required",
+
+            subtitle:
+                "Please check the donor information.",
+
+            message:
+                "Donor name cannot be empty.",
+
+            icon:
+                "⚠️",
+
+            type:
+                "primary"
+
+        });
+
         return;
+
     }
 
-    const amount = prompt(
-        "Donation amount:",
-        currentAmount
-    );
 
-    if (amount === null) {
+    if (!email) {
+
+        await appNotice({
+
+            title:
+                "Email Required",
+
+            subtitle:
+                "Please check the donor information.",
+
+            message:
+                "Donor email cannot be empty.",
+
+            icon:
+                "⚠️",
+
+            type:
+                "primary"
+
+        });
+
         return;
+
     }
 
-    if (!name.trim()) {
-        alert("Name cannot be empty.");
-        return;
-    }
-
-    if (!email.trim()) {
-        alert("Email cannot be empty.");
-        return;
-    }
 
     if (
         !amount ||
-        Number(amount) <= 0
+        amount <= 0
     ) {
-        alert("Enter a valid amount.");
+
+        await appNotice({
+
+            title:
+                "Invalid Amount",
+
+            subtitle:
+                "Please enter a valid donation amount.",
+
+            message:
+                "Donation amount must be greater than ₹0.",
+
+            icon:
+                "⚠️",
+
+            type:
+                "primary"
+
+        });
+
         return;
+
     }
+
 
     try {
 
-        const response = await fetch(
-            `/admin/api/donations/${id}`,
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-                body: JSON.stringify({
-                    name: name.trim(),
-                    email: email.trim(),
-                    amount: Number(amount)
-                })
-            }
-        );
+        const response =
+            await fetch(
+                `/admin/api/donations/${id}`,
+                {
+
+                    method:
+                        "PUT",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            name,
+
+                            email,
+
+                            amount
+
+                        })
+
+                }
+            );
+
 
         const data =
             await response.json();
 
-        if (!response.ok || !data.success) {
 
-            alert(
-                data.message ||
-                "Failed to update donation."
-            );
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            await appNotice({
+
+                title:
+                    "Update Failed",
+
+                subtitle:
+                    "The donation could not be updated.",
+
+                message:
+                    data.message ||
+                    "Please try again.",
+
+                icon:
+                    "❌",
+
+                type:
+                    "danger"
+
+            });
 
             return;
+
         }
 
-        alert(
-            "Donation updated successfully."
-        );
+
+        await appNotice({
+
+            title:
+                "Donation Updated",
+
+            subtitle:
+                "Your changes have been saved.",
+
+            message:
+                "The donation details were updated successfully.",
+
+            icon:
+                "✅",
+
+            type:
+                "primary"
+
+        });
+
 
         await loadDonations();
+
 
     } catch (error) {
 
@@ -2079,46 +2545,176 @@ async function editDonation(
             error
         );
 
-        alert(
-            "Unable to update donation."
-        );
+
+        await appNotice({
+
+            title:
+                "Something Went Wrong",
+
+            subtitle:
+                "Unable to update the donation.",
+
+            message:
+                "Please try again.",
+
+            icon:
+                "❌",
+
+            type:
+                "danger"
+
+        });
+
     }
+
 }
 
-document.getElementById("addDonationBtn")
-    ?.addEventListener("click", () => {
+document
+    .getElementById(
+        "addDonationBtn"
+    )
+    ?.addEventListener(
+        "click",
+        async () => {
 
-        const name = prompt(
-            "Donor name:"
-        );
+            const result =
+                await openAppModal({
 
-        if (name === null) {
-            return;
+                    title:
+                        "Add Donation",
+
+                    subtitle:
+                        "Enter the donor information.",
+
+                    icon:
+                        "💙",
+
+                    body: `
+
+                        <div class="app-modal-field">
+
+                            <label>
+                                Donor Name
+                            </label>
+
+                            <input
+                                id="newDonationName"
+                                type="text"
+                                placeholder="Enter donor name"
+                            >
+
+                        </div>
+
+
+                        <div class="app-modal-field">
+
+                            <label>
+                                Donor Email
+                            </label>
+
+                            <input
+                                id="newDonationEmail"
+                                type="email"
+                                placeholder="Enter donor email"
+                            >
+
+                        </div>
+
+
+                        <div class="app-modal-field">
+
+                            <label>
+                                Donation Amount
+                            </label>
+
+                            <input
+                                id="newDonationAmount"
+                                type="number"
+                                min="1"
+                                placeholder="Enter amount"
+                            >
+
+                        </div>
+
+                    `,
+
+                    buttons: [
+
+                        {
+                            text:
+                                "Cancel",
+
+                            type:
+                                "cancel",
+
+                            value:
+                                null
+
+                        },
+
+                        {
+                            text:
+                                "Add Donation",
+
+                            type:
+                                "primary",
+
+                            value:
+                                "add"
+
+                        }
+
+                    ]
+
+                });
+
+
+            if (
+                result !==
+                "add"
+            ) {
+
+                return;
+
+            }
+
+
+            const name =
+                document
+                    .getElementById(
+                        "newDonationName"
+                    )
+                    .value
+                    .trim();
+
+
+            const email =
+                document
+                    .getElementById(
+                        "newDonationEmail"
+                    )
+                    .value
+                    .trim();
+
+
+            const amount =
+                Number(
+                    document
+                        .getElementById(
+                            "newDonationAmount"
+                        )
+                        .value
+                );
+
+
+            addDonation(
+                name,
+                email,
+                amount
+            );
+
         }
-
-        const email = prompt(
-            "Donor email:"
-        );
-
-        if (email === null) {
-            return;
-        }
-
-        const amount = prompt(
-            "Donation amount:"
-        );
-
-        if (amount === null) {
-            return;
-        }
-
-        addDonation(
-            name,
-            email,
-            amount
-        );
-
-    });
+    );
 
 
     async function addDonation(
@@ -2132,12 +2728,12 @@ document.getElementById("addDonationBtn")
     amount = Number(amount);
 
     if (!name) {
-        alert("Name cannot be empty.");
+        adminAlert("Name cannot be empty.");
         return;
     }
 
     if (!email) {
-        alert("Email cannot be empty.");
+        adminAlert("Email cannot be empty.");
         return;
     }
 
@@ -2145,7 +2741,7 @@ document.getElementById("addDonationBtn")
         !amount ||
         amount <= 0
     ) {
-        alert(
+        adminAlert(
             "Enter a valid donation amount."
         );
         return;
@@ -2180,7 +2776,7 @@ document.getElementById("addDonationBtn")
             !data.success
         ) {
 
-            alert(
+            adminAlert(
                 data.message ||
                 "Failed to add donation."
             );
@@ -2188,7 +2784,7 @@ document.getElementById("addDonationBtn")
             return;
         }
 
-        alert(
+        adminAlert(
             "Donation added successfully."
         );
 
@@ -2201,7 +2797,7 @@ document.getElementById("addDonationBtn")
             error
         );
 
-        alert(
+        adminAlert(
             "Unable to add donation."
         );
     }
@@ -2436,7 +3032,7 @@ async function toggleMessageRead(id) {
         const data = await response.json();
 
         if (!data.success) {
-            alert(
+            adminAlert(
                 data.message ||
                 "Failed to update message."
             );
@@ -2452,7 +3048,7 @@ async function toggleMessageRead(id) {
             error
         );
 
-        alert(
+        adminAlert(
             "Failed to update message."
         );
     }
@@ -2463,9 +3059,22 @@ async function toggleMessageRead(id) {
 
 async function deleteMessage(id) {
 
-    const confirmDelete = confirm(
-        "Are you sure you want to delete this message?"
-    );
+    const confirmDelete =
+    await appConfirm({
+
+        title:
+            "Delete Message?",
+
+        subtitle:
+            "This message will be permanently removed.",
+
+        message:
+            "Are you sure you want to delete this message?",
+
+        icon:
+            "🗑️"
+
+    });
 
     if (!confirmDelete) {
         return;
@@ -2484,15 +3093,41 @@ async function deleteMessage(id) {
 
         if (!data.success) {
 
-            alert(
-                data.message ||
-                "Failed to delete message."
-            );
+            await appNotice({
+
+    title:
+        "Delete Failed",
+
+    subtitle:
+        "The message could not be deleted.",
+
+    message:
+        data.message ||
+        "Failed to delete message.",
+
+    icon:
+        "❌"
+
+});
 
             return;
         }
 
-        alert("Message deleted successfully.");
+        await appNotice({
+
+    title:
+        "Message Deleted",
+
+    subtitle:
+        "The message has been removed.",
+
+    message:
+        "Message deleted successfully.",
+
+    icon:
+        "🗑️"
+
+});
 
         loadMessages();
 
@@ -2503,9 +3138,21 @@ async function deleteMessage(id) {
             error
         );
 
-        alert(
-            "Failed to delete message."
-        );
+        await appNotice({
+
+    title:
+        "Something Went Wrong",
+
+    subtitle:
+        "The message could not be deleted.",
+
+    message:
+        "Please try again.",
+
+    icon:
+        "❌"
+
+});
     }
 }
 
@@ -2516,20 +3163,58 @@ async function loadVisitors() {
     try {
 
         const response =
-            await fetch("/admin/visitor-stats");
+            await fetch(
+                "/admin/visitor-stats"
+            );
 
         const data =
             await response.json();
 
-        document.getElementById(
-            "visitorStat"
-        ).textContent =
+
+        const count =
             data.count || 0;
 
-        document.getElementById(
-            "visitorBig"
-        ).textContent =
-            data.count || 0;
+
+        const visitorStat =
+            document.getElementById(
+                "visitorStat"
+            );
+
+        if (visitorStat) {
+
+            visitorStat.textContent =
+                count;
+
+        }
+
+
+        const visitorBig =
+            document.getElementById(
+                "visitorBig"
+            );
+
+        if (visitorBig) {
+
+            visitorBig.textContent =
+                count;
+
+        }
+
+
+        /* Put current count inside editor */
+
+        const visitorInput =
+            document.getElementById(
+                "visitorCountInput"
+            );
+
+        if (visitorInput) {
+
+            visitorInput.value =
+                count;
+
+        }
+
 
     } catch (error) {
 
@@ -2591,6 +3276,20 @@ async function loadSettings() {
             "settingLinkedin"
         ).value =
             settings.linkedin || "";
+
+
+            const profilePreview =
+    document.getElementById(
+        "profileImagePreview"
+    );
+
+if (profilePreview) {
+
+    profilePreview.src =
+        settings.profileImage ||
+        "/images/photoweb.jpg";
+
+}
 
     } catch (error) {
 
@@ -2675,7 +3374,7 @@ document
                 if (!response.ok ||
                     !data.success) {
 
-                    alert(
+                    adminAlert(
                         data.message ||
                         "Failed to save settings."
                     );
@@ -2684,9 +3383,21 @@ document
                 }
 
 
-                alert(
-                    "✅ Settings saved successfully!"
-                );
+                await appNotice({
+
+    title:
+        "Settings Updated",
+
+    subtitle:
+        "Your website changes have been saved.",
+
+    message:
+        "Settings saved successfully!",
+
+    icon:
+        "✅"
+
+});
 
 
             } catch (error) {
@@ -2696,14 +3407,1784 @@ document
                     error
                 );
 
-                alert(
-                    "❌ Failed to save settings."
-                );
+                await appNotice({
+    title: "Settings Update Failed",
+    subtitle: "Something went wrong while saving.",
+    message: "Failed to save settings.",
+    icon: "❌"
+});
 
             }
 
         }
     );
+
+
+/* =====================================================
+   HOMEPAGE EDITOR
+===================================================== */
+
+async function loadHomepageEditor() {
+
+    const editor =
+        document.getElementById(
+            "homepageHtmlEditor"
+        );
+
+    const message =
+        document.getElementById(
+            "homepageEditorMessage"
+        );
+
+    if (!editor) return;
+
+    try {
+
+        message.textContent =
+            "Loading homepage...";
+
+        const response =
+            await fetch(
+                "/admin/api/homepage"
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Failed to load homepage."
+            );
+        }
+
+        editor.value =
+            data.homepage.html || "";
+
+        message.textContent =
+            "✅ Homepage loaded.";
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "❌ " + error.message;
+    }
+}
+
+
+/* =====================================================
+   SAVE HOMEPAGE
+===================================================== */
+
+async function saveHomepageEditor() {
+
+    const editor =
+        document.getElementById(
+            "homepageHtmlEditor"
+        );
+
+    const message =
+        document.getElementById(
+            "homepageEditorMessage"
+        );
+
+    if (!editor) return;
+
+    const html =
+        editor.value;
+
+    if (!html.trim()) {
+
+        adminAlert(
+            "Homepage HTML cannot be empty."
+        );
+
+        return;
+    }
+
+    const confirmed =
+        await appConfirm({
+
+            title:
+                "Save Homepage Changes?",
+
+            subtitle:
+                "These changes will update your live homepage.",
+
+            message:
+                "Are you sure you want to save these changes?",
+
+            icon:
+                "🌐",
+
+            danger:
+                false
+
+        });
+
+    if (!confirmed) {
+
+        return;
+    }
+
+    try {
+
+        message.textContent =
+            "Saving homepage...";
+
+        const response =
+            await fetch(
+                "/admin/api/homepage",
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            html: html
+                        })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Failed to save homepage."
+            );
+        }
+
+        message.textContent =
+            "✅ Homepage saved successfully.";
+
+        await appNotice({
+
+    title:
+        "Homepage Updated",
+
+    subtitle:
+        "Your website changes have been saved.",
+
+    message:
+        "Website changes saved successfully.",
+
+    icon:
+        "✅"
+
+});
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "❌ " + error.message;
+    }
+}
+
+
+/* =====================================================
+   PROFILE IMAGE UPLOAD
+===================================================== */
+
+async function uploadProfileImage() {
+
+    const input =
+        document.getElementById(
+            "profileImageInput"
+        );
+
+    const preview =
+        document.getElementById(
+            "profileImagePreview"
+        );
+
+    const message =
+        document.getElementById(
+            "profileImageMessage"
+        );
+
+    const button =
+        document.getElementById(
+            "uploadProfileImageBtn"
+        );
+
+    if (
+        !input ||
+        !input.files ||
+        !input.files[0]
+    ) {
+
+        await appNotice({
+
+    title:
+        "Select an Image",
+
+    subtitle:
+        "No profile picture was selected.",
+
+    message:
+        "Please select a profile picture first.",
+
+    icon:
+        "⚠️"
+
+});
+
+        return;
+    }
+
+    const file =
+        input.files[0];
+
+    if (
+        !file.type.startsWith(
+            "image/"
+        )
+    ) {
+
+        await appNotice({
+
+    title:
+        "Invalid File",
+
+    subtitle:
+        "The selected file is not an image.",
+
+    message:
+        "Please select a JPG, PNG, WEBP, or other valid image file.",
+
+    icon:
+        "⚠️"
+
+});
+
+        return;
+    }
+
+    if (
+        file.size >
+        10 * 1024 * 1024
+    ) {
+
+        await appNotice({
+
+    title:
+        "Image Too Large",
+
+    subtitle:
+        "The profile picture exceeds the size limit.",
+
+    message:
+        "Please select an image smaller than 10 MB.",
+
+    icon:
+        "⚠️"
+
+});
+
+        return;
+    }
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "image",
+        file
+    );
+
+    try {
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "Uploading...";
+
+        message.textContent =
+            "Uploading profile picture...";
+
+        const response =
+            await fetch(
+                "/admin/api/profile-image",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Profile picture upload failed."
+            );
+        }
+
+        preview.src =
+            data.imageUrl +
+            "?v=" +
+            Date.now();
+
+        input.value = "";
+
+        message.textContent =
+            "✅ Profile picture updated successfully.";
+
+        await appNotice({
+
+    title:
+        "Profile Picture Updated",
+
+    subtitle:
+        "Your new profile picture has been uploaded.",
+
+    message:
+        "Profile picture updated successfully.",
+
+    icon:
+        "🖼️"
+
+});
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "❌ " + error.message;
+
+            await appNotice({
+
+    title:
+        "Upload Failed",
+
+    subtitle:
+        "The profile picture could not be uploaded.",
+
+    message:
+        error.message ||
+        "Please try again.",
+
+    icon:
+        "❌"
+
+});
+
+    } finally {
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "📤 Upload Profile Picture";
+    }
+}
+
+
+/* =====================================================
+   BUTTON EVENTS
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const saveHomepageBtn =
+            document.getElementById(
+                "saveHomepageBtn"
+            );
+
+        const loadHomepageBtn =
+            document.getElementById(
+                "loadHomepageBtn"
+            );
+
+        const uploadProfileImageBtn =
+            document.getElementById(
+                "uploadProfileImageBtn"
+            );
+
+
+        if (saveHomepageBtn) {
+
+            saveHomepageBtn.addEventListener(
+                "click",
+                saveHomepageEditor
+            );
+        }
+
+
+        if (loadHomepageBtn) {
+
+            loadHomepageBtn.addEventListener(
+                "click",
+                loadHomepageEditor
+            );
+        }
+
+
+        if (uploadProfileImageBtn) {
+
+            uploadProfileImageBtn.addEventListener(
+                "click",
+                uploadProfileImage
+            );
+        }
+
+        const deleteProfileImageBtn =
+    document.getElementById(
+        "deleteProfileImageBtn"
+    );
+
+if (deleteProfileImageBtn) {
+
+    deleteProfileImageBtn.addEventListener(
+        "click",
+        deleteProfileImage
+    );
+
+}
+
+const saveVisitorCountBtn =
+    document.getElementById(
+        "saveVisitorCountBtn"
+    );
+
+if (saveVisitorCountBtn) {
+
+    saveVisitorCountBtn.addEventListener(
+        "click",
+        saveVisitorCount
+    );
+
+}
+
+    }
+);
+
+
+/* =====================================================
+   SAVE WEBSITE BUILDER
+===================================================== */
+
+async function saveWebsiteBuilder() {
+
+    if (!websiteContent) {
+
+        adminAlert(
+            "Website content has not loaded yet."
+        );
+
+        return;
+
+    }
+
+
+    /* ================= UPDATE HERO ================= */
+
+    websiteContent.hero = {
+
+        name:
+            document.getElementById(
+                "builderHeroName"
+            ).value,
+
+        typing:
+            document.getElementById(
+                "builderHeroTyping"
+            ).value,
+
+        tagline:
+            document.getElementById(
+                "builderHeroTagline"
+            ).value
+
+    };
+
+
+    /* ================= UPDATE EDUCATION ================= */
+
+    document
+        .querySelectorAll(
+            "[data-education-title]"
+        )
+        .forEach(input => {
+
+            const index =
+                Number(
+                    input.dataset
+                        .educationTitle
+                );
+
+            websiteContent
+                .education[index]
+                .title =
+                input.value;
+
+        });
+
+
+    document
+        .querySelectorAll(
+            "[data-education-institute]"
+        )
+        .forEach(input => {
+
+            const index =
+                Number(
+                    input.dataset
+                        .educationInstitute
+                );
+
+            websiteContent
+                .education[index]
+                .institute =
+                input.value;
+
+        });
+
+
+    document
+        .querySelectorAll(
+            "[data-education-status]"
+        )
+        .forEach(input => {
+
+            const index =
+                Number(
+                    input.dataset
+                        .educationStatus
+                );
+
+            websiteContent
+                .education[index]
+                .status =
+                input.value;
+
+        });
+
+
+    /* ================= UPDATE SKILLS ================= */
+
+    document
+        .querySelectorAll(
+            "[data-skill-index]"
+        )
+        .forEach(input => {
+
+            const index =
+                Number(
+                    input.dataset
+                        .skillIndex
+                );
+
+            websiteContent.skills[index] =
+                input.value;
+
+        });
+
+
+    /* ================= UPDATE PROGRESS SKILLS ================= */
+
+    document
+        .querySelectorAll(
+            "[data-progress-name]"
+        )
+        .forEach(input => {
+
+            const index =
+                Number(
+                    input.dataset
+                        .progressName
+                );
+
+            websiteContent
+                .progressSkills[index]
+                .name =
+                input.value;
+
+        });
+
+
+    document
+        .querySelectorAll(
+            "[data-progress-percentage]"
+        )
+        .forEach(input => {
+
+            const index =
+                Number(
+                    input.dataset
+                        .progressPercentage
+                );
+
+            let percentage =
+                Number(
+                    input.value
+                );
+
+            percentage =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        percentage
+                    )
+                );
+
+            websiteContent
+                .progressSkills[index]
+                .percentage =
+                percentage;
+
+        });
+
+
+    /* ================= COUNTERS ================= */
+
+    websiteContent.counters = {
+
+        problemsSolved:
+            Number(
+                document.getElementById(
+                    "builderProblemsSolved"
+                ).value
+            ) || 0,
+
+        problemsLabel:
+            document.getElementById(
+                "builderProblemsLabel"
+            ).value,
+
+        yearsLabel:
+            document.getElementById(
+                "builderYearsLabel"
+            ).value,
+
+        projectsLabel:
+            document.getElementById(
+                "builderProjectsLabel"
+            ).value,
+
+        hoursLabel:
+            document.getElementById(
+                "builderHoursLabel"
+            ).value,
+
+        startDate:
+            document.getElementById(
+                "builderStartDate"
+            ).value
+
+    };
+
+
+    /* ================= ABOUT ================= */
+
+    websiteContent.about = {
+
+        title:
+            document.getElementById(
+                "builderAboutTitle"
+            ).value,
+
+        text:
+            document.getElementById(
+                "builderAboutText"
+            ).value
+
+    };
+
+
+    /* ================= CONTACT ================= */
+
+    websiteContent.contact = {
+
+        title:
+            document.getElementById(
+                "builderContactTitle"
+            ).value,
+
+        namePlaceholder:
+            document.getElementById(
+                "builderContactName"
+            ).value,
+
+        emailPlaceholder:
+            document.getElementById(
+                "builderContactEmail"
+            ).value,
+
+        messagePlaceholder:
+            document.getElementById(
+                "builderContactMessage"
+            ).value,
+
+        buttonText:
+            document.getElementById(
+                "builderContactButton"
+            ).value
+
+    };
+
+
+    /* ================= DONATION ================= */
+
+    websiteContent.donation = {
+
+        title:
+            document.getElementById(
+                "builderDonationTitle"
+            ).value,
+
+        goal:
+            Number(
+                document.getElementById(
+                    "builderDonationGoal"
+                ).value
+            ) || 0,
+
+        donorNamePlaceholder:
+            document.getElementById(
+                "builderDonationName"
+            ).value,
+
+        donorEmailPlaceholder:
+            document.getElementById(
+                "builderDonationEmail"
+            ).value,
+
+        customAmountPlaceholder:
+            document.getElementById(
+                "builderDonationCustom"
+            ).value,
+
+        buttonText:
+            document.getElementById(
+                "builderDonationButton"
+            ).value,
+
+        leaderboardTitle:
+            document.getElementById(
+                "builderLeaderboardTitle"
+            ).value,
+
+        milestoneTitle:
+            document.getElementById(
+                "builderMilestoneTitle"
+            ).value
+
+    };
+
+
+    /* ================= THANK YOU ================= */
+
+    websiteContent.thankYou = {
+
+        title:
+            document.getElementById(
+                "builderThankYouTitle"
+            ).value
+
+    };
+
+
+    /* ================= SEND TO SERVER ================= */
+
+    const message =
+        document.getElementById(
+            "websiteBuilderMessage"
+        );
+
+    const button =
+        document.getElementById(
+            "saveWebsiteBuilderBtn"
+        );
+
+
+    try {
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "Saving...";
+
+        message.textContent =
+            "Saving website changes...";
+
+
+        const response =
+            await fetch(
+                "/admin/api/portfolio-content",
+                {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            websiteContent
+                        )
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Failed to save changes."
+            );
+
+        }
+
+
+        message.textContent =
+            "✅ Website updated successfully!";
+
+        await appNotice({
+
+    title:
+        "Website Updated",
+
+    subtitle:
+        "Your website changes have been saved.",
+
+    message:
+        "Website changes saved successfully!",
+
+    icon:
+        "✅"
+
+});
+
+
+    } catch (error) {
+
+        console.error(
+            "Website Builder Save Error:",
+            error
+        );
+
+        message.textContent =
+            "❌ " + error.message;
+
+
+    } finally {
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "💾 SAVE ALL WEBSITE CHANGES";
+
+    }
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const saveButton =
+            document.getElementById(
+                "saveWebsiteBuilderBtn"
+            );
+
+        if (saveButton) {
+
+            saveButton.addEventListener(
+                "click",
+                saveWebsiteBuilder
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   WEBSITE BUILDER
+===================================================== */
+
+let websiteContent = null;
+
+
+/* ================= LOAD WEBSITE BUILDER ================= */
+
+async function loadWebsiteBuilder() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/admin/api/portfolio-content"
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Failed to load website."
+            );
+
+        }
+
+        websiteContent =
+            data.content;
+
+        fillWebsiteBuilder();
+
+    } catch (error) {
+
+        console.error(
+            "Website Builder Load Error:",
+            error
+        );
+
+        const message =
+            document.getElementById(
+                "websiteBuilderMessage"
+            );
+
+        if (message) {
+
+            message.textContent =
+                "❌ " + error.message;
+
+        }
+
+    }
+
+}
+
+
+/* ================= FILL BUILDER ================= */
+
+function fillWebsiteBuilder() {
+
+    if (!websiteContent) {
+        return;
+    }
+
+
+    /* HERO */
+
+    document.getElementById(
+        "builderHeroName"
+    ).value =
+        websiteContent.hero?.name || "";
+
+
+    document.getElementById(
+        "builderHeroTyping"
+    ).value =
+        websiteContent.hero?.typing || "";
+
+
+    document.getElementById(
+        "builderHeroTagline"
+    ).value =
+        websiteContent.hero?.tagline || "";
+
+
+    /* COUNTERS */
+
+    document.getElementById(
+        "builderProblemsSolved"
+    ).value =
+        websiteContent.counters?.problemsSolved || 0;
+
+
+    document.getElementById(
+        "builderProblemsLabel"
+    ).value =
+        websiteContent.counters?.problemsLabel || "";
+
+
+    document.getElementById(
+        "builderYearsLabel"
+    ).value =
+        websiteContent.counters?.yearsLabel || "";
+
+
+    document.getElementById(
+        "builderProjectsLabel"
+    ).value =
+        websiteContent.counters?.projectsLabel || "";
+
+
+    document.getElementById(
+        "builderHoursLabel"
+    ).value =
+        websiteContent.counters?.hoursLabel || "";
+
+
+    document.getElementById(
+        "builderStartDate"
+    ).value =
+        websiteContent.counters?.startDate || "";
+
+
+    /* ABOUT */
+
+    document.getElementById(
+        "builderAboutTitle"
+    ).value =
+        websiteContent.about?.title || "";
+
+
+    document.getElementById(
+        "builderAboutText"
+    ).value =
+        websiteContent.about?.text || "";
+
+
+    /* THANK YOU */
+
+    document.getElementById(
+        "builderThankYouTitle"
+    ).value =
+        websiteContent.thankYou?.title || "";
+
+
+    /* CONTACT */
+
+    document.getElementById(
+        "builderContactTitle"
+    ).value =
+        websiteContent.contact?.title || "";
+
+
+    document.getElementById(
+        "builderContactName"
+    ).value =
+        websiteContent.contact?.namePlaceholder || "";
+
+
+    document.getElementById(
+        "builderContactEmail"
+    ).value =
+        websiteContent.contact?.emailPlaceholder || "";
+
+
+    document.getElementById(
+        "builderContactMessage"
+    ).value =
+        websiteContent.contact?.messagePlaceholder || "";
+
+
+    document.getElementById(
+        "builderContactButton"
+    ).value =
+        websiteContent.contact?.buttonText || "";
+
+
+    /* DONATION */
+
+    document.getElementById(
+        "builderDonationTitle"
+    ).value =
+        websiteContent.donation?.title || "";
+
+
+    document.getElementById(
+        "builderDonationGoal"
+    ).value =
+        websiteContent.donation?.goal || 10000;
+
+
+    document.getElementById(
+        "builderDonationName"
+    ).value =
+        websiteContent.donation?.donorNamePlaceholder || "";
+
+
+    document.getElementById(
+        "builderDonationEmail"
+    ).value =
+        websiteContent.donation?.donorEmailPlaceholder || "";
+
+
+    document.getElementById(
+        "builderDonationCustom"
+    ).value =
+        websiteContent.donation?.customAmountPlaceholder || "";
+
+
+    document.getElementById(
+        "builderDonationButton"
+    ).value =
+        websiteContent.donation?.buttonText || "";
+
+
+    document.getElementById(
+        "builderLeaderboardTitle"
+    ).value =
+        websiteContent.donation?.leaderboardTitle || "";
+
+
+    document.getElementById(
+        "builderMilestoneTitle"
+    ).value =
+        websiteContent.donation?.milestoneTitle || "";
+
+
+    /* DYNAMIC LISTS */
+
+    renderEducation();
+
+    renderSkills();
+
+    renderProgressSkills();
+
+}
+
+
+
+
+/* ================= EDUCATION EDITOR ================= */
+
+function renderEducation() {
+
+    const container =
+        document.getElementById(
+            "educationEditor"
+        );
+
+    if (!container) return;
+
+    const education =
+        websiteContent.education || [];
+
+    container.innerHTML =
+        education.map((item, index) => `
+
+            <div class="builder-row">
+
+                <input
+                    type="text"
+                    placeholder="Education title"
+                    value="${escapeHTML(item.title || "")}"
+                    data-education-title="${index}"
+                >
+
+                <input
+                    type="text"
+                    placeholder="Institute"
+                    value="${escapeHTML(item.institute || "")}"
+                    data-education-institute="${index}"
+                >
+
+                <input
+                    type="text"
+                    placeholder="Status"
+                    value="${escapeHTML(item.status || "")}"
+                    data-education-status="${index}"
+                >
+
+                <button
+                    type="button"
+                    class="builder-remove"
+                    onclick="removeEducation(${index})"
+                >
+                    🗑
+                </button>
+
+            </div>
+
+        `).join("");
+}
+
+
+/* ================= ADD EDUCATION ================= */
+
+function addEducation() {
+
+    if (!websiteContent.education) {
+
+        websiteContent.education = [];
+
+    }
+
+    websiteContent.education.push({
+
+        title: "New Education",
+
+        institute: "Institute Name",
+
+        status: "Status"
+
+    });
+
+    renderEducation();
+
+}
+
+
+/* ================= REMOVE EDUCATION ================= */
+
+function removeEducation(index) {
+
+    if (!websiteContent.education) {
+        return;
+    }
+
+    websiteContent.education.splice(
+        index,
+        1
+    );
+
+    renderEducation();
+
+}
+
+
+/* ================= SKILLS EDITOR ================= */
+
+function renderSkills() {
+
+    const container =
+        document.getElementById(
+            "skillsEditor"
+        );
+
+    if (!container) return;
+
+    const skills =
+        websiteContent.skills || [];
+
+    container.innerHTML =
+        skills.map((skill, index) => `
+
+            <div class="skill-builder-row">
+
+                <input
+                    type="text"
+                    value="${escapeHTML(skill || "")}"
+                    placeholder="Skill name"
+                    data-skill-index="${index}"
+                >
+
+                <button
+                    type="button"
+                    class="builder-remove"
+                    onclick="removeSkill(${index})"
+                >
+                    🗑
+                </button>
+
+            </div>
+
+        `).join("");
+}
+
+
+/* ================= ADD SKILL ================= */
+
+function addSkill() {
+
+    if (!websiteContent.skills) {
+
+        websiteContent.skills = [];
+
+    }
+
+    websiteContent.skills.push(
+        "New Skill"
+    );
+
+    renderSkills();
+
+}
+
+
+/* ================= REMOVE SKILL ================= */
+
+function removeSkill(index) {
+
+    if (!websiteContent.skills) {
+        return;
+    }
+
+    websiteContent.skills.splice(
+        index,
+        1
+    );
+
+    renderSkills();
+
+}
+
+
+/* ================= SKILL PERCENTAGE ================= */
+
+function renderProgressSkills() {
+
+    const container =
+        document.getElementById(
+            "progressSkillsEditor"
+        );
+
+    if (!container) return;
+
+    const skills =
+        websiteContent.progressSkills || [];
+
+    container.innerHTML =
+        skills.map((skill, index) => `
+
+            <div class="skill-builder-row">
+
+                <input
+                    type="text"
+                    value="${escapeHTML(skill.name || "")}"
+                    placeholder="Skill name"
+                    data-progress-name="${index}"
+                >
+
+                <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value="${Number(skill.percentage) || 0}"
+                    placeholder="Percentage"
+                    data-progress-percentage="${index}"
+                >
+
+                <button
+                    type="button"
+                    class="builder-remove"
+                    onclick="removeProgressSkill(${index})"
+                >
+                    🗑
+                </button>
+
+            </div>
+
+        `).join("");
+}
+
+
+/* ================= ADD PROGRESS SKILL ================= */
+
+function addProgressSkill() {
+
+    if (!websiteContent.progressSkills) {
+
+        websiteContent.progressSkills = [];
+
+    }
+
+    websiteContent.progressSkills.push({
+
+        name: "New Skill",
+
+        percentage: 50
+
+    });
+
+    renderProgressSkills();
+
+}
+
+
+/* ================= REMOVE PROGRESS SKILL ================= */
+
+function removeProgressSkill(index) {
+
+    if (!websiteContent.progressSkills) {
+        return;
+    }
+
+    websiteContent.progressSkills.splice(
+        index,
+        1
+    );
+
+    renderProgressSkills();
+
+}
+
+
+
+
+/* ================= WEBSITE BUILDER BUTTONS ================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        document
+            .getElementById(
+                "addEducationBtn"
+            )
+            ?.addEventListener(
+                "click",
+                addEducation
+            );
+
+
+        document
+            .getElementById(
+                "addSkillBtn"
+            )
+            ?.addEventListener(
+                "click",
+                addSkill
+            );
+
+
+        document
+            .getElementById(
+                "addProgressSkillBtn"
+            )
+            ?.addEventListener(
+                "click",
+                addProgressSkill
+            );
+
+    }
+);
+
+
+/* =====================================================
+   DELETE PROFILE IMAGE
+===================================================== */
+
+async function deleteProfileImage() {
+
+    const confirmed =
+    await appConfirm({
+
+        title:
+            "Delete Profile Picture?",
+
+        subtitle:
+            "Your current profile picture will be removed.",
+
+        message:
+            "The website will return to the default profile picture.",
+
+        icon:
+            "🖼️"
+
+    });
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            "deleteProfileImageBtn"
+        );
+
+    const preview =
+        document.getElementById(
+            "profileImagePreview"
+        );
+
+    const message =
+        document.getElementById(
+            "profileImageMessage"
+        );
+
+
+    try {
+
+        button.disabled = true;
+
+        button.textContent =
+            "Deleting...";
+
+        message.textContent =
+            "Deleting profile picture...";
+
+
+        const response =
+            await fetch(
+                "/admin/api/profile-image",
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Failed to delete profile picture."
+            );
+
+        }
+
+
+        preview.src =
+            "/images/photoweb.jpg?v=" +
+            Date.now();
+
+
+        message.textContent =
+            "✅ Profile picture deleted successfully.";
+
+        await appNotice({
+
+    title:
+        "Delete Profile Picture",
+
+    subtitle:
+        "The profile picture has been deleted.",
+
+    message:
+        "Profile picture deleted.",
+
+    icon:
+        "✅"
+
+});
+
+
+    } catch (error) {
+
+        console.error(
+            "Profile Image Delete Error:",
+            error
+        );
+
+        message.textContent =
+            "❌ " + error.message;
+
+
+    } finally {
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "🗑️ Delete Picture";
+
+    }
+
+}
+
+
+
+/* =====================================================
+   SAVE VISITOR COUNT
+===================================================== */
+
+async function saveVisitorCount() {
+
+    const input =
+        document.getElementById(
+            "visitorCountInput"
+        );
+
+    const message =
+        document.getElementById(
+            "visitorEditMessage"
+        );
+
+    const button =
+        document.getElementById(
+            "saveVisitorCountBtn"
+        );
+
+
+    if (!input) {
+        return;
+    }
+
+
+    const count =
+        Number(input.value);
+
+
+    if (
+        !Number.isInteger(count) ||
+        count < 0
+    ) {
+
+        message.textContent =
+            "❌ Enter a valid visitor count.";
+
+        return;
+
+    }
+
+
+    try {
+
+        button.disabled = true;
+
+        button.textContent =
+            "Saving...";
+
+        message.textContent =
+            "Updating visitor count...";
+
+
+        const response =
+            await fetch(
+                "/admin/visitor-count",
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            count: count
+                        })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Failed to update visitor count."
+            );
+
+        }
+
+
+        /* Update dashboard immediately */
+
+        const visitorStat =
+            document.getElementById(
+                "visitorStat"
+            );
+
+        if (visitorStat) {
+
+            visitorStat.textContent =
+                data.count;
+
+        }
+
+
+        const visitorBig =
+            document.getElementById(
+                "visitorBig"
+            );
+
+        if (visitorBig) {
+
+            visitorBig.textContent =
+                data.count;
+
+        }
+
+
+        message.textContent =
+            "✅ Visitor count updated successfully.";
+
+        await appNotice({
+
+    title:
+        "Visitor Count Updated",
+
+    subtitle:
+        "Your website visitor count has been updated.",
+
+    message:
+        "Visitor count updated successfully."  + data.count,
+
+    icon:
+        "👥"
+
+});
+
+
+    } catch (error) {
+
+        console.error(
+            "Save visitor count error:",
+            error
+        );
+
+        message.textContent =
+            "❌ " + error.message;
+
+
+    } finally {
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "💾 Save Count";
+
+    }
+
+}
 
 
 
@@ -2775,3 +5256,534 @@ function escapeHTML(value) {
     }
 
 })();
+
+/* =====================================================
+   PROFESSIONAL MODAL SYSTEM
+===================================================== */
+
+let appModalResolver = null;
+
+
+/* ================= OPEN MODAL ================= */
+
+function openAppModal({
+
+    title = "Confirmation",
+
+    subtitle = "",
+
+    icon = "✨",
+
+    body = "",
+
+    buttons = []
+
+} = {}) {
+
+    const overlay =
+        document.getElementById(
+            "appModalOverlay"
+        );
+
+    const titleElement =
+        document.getElementById(
+            "appModalTitle"
+        );
+
+    const subtitleElement =
+        document.getElementById(
+            "appModalSubtitle"
+        );
+
+    const iconElement =
+        document.getElementById(
+            "appModalIcon"
+        );
+
+    const bodyElement =
+        document.getElementById(
+            "appModalBody"
+        );
+
+    const actionsElement =
+        document.getElementById(
+            "appModalActions"
+        );
+
+
+    if (!overlay) {
+
+        console.error(
+            "Professional modal HTML not found."
+        );
+
+        return Promise.resolve(
+            null
+        );
+
+    }
+
+
+    titleElement.textContent =
+        title;
+
+    subtitleElement.textContent =
+        subtitle;
+
+    iconElement.textContent =
+        icon;
+
+    bodyElement.innerHTML =
+        body;
+
+    actionsElement.innerHTML =
+        "";
+
+
+    return new Promise(resolve => {
+
+        appModalResolver =
+            resolve;
+
+
+        buttons.forEach(button => {
+
+            const element =
+                document.createElement(
+                    "button"
+                );
+
+            element.type =
+                "button";
+
+            element.className =
+                "app-modal-btn " +
+                (
+                    button.type ||
+                    "primary"
+                );
+
+            element.textContent =
+                button.text;
+
+
+            element.addEventListener(
+                "click",
+                () => {
+
+                    closeAppModal(
+                        button.value
+                    );
+
+                }
+            );
+
+
+            actionsElement
+                .appendChild(element);
+
+        });
+
+
+        overlay.classList.add(
+            "active"
+        );
+
+        overlay.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        setTimeout(() => {
+
+            const firstInput =
+                bodyElement.querySelector(
+                    "input, textarea, select"
+                );
+
+            if (firstInput) {
+
+                firstInput.focus();
+
+                if (
+                    firstInput.select
+                ) {
+
+                    firstInput.select();
+
+                }
+
+            }
+
+        }, 100);
+
+    });
+
+}
+
+
+/* ================= CLOSE MODAL ================= */
+
+function closeAppModal(value = null) {
+
+    const overlay =
+        document.getElementById(
+            "appModalOverlay"
+        );
+
+    if (!overlay) {
+        return;
+    }
+
+
+    overlay.classList.remove(
+        "active"
+    );
+
+    overlay.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
+    if (appModalResolver) {
+
+        const resolve =
+            appModalResolver;
+
+        appModalResolver =
+            null;
+
+        resolve(value);
+
+    }
+
+}
+
+
+/* ================= CLOSE BUTTON ================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const closeButton =
+            document.getElementById(
+                "appModalClose"
+            );
+
+        if (closeButton) {
+
+            closeButton.addEventListener(
+                "click",
+                () => {
+
+                    closeAppModal(
+                        null
+                    );
+
+                }
+            );
+
+        }
+
+
+        const overlay =
+            document.getElementById(
+                "appModalOverlay"
+            );
+
+        if (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target ===
+                        overlay
+                    ) {
+
+                        closeAppModal(
+                            null
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+);
+
+
+/* ================= CUSTOM PROMPT ================= */
+
+function appPrompt({
+
+    title = "Enter Information",
+
+    subtitle = "Please enter the required information.",
+
+    label = "Value",
+
+    value = "",
+
+    placeholder = "",
+
+    type = "text",
+
+    icon = "✏️"
+
+} = {}) {
+
+    const inputId =
+        "appModalInput_" +
+        Date.now();
+
+
+    const body = `
+
+        <div class="app-modal-field">
+
+            <label for="${inputId}">
+                ${escapeHTML(label)}
+            </label>
+
+            <input
+                id="${inputId}"
+                type="${type}"
+                value="${escapeHTML(
+                    String(value)
+                )}"
+                placeholder="${escapeHTML(
+                    placeholder
+                )}"
+                autocomplete="off"
+            >
+
+        </div>
+
+    `;
+
+
+    return openAppModal({
+
+        title,
+
+        subtitle,
+
+        icon,
+
+        body,
+
+        buttons: [
+
+            {
+                text: "Cancel",
+                type: "cancel",
+                value: null
+            },
+
+            {
+                text: "Continue",
+                type: "primary",
+                value: "submit"
+            }
+
+        ]
+
+    }).then(result => {
+
+        if (
+            result !==
+            "submit"
+        ) {
+
+            return null;
+
+        }
+
+
+        const input =
+            document.getElementById(
+                inputId
+            );
+
+        return input
+            ? input.value
+            : "";
+
+    });
+
+}
+
+
+/* ================= DASHBOARD ALERT REPLACEMENT ================= */
+
+function adminAlert(message) {
+
+    const text =
+        String(message || "");
+
+    const isError =
+        /failed|unable|cannot|invalid|error|not found|required|empty/i
+            .test(text);
+
+    return appNotice({
+
+        title:
+            isError
+                ? "Action Required"
+                : "Success",
+
+        subtitle:
+            isError
+                ? "Please review the information below."
+                : "The operation completed successfully.",
+
+        message:
+            text,
+
+        icon:
+            isError
+                ? "⚠️"
+                : "✅",
+
+        type:
+            isError
+                ? "danger"
+                : "primary"
+
+    });
+
+}
+
+
+/* ================= CUSTOM CONFIRM ================= */
+
+function appConfirm({
+
+    title = "Are you sure?",
+
+    subtitle =
+        "This action cannot be undone.",
+
+    message = "",
+
+    icon = "⚠️",
+
+    danger = true
+
+} = {}) {
+
+    return openAppModal({
+
+        title,
+
+        subtitle,
+
+        icon,
+
+        body: `
+
+            <div class="app-modal-message">
+
+                ${escapeHTML(
+                    message
+                )}
+
+            </div>
+
+        `,
+
+        buttons: [
+
+            {
+                text: "Cancel",
+
+                type: "cancel",
+
+                value: false
+
+            },
+
+            {
+                text:
+                    danger
+                        ? "Delete"
+                        : "Continue",
+
+                type:
+                    danger
+                        ? "danger"
+                        : "primary",
+
+                value: true
+
+            }
+
+        ]
+
+    }).then(
+        result => result === true
+    );
+
+}
+
+
+/* ================= CUSTOM NOTICE ================= */
+
+function appNotice({
+
+    title = "Done",
+
+    subtitle = "",
+
+    message = "",
+
+    icon = "✅",
+
+    type = "primary"
+
+} = {}) {
+
+    return openAppModal({
+
+        title,
+
+        subtitle,
+
+        icon,
+
+        body: `
+
+            <div class="app-modal-message">
+
+                ${escapeHTML(
+                    message
+                )}
+
+            </div>
+
+        `,
+
+        buttons: [
+
+            {
+                text: "OK",
+
+                type,
+
+                value: true
+
+            }
+
+        ]
+
+    });
+
+}
