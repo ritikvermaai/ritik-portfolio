@@ -196,32 +196,49 @@ const Gallery = mongoose.model("Gallery", gallerySchema);
 
 /* ================= VISITOR ================= */
 
+// Stores the total unique visitor count.
 const visitorSchema =
     new mongoose.Schema({
 
         _id: {
-
             type: String,
-
             default: "main"
-
         },
 
         count: {
-
             type: Number,
-
             default: 0
-
         }
 
     });
-
 
 const Visitor =
     mongoose.model(
         "Visitor",
         visitorSchema
+    );
+
+// One record per browser/device visitor. The visitor ID is kept in a
+// long-lived cookie so returning visitors are not counted again.
+const visitorIdentitySchema =
+    new mongoose.Schema({
+
+        _id: {
+            type: String,
+            required: true
+        },
+
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+
+    });
+
+const VisitorIdentity =
+    mongoose.model(
+        "VisitorIdentity",
+        visitorIdentitySchema
     );
 
 
@@ -2767,7 +2784,7 @@ app.delete(
 
 
 /* =====================================================
-   VISITOR COUNT
+   UNIQUE VISITOR COUNT
 ===================================================== */
 
 app.get(
@@ -2776,35 +2793,83 @@ app.get(
 
         try {
 
-            const visitor =
-                await Visitor
-                    .findOneAndUpdate(
+            // Keep the browser visitor ID for 10 years. Refreshing or
+            // returning years later will not increase the visitor count.
+            const cookieHeader = req.headers.cookie || "";
+            const visitorCookie = cookieHeader
+                .split(";")
+                .map(cookie => cookie.trim())
+                .find(cookie => cookie.startsWith("portfolioVisitorId="));
 
-                        {
-                            _id: "main"
-                        },
+            let visitorId = visitorCookie
+                ? decodeURIComponent(
+                    visitorCookie.split("=").slice(1).join("=")
+                )
+                : null;
 
-                        {
-                            $inc: {
-                                count: 1
-                            }
-                        },
+            let isNewVisitor = false;
 
-                        {
-                            returnDocument:
-                                "after",
+            if (!visitorId) {
+                visitorId = crypto.randomUUID();
+                isNewVisitor = true;
+            }
 
-                            upsert: true
+            // MongoDB provides a second guard: one visitor ID can only be
+            // inserted once, so it can only contribute one to the count.
+            if (isNewVisitor) {
+
+                try {
+                    await VisitorIdentity.create({
+                        _id: visitorId
+                    });
+                }
+                catch (identityError) {
+
+                    if (identityError.code === 11000) {
+                        isNewVisitor = false;
+                    }
+                    else {
+                        throw identityError;
+                    }
+
+                }
+
+            }
+
+            if (isNewVisitor) {
+
+                await Visitor.findOneAndUpdate(
+                    {
+                        _id: "main"
+                    },
+                    {
+                        $inc: {
+                            count: 1
                         }
+                    },
+                    {
+    upsert: true,
+    returnDocument: "after"
+}
+                );
 
-                    );
+            }
 
+            const visitor =
+                await Visitor.findOne({
+                    _id: "main"
+                });
+
+            // 10 years in seconds. This survives normal returns for years.
+            const cookie =
+                `portfolioVisitorId=${encodeURIComponent(visitorId)}; Max-Age=315360000; Path=/; HttpOnly; SameSite=Lax${process.env.NODE_ENV === "production" ? "; Secure" : ""}`;
+
+            res.setHeader("Set-Cookie", cookie);
 
             res.json({
-
-                count:
-                    visitor.count
-
+                count: visitor
+                    ? visitor.count
+                    : 0
             });
 
         }
@@ -2816,12 +2881,9 @@ app.get(
                 error
             );
 
-
             res.status(500)
                 .json({
-
                     count: 0
-
                 });
 
         }
