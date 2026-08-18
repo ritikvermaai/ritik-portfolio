@@ -4,7 +4,7 @@ A personal portfolio website showcasing my skills, projects, education, achievem
 
 ## 🚀 Version
 
-**Version 1.0**
+**Version 2.0**
 
 This is the original version of my personal portfolio website.
 
