@@ -583,9 +583,61 @@ body{
     box-shadow: 0 0 25px rgba(0, 247, 255, 0.5);
 }
 
+
+
+/* ================= PREMIUM WELCOME SPLASH ================= */
+#welcomeSplash{
+ position:fixed;inset:0;z-index:10000;display:grid;place-items:center;overflow:hidden;
+ background:radial-gradient(circle at 50% 42%,#0b1f32 0%,#050b16 42%,#02050b 100%);
+ opacity:1;visibility:visible;transform:scale(1);filter:blur(0);
+ transition:opacity .85s cubic-bezier(.22,1,.36,1),visibility .85s,transform 1s cubic-bezier(.22,1,.36,1),filter .85s;
+}
+#welcomeSplash::before{content:"";position:absolute;width:34vmax;height:34vmax;border:1px solid rgba(0,247,255,.16);border-radius:50%;box-shadow:0 0 100px rgba(0,247,255,.10),inset 0 0 80px rgba(0,247,255,.04);animation:splashOrbit 5s ease-in-out infinite;}
+#welcomeSplash::after{content:"";position:absolute;width:62vmax;height:62vmax;border:1px solid rgba(0,247,255,.055);border-radius:50%;animation:splashOrbitReverse 9s linear infinite;}
+body.splash-active{overflow:hidden!important;}
+#welcomeSplash.splash-hide{opacity:0;visibility:hidden;transform:scale(1.035);filter:blur(10px);pointer-events:none;}
+.splash-grid{position:absolute;inset:0;opacity:.18;background-image:linear-gradient(rgba(0,247,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,247,255,.08) 1px,transparent 1px);background-size:55px 55px;mask-image:radial-gradient(circle,black 15%,transparent 72%);animation:gridDrift 12s linear infinite;}
+.splash-content{position:relative;z-index:2;width:min(92%,700px);text-align:center;}
+.splash-logo-wrap{position:relative;width:142px;height:142px;margin:0 auto 28px;display:grid;place-items:center;animation:splashLogoIn 1s cubic-bezier(.16,1,.3,1) both;}
+.splash-logo-ring{position:absolute;inset:0;border:1px solid rgba(0,247,255,.45);border-radius:50%;box-shadow:0 0 35px rgba(0,247,255,.14);animation:ringPulse 2.4s ease-in-out infinite;}
+.splash-logo-ring::after{content:"";position:absolute;inset:-9px;border:1px solid rgba(0,247,255,.10);border-radius:50%;}
+.splash-logo{width:112px;height:112px;border-radius:50%;object-fit:cover;object-position:top;border:3px solid #00f7ff;box-shadow:0 0 24px rgba(0,247,255,.45),0 0 70px rgba(0,247,255,.13);}
+.splash-welcome{margin:0 0 10px;color:#94a3b8;font-size:clamp(13px,1.7vw,17px);letter-spacing:.28em;text-transform:uppercase;opacity:0;animation:textUp .75s .35s cubic-bezier(.16,1,.3,1) forwards;}
+.splash-title{margin:0;color:#fff;font-size:clamp(48px,8vw,82px);line-height:1;font-weight:700;letter-spacing:-.055em;opacity:0;animation:textUp .8s .48s cubic-bezier(.16,1,.3,1) forwards;}
+.splash-title span{color:#00f7ff;text-shadow:0 0 25px rgba(0,247,255,.28);}
+.splash-subtitle{margin:18px 0 30px;color:#cbd5e1;font-size:clamp(14px,2vw,18px);opacity:0;animation:textUp .75s .62s cubic-bezier(.16,1,.3,1) forwards;}
+.splash-loader{width:190px;height:3px;margin:0 auto;overflow:hidden;border-radius:10px;background:rgba(148,163,184,.15);opacity:0;animation:fadeIn .5s .82s forwards;}
+.splash-loader span{display:block;width:38%;height:100%;border-radius:inherit;background:linear-gradient(90deg,transparent,#00f7ff,#fff,#00f7ff,transparent);box-shadow:0 0 14px rgba(0,247,255,.8);animation:splashLoading 1.25s cubic-bezier(.4,0,.2,1) infinite;}
+.splash-loading-text{margin-top:12px;color:#64748b;font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:0;animation:fadeIn .6s 1s forwards;}
+@keyframes splashLogoIn{from{opacity:0;transform:translateY(22px) scale(.72);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes textUp{from{opacity:0;transform:translateY(18px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes ringPulse{0%,100%{transform:scale(.94);opacity:.55}50%{transform:scale(1.05);opacity:1}}
+@keyframes splashOrbit{0%,100%{transform:scale(.94) rotate(0deg);opacity:.55}50%{transform:scale(1.06) rotate(8deg);opacity:1}}
+@keyframes splashOrbitReverse{to{transform:rotate(-360deg)}}
+@keyframes gridDrift{to{background-position:55px 55px}}
+@keyframes splashLoading{0%{transform:translateX(-130%)}100%{transform:translateX(360%)}}
+@media(max-width:600px){.splash-logo-wrap{width:120px;height:120px}.splash-logo{width:94px;height:94px}.splash-welcome{letter-spacing:.2em}.splash-loader{width:155px}}
+@media(prefers-reduced-motion:reduce){#welcomeSplash::before,#welcomeSplash::after,.splash-grid,.splash-logo-wrap,.splash-logo-ring,.splash-welcome,.splash-title,.splash-subtitle,.splash-loader,.splash-loading-text{animation:none!important}.splash-welcome,.splash-title,.splash-subtitle,.splash-loader,.splash-loading-text{opacity:1!important}}
     </style>
 </head>
-<body>
+<body class="splash-active">
+
+<div id="welcomeSplash" aria-label="Welcome to Ritik Verma portfolio" role="status">
+    <div class="splash-grid" aria-hidden="true"></div>
+    <div class="splash-content">
+        <div class="splash-logo-wrap">
+            <div class="splash-logo-ring" aria-hidden="true"></div>
+            <img id="splashLogo" class="splash-logo" src="images/photoweb.jpg" alt="Ritik Verma">
+        </div>
+        <p class="splash-welcome">Welcome to my portfolio</p>
+        <h1 class="splash-title">Ritik <span>Verma</span></h1>
+        <p class="splash-subtitle">Developer • CSE Student • Creator</p>
+        <div class="splash-loader" aria-hidden="true"><span></span></div>
+        <p class="splash-loading-text">Preparing your experience</p>
+    </div>
+</div>
+
 
 <canvas id="particles"></canvas>
 <!-- Hamburger -->
@@ -1241,6 +1293,15 @@ if (content.profileImage) {
             Date.now();
 
     });
+
+    // Keep the splash image identical to the current Hero profile image.
+    const splashLogo = document.getElementById("splashLogo");
+    if (splashLogo) {
+        splashLogo.src =
+            content.profileImage +
+            "?v=" +
+            Date.now();
+    }
 
 }
 

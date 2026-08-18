@@ -2848,9 +2848,9 @@ app.get(
                         }
                     },
                     {
-    upsert: true,
-    returnDocument: "after"
-}
+                        upsert: true,
+                        new: true
+                    }
                 );
 
             }

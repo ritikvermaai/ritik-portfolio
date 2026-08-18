@@ -859,3 +859,39 @@ function siteNotice({
     });
 
 }
+
+/* ================= WELCOME SPLASH ================= */
+(function initWelcomeSplash() {
+    const splash = document.getElementById("welcomeSplash");
+    if (!splash) return;
+
+    // Show the welcome animation once per browser tab/session.
+    // This prevents an annoying animation every time the homepage is refreshed.
+    let alreadyShown = false;
+    try {
+        alreadyShown = sessionStorage.getItem("ritikWelcomeSplashShown") === "1";
+    } catch (error) {
+        // If storage is unavailable, simply show the splash normally.
+    }
+
+    if (alreadyShown) {
+        splash.classList.add("splash-hide");
+        document.body.classList.remove("splash-active");
+        return;
+    }
+
+    try {
+        sessionStorage.setItem("ritikWelcomeSplashShown", "1");
+    } catch (error) {
+        // Continue without session storage.
+    }
+
+    const hideSplash = () => {
+        splash.classList.add("splash-hide");
+        document.body.classList.remove("splash-active");
+        setTimeout(() => splash.remove(), 800);
+    };
+
+    // Give the welcome animation enough time to be noticed, but keep it quick.
+    window.setTimeout(hideSplash, 1800);
+})();
