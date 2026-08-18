@@ -242,6 +242,47 @@ const VisitorIdentity =
     );
 
 
+
+/* ================= PORTFOLIO RATING ================= */
+
+// One rating per permanent browser/device visitor.
+const portfolioRatingSchema =
+    new mongoose.Schema({
+
+        visitorId: {
+            type: String,
+            required: true,
+            unique: true,
+            index: true
+        },
+
+        rating: {
+            type: Number,
+            required: true,
+            min: 1,
+            max: 5
+        },
+
+        feedback: {
+            type: String,
+            default: "",
+            maxlength: 500,
+            trim: true
+        },
+
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+
+    });
+
+const PortfolioRating =
+    mongoose.model(
+        "PortfolioRating",
+        portfolioRatingSchema
+    );
+
 /* ================= DONATION ================= */
 
 const donationSchema =
@@ -2776,6 +2817,241 @@ app.delete(
                         "Failed to delete project"
 
                 });
+
+        }
+
+    }
+);
+
+
+
+/* =====================================================
+   PORTFOLIO RATING
+===================================================== */
+
+function getPortfolioVisitorId(req) {
+
+    const cookieHeader = req.headers.cookie || "";
+
+    const visitorCookie = cookieHeader
+        .split(";")
+        .map(cookie => cookie.trim())
+        .find(cookie =>
+            cookie.startsWith("portfolioVisitorId=")
+        );
+
+    if (!visitorCookie) {
+        return null;
+    }
+
+    try {
+        return decodeURIComponent(
+            visitorCookie
+                .split("=")
+                .slice(1)
+                .join("=")
+        );
+    }
+    catch {
+        return null;
+    }
+}
+
+
+// Public rating summary.
+app.get(
+    "/api/portfolio-rating",
+    async (req, res) => {
+
+        try {
+
+            const visitorId =
+                getPortfolioVisitorId(req);
+
+            const count =
+                await PortfolioRating.countDocuments();
+
+            const averageResult =
+                await PortfolioRating.aggregate([
+                    {
+                        $group: {
+                            _id: null,
+                            average: {
+                                $avg: "$rating"
+                            }
+                        }
+                    }
+                ]);
+
+            const average =
+                averageResult.length
+                    ? Number(
+                        averageResult[0]
+                            .average
+                    .toFixed(1)
+                    )
+                    : 0;
+
+            let hasRated = false;
+
+            if (visitorId) {
+                hasRated =
+                    !!(
+                        await PortfolioRating
+                            .exists({
+                                visitorId
+                            })
+                    );
+            }
+
+            res.json({
+                success: true,
+                average,
+                count,
+                hasRated
+            });
+
+        }
+        catch (error) {
+
+            console.error(
+                "Portfolio Rating Summary Error:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                message:
+                    "Unable to load rating"
+            });
+
+        }
+
+    }
+);
+
+
+// Submit one rating per permanent visitor.
+app.post(
+    "/api/portfolio-rating",
+    async (req, res) => {
+
+        try {
+
+            const visitorId =
+                getPortfolioVisitorId(req);
+
+            if (!visitorId) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Please visit the website first."
+                });
+
+            }
+
+            const rating =
+                Number(req.body?.rating);
+
+            const feedback =
+                String(
+                    req.body?.feedback || ""
+                ).trim().slice(0, 500);
+
+            if (
+                !Number.isInteger(rating) ||
+                rating < 1 ||
+                rating > 5
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Please select a rating from 1 to 5."
+                });
+
+            }
+
+            const existing =
+                await PortfolioRating
+                    .findOne({
+                        visitorId
+                    });
+
+            if (existing) {
+
+                return res.status(409).json({
+                    success: false,
+                    alreadyRated: true,
+                    message:
+                        "You have already rated this portfolio."
+                });
+
+            }
+
+            await PortfolioRating.create({
+                visitorId,
+                rating,
+                feedback
+            });
+
+            const summary =
+                await PortfolioRating.aggregate([
+                    {
+                        $group: {
+                            _id: null,
+                            average: {
+                                $avg: "$rating"
+                            },
+                            count: {
+                                $sum: 1
+                            }
+                        }
+                    }
+                ]);
+
+            const result =
+                summary[0] || {
+                    average: 0,
+                    count: 0
+                };
+
+            res.json({
+                success: true,
+                average: Number(
+                    result.average
+                .toFixed(1)
+                ),
+                count: result.count
+            });
+
+        }
+        catch (error) {
+
+            // Unique index is the final protection against
+            // two simultaneous submissions from the same visitor.
+            if (error.code === 11000) {
+
+                return res.status(409).json({
+                    success: false,
+                    alreadyRated: true,
+                    message:
+                        "You have already rated this portfolio."
+                });
+
+            }
+
+            console.error(
+                "Portfolio Rating Submit Error:",
+                error
+            );
+
+            res.status(500).json({
+                success: false,
+                message:
+                    "Unable to save your rating."
+            });
 
         }
 

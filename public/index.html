@@ -174,7 +174,7 @@
     color:white;
     text-decoration:none;
     margin:20px 0;
-    font-size:18px;
+    font-size:22px;
 }
 
 .sidebar.active{
@@ -619,7 +619,265 @@ body.splash-active{overflow:hidden!important;}
 @keyframes splashLoading{0%{transform:translateX(-130%)}100%{transform:translateX(360%)}}
 @media(max-width:600px){.splash-logo-wrap{width:120px;height:120px}.splash-logo{width:94px;height:94px}.splash-welcome{letter-spacing:.2em}.splash-loader{width:155px}}
 @media(prefers-reduced-motion:reduce){#welcomeSplash::before,#welcomeSplash::after,.splash-grid,.splash-logo-wrap,.splash-logo-ring,.splash-welcome,.splash-title,.splash-subtitle,.splash-loader,.splash-loading-text{animation:none!important}.splash-welcome,.splash-title,.splash-subtitle,.splash-loader,.splash-loading-text{opacity:1!important}}
-    </style>
+    
+/* =====================================================
+   PORTFOLIO RATING
+===================================================== */
+
+.portfolio-rating-section{
+    max-width: 920px;
+    margin: 10px auto 40px;
+    padding: 0 20px 90px;
+    text-align: center;
+}
+
+.portfolio-rating-card{
+    position: relative;
+    overflow: hidden;
+    padding: 42px 34px;
+    border-radius: 24px;
+    background:
+        linear-gradient(145deg, rgba(17,24,39,.94), rgba(15,23,42,.96));
+    border: 1px solid rgba(0,247,255,.14);
+    box-shadow:
+        0 20px 70px rgba(0,0,0,.28),
+        0 0 35px rgba(0,247,255,.05);
+}
+
+.portfolio-rating-card::before{
+    content:"";
+    position:absolute;
+    width:260px;
+    height:260px;
+    top:-160px;
+    right:-100px;
+    border-radius:50%;
+    background:rgba(0,247,255,.08);
+    filter:blur(30px);
+    pointer-events:none;
+}
+
+.portfolio-rating-eyebrow{
+    color:#00f7ff;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+}
+
+.portfolio-rating-title{
+    color:#f8fafc;
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.portfolio-rating-subtitle{
+    max-width:650px;
+    margin:0 auto;
+    color:#94a3b8;
+    line-height:1.7;
+    font-size:16px;
+}
+
+.rating-stars{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    margin:28px 0 12px;
+}
+
+.rating-star{
+    width:52px;
+    height:52px;
+    margin:0;
+    padding:0;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    background:rgba(255,255,255,.04);
+    color:#64748b;
+    font-size:28px;
+    line-height:1;
+    cursor:pointer;
+    transition:
+        transform .22s ease,
+        color .22s ease,
+        background .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+}
+
+.rating-star:hover,
+.rating-star.active{
+    color:#facc15;
+    background:rgba(250,204,21,.08);
+    border-color:rgba(250,204,21,.35);
+    box-shadow:0 0 22px rgba(250,204,21,.12);
+    transform:translateY(-3px);
+}
+
+.rating-star:focus-visible{
+    outline:2px solid #00f7ff;
+    outline-offset:3px;
+}
+
+.rating-selected{
+    min-height:22px;
+    color:#cbd5e1;
+    font-size:15px;
+    font-weight:600;
+}
+
+.rating-feedback{
+    width:100%;
+    min-height:95px;
+    margin-top:20px;
+    padding:14px 16px;
+    resize:vertical;
+    border:1px solid #334155;
+    border-radius:13px;
+    background:#0b1220;
+    color:#f8fafc;
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    line-height:1.6;
+    outline:none;
+    transition:border-color .2s ease, box-shadow .2s ease;
+}
+
+.rating-feedback::placeholder{
+    color:#64748b;
+}
+
+.rating-feedback:focus{
+    border-color:#00f7ff;
+    box-shadow:0 0 0 3px rgba(0,247,255,.08);
+}
+
+.rating-submit{
+    margin:18px 0 0;
+    padding:14px 28px;
+    border:1px solid rgba(0,247,255,.45);
+    border-radius:13px;
+    background:#00f7ff;
+    color:#061018;
+    font-weight:800;
+    cursor:pointer;
+    transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+
+.rating-submit:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 28px rgba(0,247,255,.18);
+}
+
+.rating-submit:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.rating-message{
+    min-height:22px;
+    margin-top:15px;
+    color:#94a3b8;
+    font-size:15px;
+}
+
+.rating-thanks{
+    display:none;
+    animation:ratingReveal .55s ease both;
+}
+
+.rating-thanks.show{
+    display:block;
+}
+
+.rating-thanks-icon{
+    width:62px;
+    height:62px;
+    margin:0 auto 18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(0,247,255,.08);
+    border:1px solid rgba(0,247,255,.25);
+    color:#00f7ff;
+    font-size:28px;
+}
+
+.rating-thanks h3{
+    margin-bottom:8px;
+    color:#f8fafc;
+    font-size:24px;
+}
+
+.rating-thanks p{
+    color:#94a3b8;
+    font-size:16px;
+}
+
+.rating-summary{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:18px;
+    margin-top:30px;
+    color:#cbd5e1;
+    font-size:16px;
+    font-weight:600;
+}
+
+.rating-average{
+    color:#facc15;
+    font-weight:800;
+    font-size:24px;
+}
+
+@keyframes ratingReveal{
+    from{opacity:0; transform:translateY(12px) scale(.98)}
+    to{opacity:1; transform:translateY(0) scale(1)}
+}
+
+@media (max-width:600px){
+    .portfolio-rating-section{
+        padding:0 14px 60px;
+    }
+
+    .portfolio-rating-card{
+        padding:32px 18px;
+        border-radius:20px;
+    }
+
+    .portfolio-rating-title{
+        font-size:28px;
+    }
+
+    .portfolio-rating-subtitle{
+        font-size:15px;
+    }
+
+    .rating-selected,
+    .rating-message,
+    .rating-summary{
+        font-size:14px;
+    }
+
+    .rating-star{
+        width:44px;
+        height:44px;
+        border-radius:12px;
+        font-size:23px;
+    }
+
+    .rating-stars{
+        gap:5px;
+    }
+}
+
+</style>
 </head>
 <body class="splash-active">
 
@@ -1025,6 +1283,293 @@ function showPopup(name, amount) {
 <section class="section fade">
     <h2>THANK YOU FOR VISITING</h2>
 </section>
+<section class="portfolio-rating-section fade" id="portfolio-rating">
+    <div class="portfolio-rating-card">
+
+        <div id="ratingFormView">
+            <div class="portfolio-rating-eyebrow">Your Feedback Matters</div>
+
+            <h2 class="portfolio-rating-title">
+                How would you rate my portfolio?
+            </h2>
+
+            <p class="portfolio-rating-subtitle">
+                If you enjoyed exploring my work, take a second to leave a rating.
+                Your feedback helps me improve the experience.
+            </p>
+
+            <div class="rating-stars"
+                 id="ratingStars"
+                 role="radiogroup"
+                 aria-label="Portfolio rating">
+                <button class="rating-star" type="button" data-rating="1" aria-label="1 star">★</button>
+                <button class="rating-star" type="button" data-rating="2" aria-label="2 stars">★</button>
+                <button class="rating-star" type="button" data-rating="3" aria-label="3 stars">★</button>
+                <button class="rating-star" type="button" data-rating="4" aria-label="4 stars">★</button>
+                <button class="rating-star" type="button" data-rating="5" aria-label="5 stars">★</button>
+            </div>
+
+            <div class="rating-selected" id="ratingSelected">
+                Select a rating
+            </div>
+
+            <textarea
+                id="ratingFeedback"
+                class="rating-feedback"
+                maxlength="500"
+                placeholder="Optional: What did you like, or what could I improve?"></textarea>
+
+            <button id="ratingSubmit"
+                    class="rating-submit"
+                    type="button"
+                    disabled>
+                Submit Rating
+            </button>
+
+            <div class="rating-message" id="ratingMessage"></div>
+        </div>
+
+        <div class="rating-thanks" id="ratingThanks">
+            <div class="rating-thanks-icon">✓</div>
+            <h3>Thank you for your feedback!</h3>
+            <p>Your rating has been recorded. I really appreciate it.</p>
+        </div>
+
+        <div class="rating-summary" id="ratingSummary">
+            <span>
+                <span class="rating-average" id="ratingAverage">—</span>
+                average rating
+            </span>
+            <span>•</span>
+            <span id="ratingCount">0 ratings</span>
+        </div>
+
+    </div>
+</section>
+
+
+
+<script>
+/* =====================================================
+   PORTFOLIO RATING
+===================================================== */
+
+(function initPortfolioRating(){
+
+    const stars =
+        document.querySelectorAll(".rating-star");
+
+    const submit =
+        document.getElementById("ratingSubmit");
+
+    const selected =
+        document.getElementById("ratingSelected");
+
+    const feedback =
+        document.getElementById("ratingFeedback");
+
+    const message =
+        document.getElementById("ratingMessage");
+
+    const formView =
+        document.getElementById("ratingFormView");
+
+    const thanks =
+        document.getElementById("ratingThanks");
+
+    const average =
+        document.getElementById("ratingAverage");
+
+    const count =
+        document.getElementById("ratingCount");
+
+    if (!stars.length || !submit) return;
+
+    let selectedRating = 0;
+
+    function updateStars(value){
+
+        stars.forEach(star => {
+
+            const rating =
+                Number(star.dataset.rating);
+
+            star.classList.toggle(
+                "active",
+                rating <= value
+            );
+
+        });
+
+        selected.textContent =
+            value
+                ? `${value} out of 5 stars`
+                : "Select a rating";
+
+        submit.disabled = !value;
+    }
+
+    stars.forEach(star => {
+
+        star.addEventListener(
+            "mouseenter",
+            () => updateStars(
+                Number(star.dataset.rating)
+            )
+        );
+
+        star.addEventListener(
+            "focus",
+            () => updateStars(
+                Number(star.dataset.rating)
+            )
+        );
+
+        star.addEventListener(
+            "click",
+            () => {
+
+                selectedRating =
+                    Number(star.dataset.rating);
+
+                updateStars(
+                    selectedRating
+                );
+
+            }
+        );
+
+    });
+
+    document
+        .getElementById("ratingStars")
+        .addEventListener(
+            "mouseleave",
+            () => updateStars(
+                selectedRating
+            )
+        );
+
+    function renderSummary(data){
+
+        if (!data) return;
+
+        average.textContent =
+            data.average
+                ? `${data.average} ★`
+                : "—";
+
+        count.textContent =
+            `${data.count || 0} ${
+                data.count === 1
+                    ? "rating"
+                    : "ratings"
+            }`;
+    }
+
+    fetch("/api/portfolio-rating")
+        .then(response => response.json())
+        .then(data => {
+
+            renderSummary(data);
+
+            if (data.hasRated) {
+
+                formView.style.display =
+                    "none";
+
+                thanks.classList.add(
+                    "show"
+                );
+
+            }
+
+        })
+        .catch(() => {});
+
+    submit.addEventListener(
+        "click",
+        async () => {
+
+            if (!selectedRating) return;
+
+            submit.disabled = true;
+
+            message.textContent =
+                "Saving your rating...";
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/portfolio-rating",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+                            body: JSON.stringify({
+                                rating:
+                                    selectedRating,
+                                feedback:
+                                    feedback.value
+                            })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (
+                    response.status === 409 ||
+                    data.alreadyRated
+                ) {
+
+                    formView.style.display =
+                        "none";
+
+                    thanks.classList.add(
+                        "show"
+                    );
+
+                    message.textContent = "";
+
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message ||
+                        "Unable to save rating."
+                    );
+                }
+
+                renderSummary(data);
+
+                formView.style.display =
+                    "none";
+
+                thanks.classList.add(
+                    "show"
+                );
+
+            }
+            catch (error) {
+
+                message.textContent =
+                    error.message ||
+                    "Something went wrong.";
+
+                submit.disabled = false;
+
+            }
+
+        }
+    );
+
+})();
+</script>
 
 <section class="contact-section">
   <h2>Send Me a Message</h2>
