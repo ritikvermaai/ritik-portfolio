@@ -87,3 +87,13 @@ ritik-portfolio/
 ├── .gitignore
 └── README.md
 ```
+
+
+
+## 📄 License
+
+Copyright © 2026 Ritik Verma.
+
+All rights reserved.
+
+This project is a personal portfolio website. The source code is publicly available for viewing and educational reference. Reuse, redistribution, or modification of the website or its assets without permission is not permitted.
