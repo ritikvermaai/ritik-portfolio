@@ -14,7 +14,7 @@ This is the original version of my personal portfolio website.
 
 Visit my portfolio:
 
-👉 **[Live Website](ritikverma.space)**
+👉 **[Live Website] ritikverma.space
 
 
 ## ✨ Features
