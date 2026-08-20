@@ -1,528 +1,186 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Saved Projects</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="box.css">
-
-    <style>
-        body{
-            background:#0f172a;
-            color:white;
-            font-family:'Poppins';
-            padding:100px 20px;
-        }
-
-        h1{
-            text-align:center;
-            margin-bottom:40px;
-            color:#00f7ff;
-        }
-
-        #projectList{
-            max-width:800px;
-            margin:auto;
-        }
-
-        .project-card{
-            background:#111827;
-            padding:20px;
-            margin-bottom:20px;
-            border-radius:12px;
-            border:1px solid rgba(0,247,255,0.1);
-        }
-
-        .project-card h3{
-            margin-bottom:15px;
-        }
-
-        .project-card button{
-            margin-right:10px;
-            padding:8px 15px;
-            border:none;
-            border-radius:6px;
-            cursor:pointer;
-            font-weight:bold;
-        }
-
-        .open-btn{
-            background:#00f7ff;
-            color:black;
-        }
-
-        .download-btn{
-            background:#1e293b;
-            color:white;
-        }
-
-        .delete-btn{
-            background:#ef4444;
-            color:white;
-        }
-
-        
-        .sidebar{
-            position:fixed;
-            top:0;
-            right:-290px;
-            width:200px;
-            height:100%;
-            background:#111827;
-            padding:60px 20px;
-            transition:0.4s ease;
-            z-index:1050;
-        }
-
-        .sidebar a{
-            display:block;
-            color:white;
-            text-decoration:none;
-            margin:20px 0;
-            font-size:18px;
-        }
-
-        .sidebar.active{
-            right:0;
-        }
-        .sidebar a{
-    display:block;
-    color:white;
-    text-decoration:none;
-    margin:20px 0;
-    font-size:18px;
-    transition:0.3s;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>My Projects | Ritik Verma</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="box.css">
+<link rel="stylesheet" href="responsive.css">
+<style>
+:root{--project-accent:#00f7ff;--project-bg:#0f172a;--project-card:#111827;--project-muted:#94a3b8;}
+body{background:var(--project-bg);color:#fff;font-family:'Poppins',sans-serif;padding:105px 20px 60px;min-height:100vh;}
+.projects-page{max-width:1100px;margin:0 auto;}
+.projects-hero{text-align:center;margin:20px auto 45px;max-width:760px;}
+.projects-hero .eyebrow{display:inline-block;color:var(--project-accent);font-size:.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.projects-hero h1{margin:0 0 12px;font-size:clamp(2rem,5vw,3.25rem);line-height:1.1;color:#fff;}
+.projects-hero p{margin:0;color:var(--project-muted);font-size:1rem;line-height:1.8;}
+.projects-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;}
+.project-card{position:relative;display:flex;flex-direction:column;background:linear-gradient(145deg,rgba(17,24,39,.98),rgba(15,23,42,.98));border:1px solid rgba(148,163,184,.14);border-radius:22px;padding:26px;min-height:285px;overflow:hidden;box-shadow:0 18px 45px rgba(0,0,0,.22);transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease;}
+.public-project-gallery{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin:-4px 0 20px;scrollbar-width:thin}.public-project-image{width:100%;height:170px;object-fit:cover;border-radius:15px;display:block;flex:0 0 100%}.public-project-thumb{width:90px;height:62px;object-fit:cover;border-radius:9px;flex:0 0 auto;border:1px solid rgba(148,163,184,.16)}
+.project-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--project-accent),transparent);opacity:.9;}
+.project-card:hover{transform:translateY(-5px);border-color:rgba(0,247,255,.35);box-shadow:0 24px 55px rgba(0,0,0,.3);}
+.project-top{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:18px;}
+.project-icon{width:50px;height:50px;display:grid;place-items:center;border-radius:15px;background:rgba(0,247,255,.09);border:1px solid rgba(0,247,255,.18);font-size:24px;flex:0 0 auto;}
+.project-type{font-size:.72rem;color:var(--project-accent);font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:right;padding-top:5px;}
+.project-card h2{font-size:1.35rem;margin:0 0 10px;color:#fff;}
+.project-card p{color:#cbd5e1;line-height:1.75;font-size:.93rem;margin:0 0 18px;}
+.project-tech{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:4px;}
+.project-tech span{font-size:.75rem;color:#dbeafe;background:#172033;border:1px solid rgba(148,163,184,.14);padding:6px 10px;border-radius:999px;}
+.project-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
+.project-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 16px;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem;border:1px solid rgba(0,247,255,.35);color:#07111f;background:var(--project-accent);transition:.2s ease;}
+.project-link.secondary{background:transparent;color:#e2e8f0;border-color:rgba(148,163,184,.2);}
+.project-link:hover{transform:translateY(-1px);filter:brightness(1.06);}
+.image-view-btn{cursor:pointer;font-family:inherit;}
+.project-image-modal{position:fixed;inset:0;background:rgba(2,6,23,.88);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:28px;z-index:10000;}
+.project-image-modal.active{display:flex;}
+.project-image-modal-content{position:relative;width:min(1100px,96vw);max-height:92vh;background:#0b1220;border:1px solid rgba(148,163,184,.2);border-radius:22px;padding:18px;box-shadow:0 30px 90px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:14px;}
+.project-image-modal-header{display:flex;align-items:center;justify-content:space-between;gap:15px;color:#fff;}
+.project-image-modal-title{font-size:1.1rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.project-image-close{width:42px;height:42px;border-radius:50%;border:1px solid rgba(148,163,184,.2);background:#111827;color:#fff;font-size:25px;cursor:pointer;line-height:1;}
+.project-image-main-wrap{position:relative;display:flex;align-items:center;justify-content:center;min-height:300px;max-height:68vh;background:#020617;border-radius:16px;overflow:hidden;}
+.project-image-main{max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;display:block;}
+.project-image-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:50%;background:rgba(15,23,42,.78);color:#fff;font-size:27px;cursor:pointer;z-index:2;}
+.project-image-nav.prev{left:14px}.project-image-nav.next{right:14px}
+.project-image-thumbs{display:flex;gap:9px;overflow-x:auto;padding:2px 2px 5px;scrollbar-width:thin;}
+.project-image-thumb{width:78px;height:56px;object-fit:cover;border-radius:9px;border:2px solid transparent;opacity:.65;cursor:pointer;flex:0 0 auto;}
+.project-image-thumb.active{border-color:var(--project-accent);opacity:1;}
+.project-image-counter{text-align:center;color:#94a3b8;font-size:.78rem;}
+.projects-note{margin:28px auto 0;text-align:center;color:#64748b;font-size:.82rem;}
+.top-bar{position:fixed;top:0;left:0;width:100%;height:70px;display:flex;justify-content:space-between;align-items:center;padding:0 30px;background:rgba(15,23,42,.96);z-index:3000;box-sizing:border-box;}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:18px;}
+.brand img{width:35px;height:35px;border-radius:50%;border:2px solid #e4e7e7;object-fit:cover;}
+.menu-btn{position:fixed;top:20px;right:20px;font-size:28px;color:#12c3c3;cursor:pointer;background:transparent;border:none;outline:none;padding:0;box-shadow:none;z-index:3100;}
+.sidebar{position:fixed;top:0;right:-290px;width:200px;height:100%;background:#111827;padding:80px 20px 30px;transition:.4s ease;z-index:3050;box-sizing:border-box;}
+.sidebar.active{right:0;}
+.sidebar a{display:block;color:#fff;text-decoration:none;margin:20px 0;font-size:18px;transition:.3s;}
+.sidebar a:hover,.sidebar a.active{color:var(--project-accent);}
+@media(max-width:760px){
+ body{padding:95px 14px 45px;}
+ .projects-hero{margin-bottom:30px;}
+ .projects-hero p{font-size:.9rem;line-height:1.65;}
+ .projects-grid{grid-template-columns:1fr;gap:16px;}
+ .project-card{padding:20px;border-radius:18px;min-height:0;}
+ .project-card h2{font-size:1.18rem;}
+ .project-card p{font-size:.88rem;}
+ .project-actions{display:grid;grid-template-columns:1fr 1fr;}
+ .project-link{width:100%;box-sizing:border-box;}
+ .top-bar{padding:0 16px;}
+ .brand{font-size:16px;}
+ .brand img{width:32px;height:32px;}
 }
-
-.sidebar a:hover{
-    color:#00f7ff;
+@media(max-width:420px){
+ .projects-hero h1{font-size:2rem;}
+ .project-top{gap:10px;}
+ .project-icon{width:44px;height:44px;font-size:21px;}
+ .project-type{font-size:.65rem;}
+ .project-actions{grid-template-columns:1fr;}
 }
-
-.sidebar a.active{
-    color:#00f7ff;
-    font-weight:600;
-}
-
-        /* Top bar */
-.top-bar{
-    position:fixed;
-    top:0;
-    left:-19px;
-    width:100%;
-    height:70px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:0 30px;
-    background:#0f172a;
-    z-index:3000;
-}
-
-.brand{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-weight:600;
-    font-size:18px;
-}
-
-.brand img{
-    width:35px;
-    height:35px;
-    border-radius:50%;
-    border:2px solid #e4e7e7;
-}
-
-.menu-btn{
-position:fixed;
-top:20px;
-right:20px;
-font-size:28px;
-color:#12c3c3;
-cursor:pointer;
-background:transparent;
-border:none;
-outline:none;
-padding:0;
-box-shadow:none;
-}
-body{
-    padding-top:80px;
-}
-    </style>
+</style>
+    <link rel="stylesheet" href="/site-shell.css">
 </head>
 <body>
-
-<!-- Hamburger -->
 <div class="top-bar">
-    <div class="brand">
-        <img src="images/main.png">
-        <span>Ritik Verma</span>
-    </div>
-
-    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  <div class="brand"><img src="images/main.png" alt="Ritik Verma"><span>Ritik Verma</span></div>
+  <button class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span></span><span></span><span></span></button>
+</div>
+<div class="sidebar" id="sidebar" aria-label="Main navigation">
+  <button class="close-btn" type="button" aria-label="Close navigation">×</button>
+  <a href="/" data-nav="/" id="nav-home">Home</a>
+  <a href="/coding.html" data-nav="coding.html" id="nav-coding">Compiler</a>
+  <a href="/projects.html" data-nav="projects.html" id="nav-projects">Projects</a>
+  <a href="/gallery.html" data-nav="gallery.html" id="nav-gallery">Gallery</a>
+  <a href="/attendance.html" data-nav="attendance.html" id="nav-attendance">Attendance Calculator</a>
+  <a href="/resume.html" data-nav="resume.html" id="nav-resume">Resume</a>
+  <a href="/contact.html" data-nav="contact.html" id="nav-contact">Contact us</a>
 </div>
 
-<div class="sidebar" id="sidebar">
-    <a href="/" id="nav-home">Home</a>
-    <a href="/coding.html" id="nav-coding">Compiler</a>
-    <a href="/projects.html" id="nav-projects">Projects</a>
-    <a href="/gallery.html" id="nav-gallery">Gallery</a>
-    <a href="/attendance.html" id="nav-attendance">Attendance Calculator</a>
-    <a href="/resume.html" id="nav-resume">Resume</a>
-    <a href="/contact.html" id="nav-contact us">Contact us</a>
+<main class="projects-page">
+  <section class="projects-hero">
     
-</div>
+    <h1  >My Projects</h1>
+    
+  </section>
 
-<h1>Saved Projects 📂</h1>
+  <section id="projectsGrid" class="projects-grid" aria-label="My projects"></section>
 
-<div id="projectList"></div>
+  
+</main>
 
-
-<!-- =====================================================
-     PROFESSIONAL MODAL
-===================================================== -->
-
-<div
-    id="siteModalOverlay"
-    class="site-modal-overlay"
->
-
-    <div
-        id="siteModal"
-        class="site-modal"
-    >
-
-        <div class="site-modal-header">
-
-            <div class="site-modal-title-area">
-
-                <div
-                    id="siteModalIcon"
-                    class="site-modal-icon"
-                >
-                    🔐
-                </div>
-
-                <div>
-
-                    <h3 id="siteModalTitle">
-                        Enter Information
-                    </h3>
-
-                    <p id="siteModalSubtitle">
-                        Please enter the required information.
-                    </p>
-
-                </div>
-
-            </div>
-
-            <button
-                type="button"
-                id="siteModalClose"
-                class="site-modal-close"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-        <div
-            id="siteModalBody"
-            class="site-modal-body"
-        ></div>
-
-
-        <div
-            id="siteModalActions"
-            class="site-modal-actions"
-        ></div>
-
+<div class="project-image-modal" id="projectImageModal" aria-hidden="true">
+  <div class="project-image-modal-content" role="dialog" aria-modal="true" aria-labelledby="projectImageModalTitle">
+    <div class="project-image-modal-header">
+      <div class="project-image-modal-title" id="projectImageModalTitle">Project Images</div>
+      <button class="project-image-close" id="projectImageClose" type="button" aria-label="Close image viewer">&times;</button>
     </div>
-
+    <div class="project-image-main-wrap">
+      <button class="project-image-nav prev" id="projectImagePrev" type="button" aria-label="Previous image">&#8249;</button>
+      <img class="project-image-main" id="projectImageMain" alt="Project screenshot">
+      <button class="project-image-nav next" id="projectImageNext" type="button" aria-label="Next image">&#8250;</button>
+    </div>
+    <div class="project-image-counter" id="projectImageCounter"></div>
+    <div class="project-image-thumbs" id="projectImageThumbs" aria-label="Project image thumbnails"></div>
+  </div>
 </div>
-
-
 <script src="/script.js"></script>
-
 <script>
-async function loadProjects(){
-    const res = await fetch("/projects");
-    const projects = await res.json();
-
-    const container = document.getElementById("projectList");
-    container.innerHTML = "";
-
-    projects.forEach(p => {
-        const div = document.createElement("div");
-        div.classList.add("project-card");
-
-        div.innerHTML = `
-            <h3>${p.title}</h3>
-            <button class="open-btn" onclick="openProject('${p.title}','${p.language}')">Open</button>
-            <button class="download-btn" onclick="downloadProject('${p.title}','${p.language}')">Download</button>
-            <button class="delete-btn" onclick="deleteProject('${p.title}','${p.language}')">Delete</button>
-        `;
-
-        container.appendChild(div);
-    });
+const fallbackProjects = [
+  {title:"Personal Portfolio Website",category:"Web Development",description:"A full-stack personal portfolio with responsive pages, project showcase, coding tools, contact functionality, visitor tracking and a professional dark interface.",technologies:["HTML","CSS","JavaScript","Node.js","Express"],liveUrl:"/"},
+  {title:"CampusFind — Lost & Found Portal",category:"College Project",description:"A campus-focused platform where students can report lost or found items, browse listings, communicate with other users and manage their posts through an account-based system.",technologies:["React","Node.js","Express","MongoDB","REST API"],liveUrl:"https://campusfind-q7ol.onrender.com"},
+  {title:"C / C++ Online Compiler",category:"Programming Tool",description:"A browser-based coding environment with a VS Code-inspired editor, line numbers, program input, terminal output and an online run workflow for C and C++ programs.",technologies:["C","C++","JavaScript","Node.js"],liveUrl:"/coding.html"},
+  {title:"Student Attendance Calculator",category:"Utility",description:"A responsive attendance utility designed to quickly calculate attendance percentage and understand how future attended or missed classes affect the overall percentage.",technologies:["HTML","CSS","JavaScript","Responsive UI"],liveUrl:"/attendance.html"}
+];
+function escapeHTML(value){ return String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","\'":"&#39;"}[ch])); }
+function projectCard(project){
+  const tech=(project.technologies||[]).map(t=>`<span>${escapeHTML(t)}</span>`).join("");
+  const live=project.liveUrl?`<a class="project-link" href="${escapeHTML(project.liveUrl)}" ${project.liveUrl.startsWith('http')?'target="_blank" rel="noopener noreferrer"':''}>View Project</a>`:"";
+  const github=project.githubUrl?`<a class="project-link secondary" href="${escapeHTML(project.githubUrl)}" target="_blank" rel="noopener noreferrer">GitHub</a>`:"";
+  const images=(Array.isArray(project.images)&&project.images.length?project.images:(project.imageUrl?[project.imageUrl]:[]));
+  const image=images.length?`<div class="public-project-gallery" aria-label="${escapeHTML(project.title)} photos">${images.slice(0,5).map((url,i)=>`<img src="${escapeHTML(url)}" alt="${escapeHTML(project.title)} photo ${i+1}" class="public-project-image">`).join('')}</div>`:'';
+  const imageButton=`<button type="button" class="project-link secondary image-view-btn" data-project-images='${escapeHTML(JSON.stringify(images.slice(0,5)))}' data-project-title="${escapeHTML(project.title)}">View Images</button>`;
+  return `<article class="project-card">${image}<div class="project-top"><div class="project-icon">⌘</div><div class="project-type">${escapeHTML(project.category||'Project')}</div></div><h2>${escapeHTML(project.title)}</h2><p>${escapeHTML(project.description||'')}</p><div class="project-tech">${tech}</div><div class="project-actions">${imageButton}${live}${github}</div></article>`;
 }
-
-function downloadProject(title, lang){
-    window.location.href = `/download/${title}/${lang}`;
+async function loadPortfolioProjects(){
+  const grid=document.getElementById('projectsGrid');
+  try{
+    const res=await fetch('/projects'); const data=await res.json();
+    const projects=Array.isArray(data)&&data.length?data:fallbackProjects;
+    grid.innerHTML=projects.map(projectCard).join('');
+  }catch(e){ grid.innerHTML=fallbackProjects.map(projectCard).join(''); }
 }
-
-function openProject(title, lang){
-    fetch(`/download/${title}/${lang}`)
-    .then(res => res.text())
-    .then(code => {
-        localStorage.setItem("openedCode", code);
-        localStorage.setItem("openedLang", lang);
-        window.location.href = "/coding.html";
-    });
+document.addEventListener('DOMContentLoaded',loadPortfolioProjects);
+const imageModal=document.getElementById('projectImageModal');
+const imageMain=document.getElementById('projectImageMain');
+const imageThumbs=document.getElementById('projectImageThumbs');
+const imageTitle=document.getElementById('projectImageModalTitle');
+const imageCounter=document.getElementById('projectImageCounter');
+let modalImages=[]; let modalIndex=0;
+function renderModalImage(){
+  if(!modalImages.length) return;
+  imageMain.src=modalImages[modalIndex];
+  imageMain.alt=`${imageTitle.textContent} screenshot ${modalIndex+1}`;
+  imageCounter.textContent=`${modalIndex+1} / ${modalImages.length}`;
+  imageThumbs.innerHTML=modalImages.map((url,i)=>`<img class="project-image-thumb${i===modalIndex?' active':''}" src="${escapeHTML(url)}" alt="Thumbnail ${i+1}" data-index="${i}">`).join('');
 }
-
-async function deleteProject(title, lang) {
-
-    const password =
-        await sitePrompt({
-
-            title:
-                "Admin Verification",
-
-            subtitle:
-                "Enter your admin password to delete this project.",
-
-            label:
-                "Admin Password",
-
-            placeholder:
-                "Enter admin password",
-
-            type:
-                "password",
-
-            icon:
-                "🔐"
-
-        });
-
-
-    /* User clicked Cancel */
-
-    if (
-        password === null
-    ) {
-
-        return;
-
-    }
-
-
-    /* Empty password */
-
-    if (
-        !password.trim()
-    ) {
-
-        await siteNotice({
-
-            title:
-                "Password Required",
-
-            subtitle:
-                "Project was not deleted.",
-
-            message:
-                "Please enter your admin password.",
-
-            icon:
-                "⚠️"
-
-        });
-
-        return;
-
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                `/delete/${encodeURIComponent(title)}/${encodeURIComponent(lang)}`,
-                {
-
-                    method:
-                        "DELETE",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            password:
-                                password
-
-                        })
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        /* WRONG PASSWORD */
-
-        if (
-            response.status === 403
-        ) {
-
-            await siteNotice({
-
-                title:
-                    "Incorrect Password",
-
-                subtitle:
-                    "Authorization failed.",
-
-                message:
-                    "The admin password you entered is incorrect.",
-
-                icon:
-                    "🔒",
-
-                type:
-                    "danger"
-
-            });
-
-            return;
-
-        }
-
-
-        /* PROJECT NOT FOUND */
-
-        if (
-            response.status === 404
-        ) {
-
-            await siteNotice({
-
-                title:
-                    "Project Not Found",
-
-                subtitle:
-                    "The project could not be deleted.",
-
-                message:
-                    "This project may have already been deleted.",
-
-                icon:
-                    "⚠️"
-
-            });
-
-            return;
-
-        }
-
-
-        /* OTHER SERVER ERROR */
-
-        if (
-            !response.ok
-        ) {
-
-            await siteNotice({
-
-                title:
-                    "Delete Failed",
-
-                subtitle:
-                    "The project could not be deleted.",
-
-                message:
-                    data.message ||
-                    "Please try again.",
-
-                icon:
-                    "❌",
-
-                type:
-                    "danger"
-
-            });
-
-            return;
-
-        }
-
-
-        /* SUCCESS */
-
-        await siteNotice({
-
-            title:
-                "Project Deleted",
-
-            subtitle:
-                "The project has been removed.",
-
-            message:
-                `"${title}" was deleted successfully.`,
-
-            icon:
-                "🗑️"
-
-        });
-
-
-        loadProjects();
-
-
-    } catch (error) {
-
-        console.error(
-            "Delete project error:",
-            error
-        );
-
-
-        await siteNotice({
-
-            title:
-                "Connection Error",
-
-            subtitle:
-                "Unable to delete the project.",
-
-            message:
-                "Please check your connection and try again.",
-
-            icon:
-                "❌",
-
-            type:
-                "danger"
-
-        });
-
-    }
-
+function openImageModal(images,title){
+  if(!images.length){ alert('No project images have been uploaded yet.'); return; }
+  modalImages=images; modalIndex=0; imageTitle.textContent=title||'Project Images'; renderModalImage();
+  imageModal.classList.add('active'); imageModal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
 }
+function closeImageModal(){ imageModal.classList.remove('active'); imageModal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; imageMain.removeAttribute('src'); }
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('.image-view-btn');
+  if(btn){ let imgs=[]; try{imgs=JSON.parse(btn.dataset.projectImages||'[]');}catch(_){} openImageModal(imgs,btn.dataset.projectTitle); return; }
+  const thumb=e.target.closest('.project-image-thumb');
+  if(thumb){ modalIndex=Number(thumb.dataset.index)||0; renderModalImage(); }
+});
+document.getElementById('projectImageClose').addEventListener('click',closeImageModal);
+document.getElementById('projectImagePrev').addEventListener('click',()=>{if(modalImages.length){modalIndex=(modalIndex-1+modalImages.length)%modalImages.length;renderModalImage();}});
+document.getElementById('projectImageNext').addEventListener('click',()=>{if(modalImages.length){modalIndex=(modalIndex+1)%modalImages.length;renderModalImage();}});
+imageModal.addEventListener('click',e=>{if(e.target===imageModal) closeImageModal();});
+document.addEventListener('keydown',e=>{if(!imageModal.classList.contains('active'))return;if(e.key==='Escape')closeImageModal();if(e.key==='ArrowLeft')document.getElementById('projectImagePrev').click();if(e.key==='ArrowRight')document.getElementById('projectImageNext').click();});
 
-loadProjects();
 </script>
-
+<script src="/site-shell.js"></script>
 </body>
 </html>

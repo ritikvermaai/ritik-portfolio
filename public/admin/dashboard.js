@@ -13,6 +13,9 @@ const menuButton =
 const sidebar =
     document.getElementById("sidebar");
 
+let projectExistingImages = [];
+let projectNewFiles = [];
+
 
 /* ================= AUTH CHECK ================= */
 
@@ -123,7 +126,9 @@ function showSection(sectionName) {
 
    if (sectionName === "website-builder") {
 
-    loadWebsiteBuilder();
+    if (!websiteBuilderLoaded) {
+        loadWebsiteBuilder();
+    }
 
 }
 
@@ -264,198 +269,39 @@ async function loadProjects() {
 /* ================= RENDER PROJECTS ================= */
 
 function renderProjects() {
-
-    const container =
-        document.getElementById(
-            "projectsContent"
-        );
-
-
-    const search =
-        (
-            document.getElementById(
-                "projectSearch"
-            )?.value || ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-    const filter =
-        document.getElementById(
-            "projectFilter"
-        )?.value || "all";
-
-
-    const filtered =
-        adminProjects.filter(
-            project => {
-
-                const matchesSearch =
-                    project.title
-                        .toLowerCase()
-                        .includes(search);
-
-
-                const matchesLanguage =
-                    filter === "all" ||
-                    project.language === filter;
-
-
-                return (
-                    matchesSearch &&
-                    matchesLanguage
-                );
-
-            }
-        );
-
-
+    const container = document.getElementById("projectsContent");
+    const search = (document.getElementById("projectSearch")?.value || "").trim().toLowerCase();
+    const filter = document.getElementById("projectFilter")?.value || "all";
+    const filtered = adminProjects.filter(project => {
+        const haystack = `${project.title || ""} ${project.category || ""} ${project.description || ""} ${(project.technologies || []).join(" ")}`.toLowerCase();
+        return haystack.includes(search) && (filter === "all" || (project.category || "Other") === filter);
+    });
     if (!filtered.length) {
-
-        container.innerHTML = `
-            <div class="empty-projects">
-                No projects found.
-            </div>
-        `;
-
+        container.innerHTML = `<div class="empty-projects"><strong>No portfolio projects found.</strong><br><span>Add your first project using + Add Project.</span></div>`;
         return;
     }
-
-
-    container.innerHTML =
-        filtered.map(
-            project => {
-
-                const language =
-                    project.language === "cpp"
-                        ? "C++"
-                        : "C";
-
-
-                const languageClass =
-                    project.language === "cpp"
-                        ? "language-cpp"
-                        : "language-c";
-
-
-                const date =
-                    project.createdAt
-                        ? new Date(
-                            project.createdAt
-                        ).toLocaleDateString(
-                            "en-IN",
-                            {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric"
-                            }
-                        )
-                        : "Unknown";
-
-
-                return `
-
-                    <div
-                        class="project-card"
-                        data-id="${project._id}"
-                    >
-
-                        <div class="project-top">
-
-                            <div class="project-name">
-
-                                ${escapeHTML(
-                                    project.title
-                                )}
-
-                            </div>
-
-                            <span
-                                class="
-                                    language-badge
-                                    ${languageClass}
-                                "
-                            >
-
-                                ${language}
-
-                            </span>
-
-                        </div>
-
-
-                        <div class="project-date">
-
-                            Created:
-                            ${date}
-
-                        </div>
-
-
-                        <div class="project-actions">
-
-                            <button
-                                class="project-action"
-                                onclick="
-                                    viewProject(
-                                        '${project._id}'
-                                    )
-                                "
-                            >
-                                👁 View
-                            </button>
-
-
-                            <button
-                                class="project-action"
-                                onclick="
-                                    editProject(
-                                        '${project._id}'
-                                    )
-                                "
-                            >
-                                ✏ Edit
-                            </button>
-
-
-                            <button
-                                class="project-action"
-                                onclick="
-                                    downloadProject(
-                                        '${project._id}'
-                                    )
-                                "
-                            >
-                                ⬇ Download
-                            </button>
-
-
-                            <button
-                                class="
-                                    project-action
-                                    delete
-                                "
-                                onclick="
-                                    deleteProject(
-                                        '${project._id}'
-                                    )
-                                "
-                            >
-                                🗑 Delete
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            }
-        ).join("");
-
+    container.innerHTML = filtered.map(project => {
+        const tech = Array.isArray(project.technologies) ? project.technologies : [];
+        const projectImages = Array.isArray(project.images) && project.images.length ? project.images : (project.imageUrl ? [project.imageUrl] : []);
+        const image = projectImages.length ? `<img src="${escapeHTML(projectImages[0])}" alt="${escapeHTML(project.title)}" class="admin-project-image">` : `<div class="admin-project-placeholder">⌘</div>`;
+        const featured = project.featured ? `<span class="featured-badge">★ Featured</span>` : "";
+        return `
+        <article class="project-card portfolio-admin-card" data-id="${project._id}">
+            <div class="admin-project-cover">${image}${featured}</div>
+            <div class="project-top">
+                <div><div class="project-name">${escapeHTML(project.title)}</div><div class="admin-project-category">${escapeHTML(project.category || "Project")}</div></div>
+            </div>
+            <p class="admin-project-description">${escapeHTML(project.description || "No description added.")}</p>
+            <div class="admin-project-tech">${tech.slice(0,6).map(t=>`<span>${escapeHTML(t)}</span>`).join("")}</div>
+            <div class="project-date">Added: ${project.createdAt ? new Date(project.createdAt).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}) : "Unknown"}</div>
+            <div class="project-actions">
+                <button class="project-action" onclick="viewProject('${project._id}')">👁 Preview</button>
+                <button class="project-action" onclick="editProject('${project._id}')">✏ Edit</button>
+                <button class="project-action delete" onclick="deleteProject('${project._id}')">🗑 Delete</button>
+            </div>
+        </article>`;
+    }).join("");
 }
-
 
 /* ================= OPEN ADD MODAL ================= */
 
@@ -480,9 +326,16 @@ function openAddProjectModal() {
     ).value = "";
 
 
-    document.getElementById(
-        "projectFormError"
-    ).textContent = "";
+    document.getElementById("projectFormError").textContent = "";
+    document.getElementById("projectCategory").value = "Web Development";
+    document.getElementById("projectTechnologies").value = "";
+    document.getElementById("projectLiveUrl").value = "";
+    document.getElementById("projectGithubUrl").value = "";
+    projectExistingImages = [];
+    projectNewFiles = [];
+    document.getElementById("projectImages").value = "";
+    document.getElementById("projectFeatured").checked = false;
+    renderProjectImagePreview();
 
 
     document.getElementById(
@@ -556,16 +409,16 @@ async function editProject(id) {
             project.title;
 
 
-        document.getElementById(
-            "projectLanguage"
-        ).value =
-            project.language;
-
-
-        document.getElementById(
-            "projectCode"
-        ).value =
-            project.code;
+        document.getElementById("projectCategory").value = project.category || "Web Development";
+        document.getElementById("projectDescription").value = project.description || "";
+        document.getElementById("projectTechnologies").value = (project.technologies || []).join(", ");
+        document.getElementById("projectLiveUrl").value = project.liveUrl || "";
+        document.getElementById("projectGithubUrl").value = project.githubUrl || "";
+        projectExistingImages = Array.isArray(project.images) && project.images.length ? [...project.images] : (project.imageUrl ? [project.imageUrl] : []);
+        projectNewFiles = [];
+        document.getElementById("projectImages").value = "";
+        document.getElementById("projectFeatured").checked = Boolean(project.featured);
+        renderProjectImagePreview();
 
 
         document.getElementById(
@@ -594,124 +447,27 @@ async function editProject(id) {
 /* ================= VIEW PROJECT ================= */
 
 async function viewProject(id) {
-
     try {
-
-        const response =
-            await fetch(
-                `/admin/projects/${id}`
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!data.success) {
-
-            adminAlert(
-                data.message ||
-                "Failed to load project."
-            );
-
-            return;
-
-        }
-
-
-        const project =
-            data.project;
-
-
-        document.getElementById(
-            "codeModalTitle"
-        ).textContent =
-            project.title;
-
-
-        document.getElementById(
-            "codeModalLanguage"
-        ).textContent =
-            project.language === "cpp"
-                ? "C++"
-                : "C";
-
-
-        document.getElementById(
-            "projectCodeView"
-        ).textContent =
-            project.code;
-
-
-        document.getElementById(
-            "downloadCodeBtn"
-        ).onclick = () => {
-
-            downloadProject(
-                project._id
-            );
-
-        };
-
-
-        document.getElementById(
-            "copyCodeBtn"
-        ).onclick = async () => {
-
-            try {
-
-                await navigator.clipboard
-                    .writeText(
-                        project.code
-                    );
-
-
-                const button =
-                    document.getElementById(
-                        "copyCodeBtn"
-                    );
-
-
-                button.textContent =
-                    "✓ Copied";
-
-
-                setTimeout(() => {
-
-                    button.textContent =
-                        "📋 Copy Code";
-
-                }, 1500);
-
-
-            } catch {
-
-                adminAlert(
-                    "Unable to copy code."
-                );
-
-            }
-
-        };
-
-
-        document.getElementById(
-            "codeModal"
-        ).classList.add("show");
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        adminAlert(
-            "Failed to load project."
-        );
-
-    }
-
+        const response = await fetch(`/admin/projects/${id}`);
+        const data = await response.json();
+        if (!data.success) return adminAlert(data.message || "Failed to load project.");
+        const project = data.project;
+        document.getElementById("codeModalTitle").textContent = project.title;
+        document.getElementById("codeModalLanguage").textContent = project.category || "Project Details";
+        const tech = (project.technologies || []).map(t => `<span>${escapeHTML(t)}</span>`).join("");
+        const previewImages = Array.isArray(project.images) && project.images.length ? project.images : (project.imageUrl ? [project.imageUrl] : []);
+        const previewGallery = previewImages.length ? `<div class="project-preview-gallery">${previewImages.map((url, i) => `<img src="${escapeHTML(url)}" class="project-preview-image" alt="${escapeHTML(project.title)} photo ${i+1}">`).join("")}</div>` : "";
+        document.getElementById("projectPreviewContent").innerHTML = `
+            ${previewGallery}
+            <p class="project-preview-description">${escapeHTML(project.description || "No description available.")}</p>
+            <div class="project-preview-tech">${tech}</div>
+            <div class="project-preview-links">
+                ${project.liveUrl ? `<a href="${escapeHTML(project.liveUrl)}" target="_blank" rel="noopener noreferrer" class="primary-btn">🌐 Live Project</a>` : ""}
+                ${project.githubUrl ? `<a href="${escapeHTML(project.githubUrl)}" target="_blank" rel="noopener noreferrer" class="secondary-btn">⌘ GitHub</a>` : ""}
+            </div>`;
+        document.getElementById("codeModal").classList.add("show");
+    } catch (error) { console.error(error); adminAlert("Failed to load project."); }
 }
-
 
 /* ================= DOWNLOAD ================= */
 
@@ -911,146 +667,94 @@ async function deleteProject(id) {
 }
 
 
-/* ================= SAVE PROJECT ================= */
+/* ================= PROJECT PHOTO UPLOADER ================= */
 
-document
-    .getElementById("projectForm")
-    .addEventListener(
-        "submit",
-        async event => {
+function renderProjectImagePreview(){
+    const box = document.getElementById("projectImagePreview");
+    if (!box) return;
+    const existing = projectExistingImages.map((url, index) => `
+        <div class="project-image-thumb">
+            <img src="${escapeHTML(url)}" alt="Project photo ${index + 1}">
+            <button type="button" title="Remove photo" onclick="removeExistingProjectImage(${index})">×</button>
+        </div>`).join("");
+    const fresh = projectNewFiles.map((file, index) => {
+        const src = URL.createObjectURL(file);
+        return `<div class="project-image-thumb project-image-new"><img src="${src}" alt="New project photo ${index + 1}"><button type="button" title="Remove photo" onclick="removeNewProjectImage(${index})">×</button></div>`;
+    }).join("");
+    box.innerHTML = existing + fresh;
+    const count = projectExistingImages.length + projectNewFiles.length;
+    const hint = document.getElementById("projectUploadHint");
+    if (hint) hint.textContent = `${count}/5 photos selected${count >= 5 ? " — maximum reached" : ""}`;
+}
 
-            event.preventDefault();
+function removeExistingProjectImage(index){
+    projectExistingImages.splice(index,1);
+    renderProjectImagePreview();
+}
 
+function removeNewProjectImage(index){
+    projectNewFiles.splice(index,1);
+    renderProjectImagePreview();
+}
 
-            const title =
-                document.getElementById(
-                    "projectTitle"
-                ).value.trim();
+const chooseProjectImages = document.getElementById("chooseProjectImages");
+const projectImagesInput = document.getElementById("projectImages");
+if (chooseProjectImages && projectImagesInput){
+    chooseProjectImages.addEventListener("click", () => projectImagesInput.click());
+    projectImagesInput.addEventListener("change", () => {
+        const incoming = Array.from(projectImagesInput.files || []);
+        const allowed = 5 - projectExistingImages.length - projectNewFiles.length;
+        const valid = incoming.filter(file => file.type.startsWith("image/"));
+        projectNewFiles = projectNewFiles.concat(valid.slice(0, Math.max(0, allowed)));
+        if (valid.length > Math.max(0, allowed)) adminAlert("You can upload a maximum of 5 photos per project.");
+        projectImagesInput.value = "";
+        renderProjectImagePreview();
+    });
+}
 
+async function uploadProjectImages(){
+    if (!projectNewFiles.length) return [];
+    const formData = new FormData();
+    projectNewFiles.forEach(file => formData.append("images", file));
+    const response = await fetch("/admin/projects/upload-images", { method:"POST", body:formData });
+    const data = await response.json();
+    if (!response.ok || !data.success) throw new Error(data.message || "Project image upload failed.");
+    return Array.isArray(data.images) ? data.images : [];
+}
 
-            const language =
-                document.getElementById(
-                    "projectLanguage"
-                ).value;
-
-
-            const code =
-                document.getElementById(
-                    "projectCode"
-                ).value;
-
-
-            const errorBox =
-                document.getElementById(
-                    "projectFormError"
-                );
-
-
-            errorBox.textContent = "";
-
-
-            if (!title || !code) {
-
-                errorBox.textContent =
-                    "Title and code are required.";
-
-                return;
-
-            }
-
-
-            const id =
-                document.getElementById(
-                    "projectId"
-                ).value;
-
-
-            const isEdit =
-                Boolean(id);
-
-
-            try {
-
-                const response =
-                    await fetch(
-
-                        isEdit
-                            ? `/admin/projects/${id}`
-                            : "/admin/projects",
-
-                        {
-
-                            method:
-                                isEdit
-                                    ? "PUT"
-                                    : "POST",
-
-                            headers: {
-
-                                "Content-Type":
-                                    "application/json"
-
-                            },
-
-                            body:
-                                JSON.stringify({
-
-                                    title,
-
-                                    code,
-
-                                    language
-
-                                })
-
-                        }
-
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!response.ok ||
-                    !data.success) {
-
-                    errorBox.textContent =
-                        data.message ||
-                        "Failed to save project.";
-
-                    return;
-
-                }
-
-
-                closeProjectModal();
-
-
-                await loadProjects();
-
-
-                adminAlert(
-                    isEdit
-                        ? "Project updated successfully."
-                        : "Project added successfully."
-                );
-
-
-            } catch (error) {
-
-                console.error(error);
-
-                errorBox.textContent =
-                    "Server error. Please try again.";
-
-            }
-
-        }
-    );
-
-
-/* ================= SEARCH ================= */
+/* ================= SAVE PORTFOLIO PROJECT ================= */
+document.getElementById("projectForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    const title = document.getElementById("projectTitle").value.trim();
+    const category = document.getElementById("projectCategory").value;
+    const description = document.getElementById("projectDescription").value.trim();
+    const technologies = document.getElementById("projectTechnologies").value.split(",").map(v=>v.trim()).filter(Boolean);
+    const liveUrl = document.getElementById("projectLiveUrl").value.trim();
+    const githubUrl = document.getElementById("projectGithubUrl").value.trim();
+    const featured = document.getElementById("projectFeatured").checked;
+    const errorBox = document.getElementById("projectFormError");
+    errorBox.textContent = "";
+    if (!title || !description) { errorBox.textContent = "Project title and description are required."; return; }
+    if (projectExistingImages.length + projectNewFiles.length > 5) { errorBox.textContent = "You can keep a maximum of 5 project photos."; return; }
+    const id = document.getElementById("projectId").value;
+    const isEdit = Boolean(id);
+    try {
+        const uploadedImages = await uploadProjectImages();
+        const images = [...projectExistingImages, ...uploadedImages].slice(0,5);
+        const response = await fetch(isEdit ? `/admin/projects/${id}` : "/admin/projects", {
+            method: isEdit ? "PUT" : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, category, description, technologies, liveUrl, githubUrl, images, imageUrl: images[0] || "", featured })
+        });
+        const data = await response.json();
+        if (!response.ok || !data.success) { errorBox.textContent = data.message || "Failed to save project."; return; }
+        closeProjectModal();
+        projectExistingImages = [];
+        projectNewFiles = [];
+        await loadProjects();
+        adminAlert(isEdit ? "Project updated successfully." : "Project added successfully.");
+    } catch (error) { console.error(error); errorBox.textContent = error.message || "Network error. Please try again."; }
+});
 
 document
     .getElementById("projectSearch")
@@ -3893,13 +3597,14 @@ if (saveVisitorCountBtn) {
 
 async function saveWebsiteBuilder() {
 
-    if (!websiteContent) {
+    if (!websiteContent || !websiteBuilderLoaded) {
 
-        adminAlert(
-            "Website content has not loaded yet."
-        );
+        await loadWebsiteBuilder();
 
-        return;
+        if (!websiteContent || !websiteBuilderLoaded) {
+            adminAlert("Website Builder could not load your saved content. Please check your admin connection and try again.");
+            return;
+        }
 
     }
 
@@ -4280,20 +3985,12 @@ async function saveWebsiteBuilder() {
             "✅ Website updated successfully!";
 
         await appNotice({
-
-    title:
-        "Website Updated",
-
-    subtitle:
-        "Your website changes have been saved.",
-
-    message:
-        "Website changes saved successfully!",
-
-    icon:
-        "✅"
-
-});
+            title: "Website Updated",
+            subtitle: "Your website changes have been saved.",
+            message: "Website changes saved successfully!",
+            icon: "✅",
+            type: "primary"
+        });
 
 
     } catch (error) {
@@ -4320,26 +4017,22 @@ async function saveWebsiteBuilder() {
 }
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+function initWebsiteBuilderControls() {
 
-        const saveButton =
-            document.getElementById(
-                "saveWebsiteBuilderBtn"
-            );
+    const saveButton = document.getElementById("saveWebsiteBuilderBtn");
 
-        if (saveButton) {
-
-            saveButton.addEventListener(
-                "click",
-                saveWebsiteBuilder
-            );
-
-        }
-
+    if (saveButton && !saveButton.dataset.bound) {
+        saveButton.dataset.bound = "true";
+        saveButton.addEventListener("click", saveWebsiteBuilder);
     }
-);
+
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initWebsiteBuilderControls);
+} else {
+    initWebsiteBuilderControls();
+}
 
 
 /* =====================================================
@@ -4347,56 +4040,61 @@ document.addEventListener(
 ===================================================== */
 
 let websiteContent = null;
+let websiteBuilderLoaded = false;
 
 
 /* ================= LOAD WEBSITE BUILDER ================= */
 
 async function loadWebsiteBuilder() {
 
+    const message =
+        document.getElementById("websiteBuilderMessage");
+
     try {
 
-        const response =
-            await fetch(
-                "/admin/api/portfolio-content"
-            );
+        if (message) message.textContent = "Loading website content...";
 
-        const data =
-            await response.json();
+        const response = await fetch("/admin/api/portfolio-content", {
+            method: "GET",
+            credentials: "same-origin",
+            cache: "no-store"
+        });
 
-        if (
-            !response.ok ||
-            !data.success
-        ) {
-
-            throw new Error(
-                data.message ||
-                "Failed to load website."
-            );
-
+        if (response.status === 401) {
+            window.location.href = "/admin/admin.html";
+            return;
         }
 
-        websiteContent =
-            data.content;
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Failed to load website content.");
+        }
+
+        websiteContent = data.content || {};
+
+        // Always provide safe defaults so the builder works even on an empty/new database.
+        websiteContent.hero ||= { name: "", typing: "", tagline: "" };
+        websiteContent.education ||= [];
+        websiteContent.counters ||= {};
+        websiteContent.skills ||= [];
+        websiteContent.progressSkills ||= [];
+        websiteContent.about ||= { title: "", text: "" };
+        websiteContent.contact ||= {};
+        websiteContent.donation ||= {};
+        websiteContent.thankYou ||= { title: "" };
 
         fillWebsiteBuilder();
+        websiteBuilderLoaded = true;
+
+        if (message) message.textContent = "Website content loaded.";
 
     } catch (error) {
 
-        console.error(
-            "Website Builder Load Error:",
-            error
-        );
-
-        const message =
-            document.getElementById(
-                "websiteBuilderMessage"
-            );
+        console.error("Website Builder Load Error:", error);
 
         if (message) {
-
-            message.textContent =
-                "❌ " + error.message;
-
+            message.textContent = "❌ " + (error.message || "Unable to load website builder.");
         }
 
     }
@@ -5252,6 +4950,7 @@ function escapeHTML(value) {
     if (loggedIn) {
 
         await loadDashboardData();
+        initWebsiteBuilderControls();
 
     }
 

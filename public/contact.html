@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>CONTACT US</title>
     <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="/site-shell.css">
 </head>
 <body>
 <style> /* Hamburger */
@@ -150,18 +153,18 @@ box-shadow:none;
         <span>Ritik Verma</span>
     </div>
 
-    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <button class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span></span><span></span><span></span></button>
 </div>
 
-<div class="sidebar" id="sidebar">
-    <a href="/" id="nav-home">Home</a>
-    <a href="/coding.html" id="nav-coding">Compiler</a>
-    <a href="/projects.html" id="nav-projects">Projects</a>
-    <a href="/gallery.html" id="nav-gallery">Gallery</a>
-    <a href="/attendance.html" id="nav-attendance">Attendance Calculator</a>
-    <a href="/resume.html" id="nav-resume">Resume</a>
-    <a href="/contact.html" id="nav-contact">Contact us</a>
-    
+<div class="sidebar" id="sidebar" aria-label="Main navigation">
+  <button class="close-btn" type="button" aria-label="Close navigation">×</button>
+  <a href="/" data-nav="/" id="nav-home">Home</a>
+  <a href="/coding.html" data-nav="coding.html" id="nav-coding">Compiler</a>
+  <a href="/projects.html" data-nav="projects.html" id="nav-projects">Projects</a>
+  <a href="/gallery.html" data-nav="gallery.html" id="nav-gallery">Gallery</a>
+  <a href="/attendance.html" data-nav="attendance.html" id="nav-attendance">Attendance Calculator</a>
+  <a href="/resume.html" data-nav="resume.html" id="nav-resume">Resume</a>
+  <a href="/contact.html" data-nav="contact.html" id="nav-contact">Contact us</a>
 </div>
 <body>
     <h1>🚀 Your's Ritik Verma  🚀</h1>
@@ -177,6 +180,7 @@ box-shadow:none;
         <a class="btn" href="https://www.instagram.com/its__ritikverma/" target="_blank">📸  Instagram</a>
     </div>
 
+<script src="/site-shell.js"></script>
 </body>
 
 <script src="script.js"></script>

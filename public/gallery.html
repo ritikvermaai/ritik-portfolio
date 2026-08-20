@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Gallery</title>
 
     <style>
@@ -184,6 +185,8 @@ body {
     transform: scale(1.08);
 }
     </style>
+<link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="/site-shell.css">
 </head>
 <!-- TOP BAR -->
 <div class="top-bar">
@@ -192,22 +195,20 @@ body {
         <span>Ritik Verma</span>
     </div>
 
-    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    <button class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span></span><span></span><span></span></button>
 </div>
 
 <!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-    <a href="/" id="nav-home">Home</a>
-    <a href="/coding.html" id="nav-coding">Compiler</a>
-    <a href="/projects.html" id="nav-projects">Projects</a>
-    <a href="/gallery.html" id="nav-gallery">Gallery</a>
-    <a href="/attendance.html" id="nav-attendance">Attendance Calculator</a>
-    <a href="/resume.html" id="nav-resume">Resume</a>
-    <a href="/contact.html" id="nav-contact">Contact us</a>
-    
+<div class="sidebar" id="sidebar" aria-label="Main navigation">
+  <button class="close-btn" type="button" aria-label="Close navigation">×</button>
+  <a href="/" data-nav="/" id="nav-home">Home</a>
+  <a href="/coding.html" data-nav="coding.html" id="nav-coding">Compiler</a>
+  <a href="/projects.html" data-nav="projects.html" id="nav-projects">Projects</a>
+  <a href="/gallery.html" data-nav="gallery.html" id="nav-gallery">Gallery</a>
+  <a href="/attendance.html" data-nav="attendance.html" id="nav-attendance">Attendance Calculator</a>
+  <a href="/resume.html" data-nav="resume.html" id="nav-resume">Resume</a>
+  <a href="/contact.html" data-nav="contact.html" id="nav-contact">Contact us</a>
 </div>
-
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 <body>
 
 <h1>My Gallery</h1>
@@ -349,16 +350,8 @@ window.addEventListener(
     }
 );
 
-function toggleMenu() {
-    document
-        .getElementById("sidebar")
-        .classList.toggle("show");
-
-    document
-        .getElementById("overlay")
-        .classList.toggle("show");
-}
 </script>
 
+<script src="/site-shell.js"></script>
 </body>
 </html>

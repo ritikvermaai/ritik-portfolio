@@ -406,7 +406,7 @@
                 <h2>Project Manager</h2>
 
                 <p>
-                    Add, edit, view, download and delete your projects.
+                    Manage the projects shown on your public portfolio. Add, edit, preview and delete projects anytime.
                 </p>
 
             </div>
@@ -439,19 +439,11 @@
 
 
         <select id="projectFilter">
-
-            <option value="all">
-                All Languages
-            </option>
-
-            <option value="c">
-                C
-            </option>
-
-            <option value="cpp">
-                C++
-            </option>
-
+            <option value="all">All Categories</option>
+            <option value="Web Development">Web Development</option>
+            <option value="College Project">College Project</option>
+            <option value="Programming Tool">Programming Tool</option>
+            <option value="Utility">Utility</option>
         </select>
 
     </div>
@@ -514,48 +506,54 @@
             >
 
 
-            <label>
-                Project Title
+            <div class="project-form-grid">
+                <div>
+                    <label>Project Title</label>
+                    <input type="text" id="projectTitle" placeholder="CampusFind — Lost & Found Portal" required>
+                </div>
+                <div>
+                    <label>Category</label>
+                    <select id="projectCategory">
+                        <option>Web Development</option>
+                        <option>College Project</option>
+                        <option>Programming Tool</option>
+                        <option>Utility</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>Description</label>
+            <textarea id="projectDescription" placeholder="Write a short professional description of the project..." required></textarea>
+
+            <label>Technologies <span class="field-hint">comma separated</span></label>
+            <input type="text" id="projectTechnologies" placeholder="React, Node.js, Express, MongoDB">
+
+            <div class="project-form-grid">
+                <div>
+                    <label>Live Project URL</label>
+                    <input type="url" id="projectLiveUrl" placeholder="https://example.com">
+                </div>
+                <div>
+                    <label>GitHub URL</label>
+                    <input type="url" id="projectGithubUrl" placeholder="https://github.com/username/project">
+                </div>
+            </div>
+
+            <div class="project-image-upload-block">
+                <label>Project Photos <span class="field-hint">up to 5 photos</span></label>
+                <div class="project-upload-box" id="projectUploadBox">
+                    <input type="file" id="projectImages" accept="image/*" multiple hidden>
+                    <button type="button" class="secondary-btn" id="chooseProjectImages">📷 Choose Photos</button>
+                    <span id="projectUploadHint">Add up to 5 project screenshots or photos.</span>
+                </div>
+                <div id="projectImagePreview" class="project-image-preview"></div>
+            </div>
+
+            <label class="project-check">
+                <input type="checkbox" id="projectFeatured">
+                <span>Feature this project at the top of My Projects</span>
             </label>
-
-            <input
-                type="text"
-                id="projectTitle"
-                placeholder="Example: Calculator"
-                required
-            >
-
-
-            <label>
-                Language
-            </label>
-
-            <select
-                id="projectLanguage"
-                required
-            >
-
-                <option value="c">
-                    C
-                </option>
-
-                <option value="cpp">
-                    C++
-                </option>
-
-            </select>
-
-
-            <label>
-                Source Code
-            </label>
-
-            <textarea
-                id="projectCode"
-                placeholder="Paste your C/C++ code here..."
-                spellcheck="false"
-                required
-            ></textarea>
 
 
             <div
@@ -608,7 +606,7 @@
                 </h2>
 
                 <p id="codeModalLanguage">
-                    C
+                    Project Details
                 </p>
 
             </div>
@@ -623,29 +621,7 @@
         </div>
 
 
-        <pre
-            id="projectCodeView"
-            class="code-view"
-        ></pre>
-
-
-        <div class="modal-actions">
-
-            <button
-                class="secondary-btn"
-                id="copyCodeBtn"
-            >
-                📋 Copy Code
-            </button>
-
-            <button
-                class="primary-btn"
-                id="downloadCodeBtn"
-            >
-                ⬇ Download
-            </button>
-
-        </div>
+        <div id="projectPreviewContent" class="project-preview-content"></div>
 
     </div>
 

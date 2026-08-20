@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Ritik Verma</title>
     <link rel="stylesheet" href="box.css">
     <div id="progress-bar"></div>
@@ -878,8 +879,15 @@ body.splash-active{overflow:hidden!important;}
 }
 
 </style>
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="/site-shell.css">
 </head>
+<style id="portfolio-toast-style">
+#portfolioToast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,18px);z-index:12000;max-width:min(92vw,520px);padding:13px 18px;border:1px solid rgba(0,247,255,.25);border-radius:12px;background:rgba(15,23,42,.96);color:#e2e8f0;box-shadow:0 14px 40px rgba(0,0,0,.35);font-size:14px;font-weight:600;line-height:1.4;opacity:0;visibility:hidden;transition:opacity .22s ease,transform .22s ease,visibility .22s ease;text-align:center;backdrop-filter:blur(12px)}
+#portfolioToast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+</style>
 <body class="splash-active">
+<div id="portfolioToast" role="status" aria-live="polite"></div>
 
 <div id="welcomeSplash" aria-label="Welcome to Ritik Verma portfolio" role="status">
     <div class="splash-grid" aria-hidden="true"></div>
@@ -905,25 +913,19 @@ body.splash-active{overflow:hidden!important;}
         <span>Ritik Verma</span>
     </div>
 
-    <button class="menu-btn" onclick="toggleMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
-</button>
+    <button class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span></span><span></span><span></span></button>
 </div>
 
-<div class="sidebar" id="sidebar">
-    <a href="/" id="nav-home">Home</a>
-    <a href="/coding.html" id="nav-coding">Compiler</a>
-    <a href="/projects.html" id="nav-projects">Projects</a>
-    <a href="/gallery.html" id="nav-gallery">Gallery</a>
-    <a href="/attendance.html" id="nav-attendance">Attendance Calculator</a>
-    <a href="/resume.html" id="nav-resume">Resume</a>
-    <a href="/contact.html" id="nav-contact us">Contact us</a>
+<div class="sidebar" id="sidebar" aria-label="Main navigation">
+  <button class="close-btn" type="button" aria-label="Close navigation">×</button>
+  <a href="/" data-nav="/" id="nav-home">Home</a>
+  <a href="/coding.html" data-nav="coding.html" id="nav-coding">Compiler</a>
+  <a href="/projects.html" data-nav="projects.html" id="nav-projects">Projects</a>
+  <a href="/gallery.html" data-nav="gallery.html" id="nav-gallery">Gallery</a>
+  <a href="/attendance.html" data-nav="attendance.html" id="nav-attendance">Attendance Calculator</a>
+  <a href="/resume.html" data-nav="resume.html" id="nav-resume">Resume</a>
+  <a href="/contact.html" data-nav="contact.html" id="nav-contact">Contact us</a>
 </div>
-
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-
 <!-- HERO SECTION -->
 <div class="container">
     <img src="" class="profile-pic">
@@ -974,11 +976,16 @@ href="https://in.linkedin.com/in/vermaritik?trk=profile-badge">
 </div>
 
 <!-- EDUCATION SECTION -->
-<section class="section fade">
-    <h2>Education</h2>
-    <p>B.Tech Computer Science Engineering</p>
-    <p>PSIT Kanpur</p>
-    <p>1st Year Student</p>
+<section class="section fade education-section" id="education">
+    <div class="education-card">
+        <div class="education-icon">🎓</div>
+        <div class="education-content">
+            <h2>Education</h2>
+            <p class="education-title">B.Tech Computer Science Engineering</p>
+            <p class="education-institute">PSIT Kanpur</p>
+            <p class="education-status">1st Year Student</p>
+        </div>
+    </div>
 </section>
 
 
@@ -1058,7 +1065,9 @@ href="https://in.linkedin.com/in/vermaritik?trk=profile-badge">
 
 <section class="donation-section">
 
-    <h2>Support My Work 💙</h2>
+    <div class="support-grid">
+    <div class="support-panel">
+        <h2>Support My Work 💙</h2>
 
     <input type="text" id="donorName" placeholder="Your Name" required>
     <input type="email" id="donorEmail" placeholder="Your Email" required>
@@ -1073,16 +1082,22 @@ href="https://in.linkedin.com/in/vermaritik?trk=profile-badge">
     <input type="number" id="customAmount" placeholder="Enter custom amount">
     <button onclick="payCustom()">Donate Now</button>
 
-    <div class="stats">
-        <h3>Total Raised: ₹<span id="totalAmount">0</span></h3>
-        <h3>Total Supporters: <span id="totalDonors">0</span></h3>
     </div>
-
     <div class="leaderboard">
+    <div class="support-stats">
+        <div class="support-stat">
+            <span class="support-stat-label">Total Raised</span>
+            <strong>₹<span id="totalAmount">0</span></strong>
+        </div>
+        <div class="support-stat">
+            <span class="support-stat-label">Total Supporters</span>
+            <strong><span id="totalDonors">0</span></strong>
+        </div>
+    </div>
     <h2>🏆 Top Supporters</h2>
     <ul id="leaderboardList"></ul>
+    </div>
 </div>
-
 <div class="milestone-container">
     <h2>🎯 Support Goal</h2>
 
@@ -1103,23 +1118,34 @@ href="https://in.linkedin.com/in/vermaritik?trk=profile-badge">
 
 <script>
 
+let portfolioToastTimer;
+function showPortfolioToast(message) {
+    const toast = document.getElementById("portfolioToast");
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(portfolioToastTimer);
+    portfolioToastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+}
+
 async function startPayment(amount) {
 
     const name = document.getElementById("donorName").value;
     const email = document.getElementById("donorEmail").value;
 
     if (!name || !email) {
-        alert("Please enter name and email");
+        showPortfolioToast("Please enter your name and email.");
         return;
     }
 
-    const orderResponse = await fetch("/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount })
-    });
-
-    const order = await orderResponse.json();
+    try {
+        const orderResponse = await fetch("/create-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount })
+        });
+        if (!orderResponse.ok) throw new Error("Order creation failed");
+        const order = await orderResponse.json();
 
     const options = {
         key: "rzp_live_SMRtlqLQXtRgwj",
@@ -1154,13 +1180,17 @@ async function startPayment(amount) {
     loadLeaderboard();
 
 } else {
-    alert("Payment Verification Failed ❌");
+    showPortfolioToast("Payment verification failed. Please try again.");
 }
         }
     };
 
-    const rzp = new Razorpay(options);
-    rzp.open();
+        const rzp = new Razorpay(options);
+        rzp.open();
+    } catch (error) {
+        console.error("Payment start failed:", error);
+        showPortfolioToast("Unable to start payment right now. Please try again.");
+    }
 }
 
 function payCustom() {
@@ -1168,7 +1198,7 @@ function payCustom() {
     if (amount > 0) {
         startPayment(amount);
     } else {
-        alert("Enter valid amount");
+        showPortfolioToast("Please enter a valid donation amount.");
     }
 }
 
@@ -1739,11 +1769,9 @@ const diffYears = (now - startDate) / (1000 * 60 * 60 * 24 * 365);
 
 document.getElementById("yearsCounter").innerText = diffYears.toFixed(1) + "+";
 
-fetch("/projects")
-.then(res => res.json())
-.then(data => {
-    document.getElementById("projectCounter").innerText = data.length + "+";
-});
+// Keep the portfolio project counter independent from compiler-saved projects.
+// Update this number whenever a new project is added to projects.html.
+document.getElementById("projectCounter").innerText = "4+";
 let totalTime = localStorage.getItem("siteTime") || 0;
 
 setInterval(() => {
@@ -1921,9 +1949,14 @@ if (content.profileImage) {
                 }
 
 
-                educationSection
-                    .querySelectorAll("p")
-                    .forEach(p => p.remove());
+                const educationContent =
+                    educationSection.querySelector(".education-content");
+
+                if (educationContent) {
+                    educationContent
+                        .querySelectorAll("p")
+                        .forEach(p => p.remove());
+                }
 
 
                 content.education
@@ -1954,14 +1987,11 @@ if (content.profileImage) {
                             item.status || "";
 
 
-                        educationSection
-                            .appendChild(title);
-
-                        educationSection
-                            .appendChild(institute);
-
-                        educationSection
-                            .appendChild(status);
+                        if (educationContent) {
+                            educationContent.appendChild(title);
+                            educationContent.appendChild(institute);
+                            educationContent.appendChild(status);
+                        }
 
                     });
 
@@ -2766,5 +2796,6 @@ document.getElementById("contact-form").addEventListener("submit", async functio
 <script src="script.js"></script>
 
 
+<script src="/site-shell.js"></script>
 </body>
 </html>

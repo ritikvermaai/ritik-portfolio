@@ -37,6 +37,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
 
         console.log("MongoDB Connected");
+        seedPortfolioProjects();
 
     })
 
@@ -56,9 +57,9 @@ mongoose.connect(process.env.MONGODB_URI)
 
 app.use(cors());
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "12mb" }));
 
-app.use(express.json());
+app.use(express.json({ limit: "12mb" }));
 
 
 
@@ -125,24 +126,23 @@ app.use(
 
 /* ================= PROJECT ================= */
 
-const projectSchema =
-    new mongoose.Schema({
-
-        title: String,
-
-        code: String,
-
-        language: String,
-
-        createdAt: {
-
-            type: Date,
-
-            default: Date.now
-
-        }
-
-    });
+const projectSchema = new mongoose.Schema({
+    title: { type: String, required: true, trim: true },
+    category: { type: String, default: "Web Development", trim: true },
+    description: { type: String, default: "", trim: true },
+    technologies: { type: [String], default: [] },
+    liveUrl: { type: String, default: "", trim: true },
+    githubUrl: { type: String, default: "", trim: true },
+    imageUrl: { type: String, default: "", trim: true },
+    images: { type: [String], default: [] },
+    featured: { type: Boolean, default: false },
+    portfolioProject: { type: Boolean, default: false },
+    // Kept for backward compatibility with older compiler projects.
+    code: { type: String, default: "" },
+    language: { type: String, default: "" },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
+});
 
 
 const Project =
@@ -150,6 +150,25 @@ const Project =
         "Project",
         projectSchema
     );
+
+const portfolioSeedSchema = new mongoose.Schema({ key:{type:String,unique:true} });
+const PortfolioSeed = mongoose.model("PortfolioSeed", portfolioSeedSchema);
+
+async function seedPortfolioProjects(){
+    try {
+        const marker = await PortfolioSeed.findOne({key:"default-portfolio-projects-v1"});
+        if (marker) return;
+        const defaults = [
+            {title:"Personal Portfolio Website",category:"Web Development",description:"A full-stack personal portfolio with responsive pages, project showcase, coding tools, contact functionality, visitor tracking and a professional dark interface.",technologies:["HTML","CSS","JavaScript","Node.js","Express"],liveUrl:"/",featured:true,portfolioProject:true},
+            {title:"CampusFind — Lost & Found Portal",category:"College Project",description:"A campus-focused platform where students can report lost or found items, browse listings, communicate with other users and manage their posts through an account-based system.",technologies:["React","Node.js","Express","MongoDB","REST API"],liveUrl:"https://campusfind-q7ol.onrender.com",featured:true,portfolioProject:true},
+            {title:"C / C++ Online Compiler",category:"Programming Tool",description:"A browser-based coding environment with a VS Code-inspired editor, line numbers, program input, terminal output and an online run workflow for C and C++ programs.",technologies:["C","C++","JavaScript","Node.js"],liveUrl:"/coding.html",portfolioProject:true},
+            {title:"Student Attendance Calculator",category:"Utility",description:"A responsive attendance utility designed to quickly calculate attendance percentage and understand how future attended or missed classes affect the overall percentage.",technologies:["HTML","CSS","JavaScript","Responsive UI"],liveUrl:"/attendance.html",portfolioProject:true}
+        ];
+        if (await Project.countDocuments({portfolioProject:true}) === 0) await Project.insertMany(defaults);
+        await PortfolioSeed.create({key:"default-portfolio-projects-v1"});
+        console.log("Portfolio projects initialized");
+    } catch(error) { console.error("Portfolio project seed error:", error); }
+}
 
 /* ================= GALLERY ================= */
 
@@ -2001,11 +2020,7 @@ app.get(
 
         try {
 
-            const projects =
-                await Project.find()
-                    .sort({
-                        createdAt: -1
-                    });
+            const projects = await Project.find({ portfolioProject: true }).sort({ featured:-1, createdAt:-1 });
 
             res.json({
                 success: true,
@@ -2041,9 +2056,10 @@ app.get(
         try {
 
             const project =
-                await Project.findById(
-                    req.params.id
-                );
+                await Project.findOne({
+                    _id: req.params.id,
+                    portfolioProject: true
+                });
 
             if (!project) {
 
@@ -2079,444 +2095,89 @@ app.get(
 );
 
 
-/* ================= ADD PROJECT ================= */
+/* ================= PROJECT IMAGE UPLOAD ================= */
 
-app.post(
-    "/admin/projects",
-    requireAdmin,
-    async (req, res) => {
+app.post("/admin/projects/upload-images", requireAdmin, upload.array("images", 5), async (req, res) => {
+    try {
+        const files = req.files || [];
+        if (!files.length) return res.status(400).json({ success:false, message:"Please select at least one image." });
+        if (files.length > 5) return res.status(400).json({ success:false, message:"You can upload a maximum of 5 images." });
 
-        try {
-
-            const {
-                title,
-                code,
-                language
-            } = req.body;
-
-
-            if (
-                !title ||
-                !code ||
-                !language
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Title, code and language are required."
-                });
-
-            }
-
-
-            if (
-                language !== "c" &&
-                language !== "cpp"
-            ) {
-
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Language must be c or cpp."
-                });
-
-            }
-
-
-            const project =
-                await Project.create({
-
-                    title:
-                        title.trim(),
-
-                    code,
-
-                    language
-
-                });
-
-
-            res.json({
-
-                success: true,
-
-                message:
-                    "Project added successfully.",
-
-                project
-
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Admin Add Project Error:",
-                error
+        const urls = await Promise.all(files.map(file => new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+                { folder: "ritik-portfolio/projects", resource_type: "image" },
+                (error, result) => error ? reject(error) : resolve(result.secure_url)
             );
+            stream.end(file.buffer);
+        })));
 
-            res.status(500).json({
+        res.json({ success:true, images: urls });
+    } catch (error) {
+        console.error("Project Image Upload Error:", error);
+        res.status(500).json({ success:false, message:"Project image upload failed. Please try again." });
+    }
+});
 
-                success: false,
+/* ================= ADD / UPDATE / DELETE PORTFOLIO PROJECTS ================= */
 
-                message:
-                    "Failed to add project."
+function normalizeProjectPayload(body) {
+    const technologies = Array.isArray(body.technologies)
+        ? body.technologies.map(v => String(v).trim()).filter(Boolean)
+        : String(body.technologies || "").split(",").map(v => v.trim()).filter(Boolean);
+    return {
+        title: String(body.title || "").trim(),
+        category: String(body.category || "Web Development").trim(),
+        description: String(body.description || "").trim(),
+        technologies,
+        liveUrl: String(body.liveUrl || "").trim(),
+        githubUrl: String(body.githubUrl || "").trim(),
+        imageUrl: String(body.imageUrl || "").trim(),
+        images: Array.isArray(body.images) ? body.images.map(v => String(v).trim()).filter(Boolean).slice(0, 5) : [],
+        featured: Boolean(body.featured),
+        portfolioProject: true,
+        updatedAt: new Date()
+    };
+}
 
-            });
-
+app.post("/admin/projects", requireAdmin, async (req, res) => {
+    try {
+        const payload = normalizeProjectPayload(req.body);
+        if (!payload.title || !payload.description) {
+            return res.status(400).json({ success:false, message:"Project title and description are required." });
         }
-
+        const project = await Project.create(payload);
+        res.json({ success:true, message:"Project added successfully.", project });
+    } catch (error) {
+        console.error("Admin Add Project Error:", error);
+        res.status(500).json({ success:false, message:"Failed to add project." });
     }
-);
+});
 
-
-/* ================= UPDATE PROJECT ================= */
-
-app.put(
-    "/admin/projects/:id",
-    requireAdmin,
-    async (req, res) => {
-
-        try {
-
-            const {
-                title,
-                code,
-                language
-            } = req.body;
-
-
-            if (
-                !title ||
-                !code ||
-                !language
-            ) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "Title, code and language are required."
-
-                });
-
-            }
-
-
-            if (
-                language !== "c" &&
-                language !== "cpp"
-            ) {
-
-                return res.status(400).json({
-
-                    success: false,
-
-                    message:
-                        "Language must be c or cpp."
-
-                });
-
-            }
-
-
-            const project =
-                await Project.findByIdAndUpdate(
-
-                    req.params.id,
-
-                    {
-
-                        title:
-                            title.trim(),
-
-                        code,
-
-                        language
-
-                    },
-
-                    {
-
-                        new: true,
-
-                        runValidators: true
-
-                    }
-
-                );
-
-
-            if (!project) {
-
-                return res.status(404).json({
-
-                    success: false,
-
-                    message:
-                        "Project not found."
-
-                });
-
-            }
-
-
-            res.json({
-
-                success: true,
-
-                message:
-                    "Project updated successfully.",
-
-                project
-
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Admin Update Project Error:",
-                error
-            );
-
-            res.status(500).json({
-
-                success: false,
-
-                message:
-                    "Failed to update project."
-
-            });
-
+app.put("/admin/projects/:id", requireAdmin, async (req, res) => {
+    try {
+        const payload = normalizeProjectPayload(req.body);
+        if (!payload.title || !payload.description) {
+            return res.status(400).json({ success:false, message:"Project title and description are required." });
         }
-
+        const project = await Project.findByIdAndUpdate(req.params.id, payload, { new:true, runValidators:true });
+        if (!project) return res.status(404).json({ success:false, message:"Project not found." });
+        res.json({ success:true, message:"Project updated successfully.", project });
+    } catch (error) {
+        console.error("Admin Update Project Error:", error);
+        res.status(500).json({ success:false, message:"Failed to update project." });
     }
-);
+});
 
-
-/* ================= DELETE PROJECT ================= */
-
-app.delete(
-    "/admin/projects/:id",
-    requireAdmin,
-    async (req, res) => {
-
-        try {
-
-            const project =
-                await Project.findByIdAndDelete(
-                    req.params.id
-                );
-
-
-            if (!project) {
-
-                return res.status(404).json({
-
-                    success: false,
-
-                    message:
-                        "Project not found."
-
-                });
-
-            }
-
-
-            res.json({
-
-                success: true,
-
-                message:
-                    "Project deleted successfully."
-
-            });
-
-        } catch (error) {
-
-            console.error(
-                "Admin Delete Project Error:",
-                error
-            );
-
-            res.status(500).json({
-
-                success: false,
-
-                message:
-                    "Failed to delete project."
-
-            });
-
-        }
-
+app.delete("/admin/projects/:id", requireAdmin, async (req, res) => {
+    try {
+        const project = await Project.findByIdAndDelete(req.params.id);
+        if (!project) return res.status(404).json({ success:false, message:"Project not found." });
+        res.json({ success:true, message:"Project deleted successfully." });
+    } catch (error) {
+        console.error("Admin Delete Project Error:", error);
+        res.status(500).json({ success:false, message:"Failed to delete project." });
     }
-);
-
-/* =====================================================
-   RUN C/C++ CODE
-===================================================== */
-
-const {
-    spawn
-} = require("child_process");
-
-
-app.post(
-    "/run",
-    (req, res) => {
-
-        const {
-            code,
-            language,
-            input
-        } = req.body;
-
-
-        const extension =
-            language === "cpp"
-                ? "cpp"
-                : "c";
-
-
-        const compiler =
-            language === "cpp"
-                ? "g++"
-                : "gcc";
-
-
-        const sourceFile =
-            `program.${extension}`;
-
-
-        const outputFile =
-            process.platform === "win32"
-                ? "program.exe"
-                : "./program";
-
-
-        const compile =
-            spawn(
-                compiler,
-                [
-                    sourceFile,
-                    "-o",
-                    "program"
-                ]
-            );
-
-
-        const fs =
-            require("fs");
-
-
-        fs.writeFileSync(
-            sourceFile,
-            code
-        );
-
-
-        let compileOutput = "";
-
-
-        compile.stderr.on(
-            "data",
-            data => {
-
-                compileOutput +=
-                    data.toString();
-
-            }
-        );
-
-
-        compile.on(
-            "close",
-            compileCode => {
-
-                if (compileCode !== 0) {
-
-                    return res.json({
-
-                        output:
-                            compileOutput ||
-                            "Compilation Error"
-
-                    });
-
-                }
-
-
-                const run =
-                    process.platform === "win32"
-
-                        ? spawn(
-                            outputFile
-                        )
-
-                        : spawn(
-                            outputFile
-                        );
-
-
-                if (input) {
-
-                    run.stdin.write(
-                        input
-                    );
-
-                }
-
-
-                run.stdin.end();
-
-
-                let outputData = "";
-
-
-                run.stdout.on(
-                    "data",
-                    data => {
-
-                        outputData +=
-                            data.toString();
-
-                    }
-                );
-
-
-                run.stderr.on(
-                    "data",
-                    data => {
-
-                        outputData +=
-                            data.toString();
-
-                    }
-                );
-
-
-                run.on(
-                    "close",
-                    () => {
-
-                        res.json({
-
-                            output:
-                                outputData
-
-                        });
-
-                    }
-                );
-
-            }
-        );
-
-    }
-);
-
+});
 
 /* =====================================================
    SAVE PROJECT
@@ -2554,13 +2215,10 @@ app.post(
 
             const project =
                 await Project.create({
-
                     title,
-
                     code,
-
-                    language
-
+                    language,
+                    portfolioProject: false
                 });
 
 
@@ -2607,16 +2265,7 @@ app.get(
 
         try {
 
-            const projects =
-                await Project.find()
-
-                    .select(
-                        "title language createdAt"
-                    )
-
-                    .sort({
-                        createdAt: -1
-                    });
+            const projects = await Project.find({ portfolioProject: true }).select("title category description technologies liveUrl githubUrl imageUrl images featured createdAt").sort({ featured:-1, createdAt:-1 });
 
 
             res.json(projects);
