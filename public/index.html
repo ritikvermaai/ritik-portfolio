@@ -1,0 +1,2801 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Ritik Verma</title>
+    <link rel="stylesheet" href="box.css">
+    <div id="progress-bar"></div>
+<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins';
+        }
+
+        body{
+            background:#0f172a;
+            color:white;
+            overflow-x:hidden; /* allow vertical scroll */
+        }
+
+        #particles{
+            position:fixed;
+            width:100%;
+            height:100%;
+            z-index:-1;
+        }
+
+        .container{
+            height:100vh;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+        }
+
+        .profile-pic{
+            width:400px;
+            height:400px;
+            border-radius:50%;
+            border:4px solid #00f7ff;
+            margin-bottom:20px;
+            object-fit: cover;
+            object-position: top;
+        }
+
+        h1{
+            font-size:60px;
+        }
+
+        .highlight{
+            color:#00f7ff;
+        }
+
+        #typing{
+            margin-top:15px;
+            font-size:25px;
+            color:#cbd5e1;
+        }
+
+        .buttons{
+            margin-top:25px;
+        }
+
+        .buttons a{
+            text-decoration:none;
+            padding:10px 20px;
+            margin:10px;
+            background:#00f7ff;
+            color:black;
+            border-radius:5px;
+            font-weight:bold;
+        }
+        .floating-badge{
+    position:fixed;
+    top:20px;
+    right:20px;
+    left:20px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#111827;
+    padding:8px 15px;
+    border-radius:30px;
+    opacity:0;
+    transform:translateY(-10px);
+    transition:0.4s ease;
+    z-index:1000;
+}
+
+.floating-badge img{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    object-fit: cover;
+    object-position: top;
+}
+
+.floating-badge.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+        /* Sections */
+        .section{
+    padding:120px 20px;
+    text-align:center;
+    position:relative;
+}
+
+.section::before{
+    content:"";
+    position:absolute;
+    width:80%;
+    height:100%;
+    left:10%;
+    top:0;
+}
+
+        .section h2{
+            font-size:36px;
+            margin-bottom:20px;
+            color:#00f7ff;
+        }
+
+        .skills span{
+            display:inline-block;
+            background:#00f7ff;
+            color:black;
+            padding:10px 15px;
+            margin:10px;
+            border-radius:20px;
+            font-weight:bold;
+        }
+
+        /* Scroll Animation */
+        .fade{
+            opacity:0;
+            transform:translateY(40px);
+            transition:1s;
+        }
+
+        .fade.show{
+            opacity:1;
+            transform:translateY(0);
+        }
+        /* Hamburger */
+.menu-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+    font-size:28px;
+    cursor:pointer;
+    z-index:1100;
+}
+
+/* Sidebar */
+.sidebar{
+    position:fixed;
+    top:0;
+    right:-250px;
+    width:250px;
+    height:100%;
+    background:#111827;
+    padding:60px 20px;
+    transition:0.4s ease;
+    z-index:1050;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    margin:20px 0;
+    font-size:22px;
+}
+
+.sidebar.active{
+    right:0;
+}
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    margin:20px 0;
+    font-size:18px;
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+    color:#00f7ff;
+}
+
+.sidebar a.active{
+    color:#00f7ff;
+    font-weight:600;
+}
+
+/* Top bar */
+.top-bar{
+    position:fixed;
+    top:0;
+    left:-19px;
+    width:100%;
+    height:70px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 30px;
+    background:#0f172a;
+    z-index:3000;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:600;
+    font-size:18px;
+}
+
+.brand img{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    border:2px solid #e4e7e7;
+}
+
+.menu-btn{
+    width:35px;
+    height:25px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    background:none;
+    border:none;
+    cursor:pointer;
+}
+
+.menu-btn span{
+    display:block;
+    height:3px;
+    width:100%;
+    background:#00f7ff;
+    border-radius:5px;
+    transition:0.3s ease;
+}
+
+/* Animation */
+.menu-btn.active span:nth-child(1){
+    transform:rotate(45deg) translateY(10px);
+}
+
+.menu-btn.active span:nth-child(2){
+    opacity:0;
+}
+
+.menu-btn.active span:nth-child(3){
+    transform:rotate(-45deg) translateY(-10px);
+}
+body{
+    padding-top:80px;
+}
+/* ===== COUNTER SECTION ===== */
+
+.counter-section {
+    padding: 100px 10%;
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+    background: transparent;
+}
+
+.counter-box {
+    background: #111827;
+    padding: 40px 60px;
+    border-radius: 15px;
+    text-align: center;
+    min-width: 200px;
+    transition: 0.3s ease;
+}
+
+.counter-box:hover {
+    transform: translateY(-5px);
+}
+
+.counter,
+#yearsCounter,
+#projectCounter,
+#timeCounter {
+    font-size: 48px;
+    font-weight: bold;
+    color: #00f7ff;
+}
+
+.counter-box p {
+    margin-top: 10px;
+    color: #cbd5e1;
+}
+/* ===== Scroll Progress Bar ===== */
+
+#progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: linear-gradient(90deg, #00f7ff, #007acc);
+    z-index: 9999;
+    transition: width 0.2s ease;
+}
+
+/* ===== Skills Section ===== */
+
+.skills-section {
+    width: 80%;
+    margin: 100px auto;
+}
+
+.section-title {
+    text-align: center;
+    color: #00f7ff;
+    font-size: 36px;
+    margin-bottom: 40px;
+}
+
+.skill {
+    margin-bottom: 30px;
+}
+
+.skill-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: white;
+    font-size: 18px;
+}
+
+.skill-bar {
+    width: 100%;
+    height: 10px;
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.skill-progress {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00f7ff, #007acc);
+    border-radius: 10px;
+    transition: width 1.5s ease;
+}
+
+.visitor-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #111827;
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: #00f7ff;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(0,247,255,0.3);
+}
+.contact-section {
+    color: #00f7ff;
+  padding: 100px 10%;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;   /* LINE-WISE */
+  align-items: center;
+  gap: 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 60%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #2a2a2a;
+  background-color: #1e1e1e;   /* Grey dark */
+  color: #ffffff;
+  font-size: 16px;
+  outline: none;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: #aaaaaa;
+}
+
+.contact-form textarea {
+  height: 150px;
+  resize: none;
+}
+
+.contact-form button {
+  margin-top: 10px;
+  padding: 12px 30px;
+  background: #00f7ff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.contact-form button:hover {
+  background: #00cdd6;
+  transform: scale(1.05);
+}
+
+.donation-section {
+    text-align: center;
+    padding: 60px 20px;
+    color: #00f7ff;
+    font-size: 30px;
+}
+
+.donation-section input {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 250px;
+}
+
+.amount-buttons button,
+.donation-section button {
+    margin: 5px;
+    padding: 10px 20px;
+    background: #00f2ff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.stats {
+    margin-top: 30px;
+    color: #00f2ff;
+}
+
+.leaderboard {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.leaderboard ul {
+    list-style: none;
+    padding: 0;
+}
+
+.leaderboard li {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px auto;
+    padding: 10px 20px;
+    width: 300px;
+    background: #111;
+    border-radius: 8px;
+    color: #00f2ff;
+    transition: 0.3s;
+}
+
+.leaderboard li:hover {
+    transform: scale(1.05);
+}
+
+
+.milestone-container {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.goal-text {
+    margin: 10px 0;
+    font-size: 18px;
+    color: #00f2ff;
+}
+
+.progress-bar {
+    width: 300px;
+    height: 20px;
+    background: #222;
+    border-radius: 20px;
+    margin: 10px auto;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00f2ff, #0066ff);
+    border-radius: 20px;
+    transition: width 1s ease-in-out;
+}
+
+#percentageText {
+    margin-top: 8px;
+    color: #00f2ff;
+}
+
+
+.popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.4s ease;
+  z-index: 9999;
+}
+
+.popup.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.popup-box {
+  background: linear-gradient(135deg,#00f5ff,#00c3ff);
+  padding: 40px 60px;
+  border-radius: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  color: black;
+  text-align: center;
+  transform: scale(0.5);
+  animation: pop 0.4s ease forwards;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+
+/* ================= ADMIN DASHBOARD BUTTON ================= */
+
+.admin-access {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+}
+
+.admin-access a {
+    display: inline-block;
+    padding: 10px 18px;
+
+    background: rgba(15, 23, 42, 0.95);
+    color: #00f7ff;
+
+    border: 1px solid #00f7ff;
+    border-radius: 20px;
+
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+
+    box-shadow: 0 0 15px rgba(0, 247, 255, 0.15);
+
+    transition: all 0.3s ease;
+}
+
+.admin-access a:hover {
+    background: #00f7ff;
+    color: #0f172a;
+
+    transform: translateY(-3px);
+
+    box-shadow: 0 0 25px rgba(0, 247, 255, 0.5);
+}
+
+
+
+/* ================= PREMIUM WELCOME SPLASH ================= */
+#welcomeSplash{
+ position:fixed;inset:0;z-index:10000;display:grid;place-items:center;overflow:hidden;
+ background:radial-gradient(circle at 50% 42%,#0b1f32 0%,#050b16 42%,#02050b 100%);
+ opacity:1;visibility:visible;transform:scale(1);filter:blur(0);
+ transition:opacity .85s cubic-bezier(.22,1,.36,1),visibility .85s,transform 1s cubic-bezier(.22,1,.36,1),filter .85s;
+}
+#welcomeSplash::before{content:"";position:absolute;width:34vmax;height:34vmax;border:1px solid rgba(0,247,255,.16);border-radius:50%;box-shadow:0 0 100px rgba(0,247,255,.10),inset 0 0 80px rgba(0,247,255,.04);animation:splashOrbit 5s ease-in-out infinite;}
+#welcomeSplash::after{content:"";position:absolute;width:62vmax;height:62vmax;border:1px solid rgba(0,247,255,.055);border-radius:50%;animation:splashOrbitReverse 9s linear infinite;}
+body.splash-active{overflow:hidden!important;}
+#welcomeSplash.splash-hide{opacity:0;visibility:hidden;transform:scale(1.035);filter:blur(10px);pointer-events:none;}
+.splash-grid{position:absolute;inset:0;opacity:.18;background-image:linear-gradient(rgba(0,247,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,247,255,.08) 1px,transparent 1px);background-size:55px 55px;mask-image:radial-gradient(circle,black 15%,transparent 72%);animation:gridDrift 12s linear infinite;}
+.splash-content{position:relative;z-index:2;width:min(92%,700px);text-align:center;}
+.splash-logo-wrap{position:relative;width:142px;height:142px;margin:0 auto 28px;display:grid;place-items:center;animation:splashLogoIn 1s cubic-bezier(.16,1,.3,1) both;}
+.splash-logo-ring{position:absolute;inset:0;border:1px solid rgba(0,247,255,.45);border-radius:50%;box-shadow:0 0 35px rgba(0,247,255,.14);animation:ringPulse 2.4s ease-in-out infinite;}
+.splash-logo-ring::after{content:"";position:absolute;inset:-9px;border:1px solid rgba(0,247,255,.10);border-radius:50%;}
+.splash-logo{width:112px;height:112px;border-radius:50%;object-fit:cover;object-position:top;border:3px solid #00f7ff;box-shadow:0 0 24px rgba(0,247,255,.45),0 0 70px rgba(0,247,255,.13);}
+.splash-welcome{margin:0 0 10px;color:#94a3b8;font-size:clamp(13px,1.7vw,17px);letter-spacing:.28em;text-transform:uppercase;opacity:0;animation:textUp .75s .35s cubic-bezier(.16,1,.3,1) forwards;}
+.splash-title{margin:0;color:#fff;font-size:clamp(48px,8vw,82px);line-height:1;font-weight:700;letter-spacing:-.055em;opacity:0;animation:textUp .8s .48s cubic-bezier(.16,1,.3,1) forwards;}
+.splash-title span{color:#00f7ff;text-shadow:0 0 25px rgba(0,247,255,.28);}
+.splash-subtitle{margin:18px 0 30px;color:#cbd5e1;font-size:clamp(14px,2vw,18px);opacity:0;animation:textUp .75s .62s cubic-bezier(.16,1,.3,1) forwards;}
+.splash-loader{width:190px;height:3px;margin:0 auto;overflow:hidden;border-radius:10px;background:rgba(148,163,184,.15);opacity:0;animation:fadeIn .5s .82s forwards;}
+.splash-loader span{display:block;width:38%;height:100%;border-radius:inherit;background:linear-gradient(90deg,transparent,#00f7ff,#fff,#00f7ff,transparent);box-shadow:0 0 14px rgba(0,247,255,.8);animation:splashLoading 1.25s cubic-bezier(.4,0,.2,1) infinite;}
+.splash-loading-text{margin-top:12px;color:#64748b;font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:0;animation:fadeIn .6s 1s forwards;}
+@keyframes splashLogoIn{from{opacity:0;transform:translateY(22px) scale(.72);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes textUp{from{opacity:0;transform:translateY(18px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes ringPulse{0%,100%{transform:scale(.94);opacity:.55}50%{transform:scale(1.05);opacity:1}}
+@keyframes splashOrbit{0%,100%{transform:scale(.94) rotate(0deg);opacity:.55}50%{transform:scale(1.06) rotate(8deg);opacity:1}}
+@keyframes splashOrbitReverse{to{transform:rotate(-360deg)}}
+@keyframes gridDrift{to{background-position:55px 55px}}
+@keyframes splashLoading{0%{transform:translateX(-130%)}100%{transform:translateX(360%)}}
+@media(max-width:600px){.splash-logo-wrap{width:120px;height:120px}.splash-logo{width:94px;height:94px}.splash-welcome{letter-spacing:.2em}.splash-loader{width:155px}}
+@media(prefers-reduced-motion:reduce){#welcomeSplash::before,#welcomeSplash::after,.splash-grid,.splash-logo-wrap,.splash-logo-ring,.splash-welcome,.splash-title,.splash-subtitle,.splash-loader,.splash-loading-text{animation:none!important}.splash-welcome,.splash-title,.splash-subtitle,.splash-loader,.splash-loading-text{opacity:1!important}}
+    
+/* =====================================================
+   PORTFOLIO RATING
+===================================================== */
+
+.portfolio-rating-section{
+    max-width: 920px;
+    margin: 10px auto 40px;
+    padding: 0 20px 90px;
+    text-align: center;
+}
+
+.portfolio-rating-card{
+    position: relative;
+    overflow: hidden;
+    padding: 42px 34px;
+    border-radius: 24px;
+    background:
+        linear-gradient(145deg, rgba(17,24,39,.94), rgba(15,23,42,.96));
+    border: 1px solid rgba(0,247,255,.14);
+    box-shadow:
+        0 20px 70px rgba(0,0,0,.28),
+        0 0 35px rgba(0,247,255,.05);
+}
+
+.portfolio-rating-card::before{
+    content:"";
+    position:absolute;
+    width:260px;
+    height:260px;
+    top:-160px;
+    right:-100px;
+    border-radius:50%;
+    background:rgba(0,247,255,.08);
+    filter:blur(30px);
+    pointer-events:none;
+}
+
+.portfolio-rating-eyebrow{
+    color:#00f7ff;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+}
+
+.portfolio-rating-title{
+    color:#f8fafc;
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.portfolio-rating-subtitle{
+    max-width:650px;
+    margin:0 auto;
+    color:#94a3b8;
+    line-height:1.7;
+    font-size:16px;
+}
+
+.rating-stars{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    margin:28px 0 12px;
+}
+
+.rating-star{
+    width:52px;
+    height:52px;
+    margin:0;
+    padding:0;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    background:rgba(255,255,255,.04);
+    color:#64748b;
+    font-size:28px;
+    line-height:1;
+    cursor:pointer;
+    transition:
+        transform .22s ease,
+        color .22s ease,
+        background .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+}
+
+.rating-star:hover,
+.rating-star.active{
+    color:#facc15;
+    background:rgba(250,204,21,.08);
+    border-color:rgba(250,204,21,.35);
+    box-shadow:0 0 22px rgba(250,204,21,.12);
+    transform:translateY(-3px);
+}
+
+.rating-star:focus-visible{
+    outline:2px solid #00f7ff;
+    outline-offset:3px;
+}
+
+.rating-selected{
+    min-height:22px;
+    color:#cbd5e1;
+    font-size:15px;
+    font-weight:600;
+}
+
+.rating-feedback{
+    width:100%;
+    min-height:95px;
+    margin-top:20px;
+    padding:14px 16px;
+    resize:vertical;
+    border:1px solid #334155;
+    border-radius:13px;
+    background:#0b1220;
+    color:#f8fafc;
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    line-height:1.6;
+    outline:none;
+    transition:border-color .2s ease, box-shadow .2s ease;
+}
+
+.rating-feedback::placeholder{
+    color:#64748b;
+}
+
+.rating-feedback:focus{
+    border-color:#00f7ff;
+    box-shadow:0 0 0 3px rgba(0,247,255,.08);
+}
+
+.rating-submit{
+    margin:18px 0 0;
+    padding:14px 28px;
+    border:1px solid rgba(0,247,255,.45);
+    border-radius:13px;
+    background:#00f7ff;
+    color:#061018;
+    font-weight:800;
+    cursor:pointer;
+    transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+
+.rating-submit:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 28px rgba(0,247,255,.18);
+}
+
+.rating-submit:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.rating-message{
+    min-height:22px;
+    margin-top:15px;
+    color:#94a3b8;
+    font-size:15px;
+}
+
+.rating-thanks{
+    display:none;
+    animation:ratingReveal .55s ease both;
+}
+
+.rating-thanks.show{
+    display:block;
+}
+
+.rating-thanks-icon{
+    width:62px;
+    height:62px;
+    margin:0 auto 18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(0,247,255,.08);
+    border:1px solid rgba(0,247,255,.25);
+    color:#00f7ff;
+    font-size:28px;
+}
+
+.rating-thanks h3{
+    margin-bottom:8px;
+    color:#f8fafc;
+    font-size:24px;
+}
+
+.rating-thanks p{
+    color:#94a3b8;
+    font-size:16px;
+}
+
+.rating-summary{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:18px;
+    margin-top:30px;
+    color:#cbd5e1;
+    font-size:16px;
+    font-weight:600;
+}
+
+.rating-average{
+    color:#facc15;
+    font-weight:800;
+    font-size:24px;
+}
+
+@keyframes ratingReveal{
+    from{opacity:0; transform:translateY(12px) scale(.98)}
+    to{opacity:1; transform:translateY(0) scale(1)}
+}
+
+@media (max-width:600px){
+    .portfolio-rating-section{
+        padding:0 14px 60px;
+    }
+
+    .portfolio-rating-card{
+        padding:32px 18px;
+        border-radius:20px;
+    }
+
+    .portfolio-rating-title{
+        font-size:28px;
+    }
+
+    .portfolio-rating-subtitle{
+        font-size:15px;
+    }
+
+    .rating-selected,
+    .rating-message,
+    .rating-summary{
+        font-size:14px;
+    }
+
+    .rating-star{
+        width:44px;
+        height:44px;
+        border-radius:12px;
+        font-size:23px;
+    }
+
+    .rating-stars{
+        gap:5px;
+    }
+}
+
+</style>
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="/site-shell.css">
+</head>
+<style id="portfolio-toast-style">
+#portfolioToast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,18px);z-index:12000;max-width:min(92vw,520px);padding:13px 18px;border:1px solid rgba(0,247,255,.25);border-radius:12px;background:rgba(15,23,42,.96);color:#e2e8f0;box-shadow:0 14px 40px rgba(0,0,0,.35);font-size:14px;font-weight:600;line-height:1.4;opacity:0;visibility:hidden;transition:opacity .22s ease,transform .22s ease,visibility .22s ease;text-align:center;backdrop-filter:blur(12px)}
+#portfolioToast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+</style>
+<body class="splash-active">
+<div id="portfolioToast" role="status" aria-live="polite"></div>
+
+<div id="welcomeSplash" aria-label="Welcome to Ritik Verma portfolio" role="status">
+    <div class="splash-grid" aria-hidden="true"></div>
+    <div class="splash-content">
+        <div class="splash-logo-wrap">
+            <div class="splash-logo-ring" aria-hidden="true"></div>
+            <img id="splashLogo" class="splash-logo" src="images/photoweb.jpg" alt="Ritik Verma">
+        </div>
+        <p class="splash-welcome">Welcome to my portfolio</p>
+        <h1 class="splash-title">Ritik <span>Verma</span></h1>
+        <p class="splash-subtitle">Developer • CSE Student • Creator</p>
+        <div class="splash-loader" aria-hidden="true"><span></span></div>
+        <p class="splash-loading-text">Preparing your experience</p>
+    </div>
+</div>
+
+
+<canvas id="particles"></canvas>
+<!-- Hamburger -->
+<div class="top-bar">
+    <div class="brand">
+        <img src="images/main.png">
+        <span>Ritik Verma</span>
+    </div>
+
+    <button class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span></span><span></span><span></span></button>
+</div>
+
+<div class="sidebar" id="sidebar" aria-label="Main navigation">
+  <button class="close-btn" type="button" aria-label="Close navigation">×</button>
+  <a href="/" data-nav="/" id="nav-home">Home</a>
+  <a href="/coding.html" data-nav="coding.html" id="nav-coding">Compiler</a>
+  <a href="/projects.html" data-nav="projects.html" id="nav-projects">Projects</a>
+  <a href="/gallery.html" data-nav="gallery.html" id="nav-gallery">Gallery</a>
+  <a href="/attendance.html" data-nav="attendance.html" id="nav-attendance">Attendance Calculator</a>
+  <a href="/resume.html" data-nav="resume.html" id="nav-resume">Resume</a>
+  <a href="/contact.html" data-nav="contact.html" id="nav-contact">Contact us</a>
+</div>
+<!-- HERO SECTION -->
+<div class="container">
+    <img src="" class="profile-pic">
+
+    <h1>Hello I'm <span class="highlight">Ritik Verma</span></h1>
+
+    <p id="typing"></p>
+<p style="margin-top:10px; color:#e6088d; font-size:22px;">
+    Learn. Build. Improve. Repeat.
+</p>
+
+</div>
+
+<div class="floating-badge" id="badge">
+    <img src="images/main.png">
+    <span>Ritik Verma</span>
+</div>
+
+<!-- ================= ADMIN BUTTON ================= -->
+
+<div class="admin-access">
+    <a href="/admin/admin.html">
+        🔐 Admin Dashboard
+    </a>
+</div>
+
+<div class="visitor-box">
+    👀 Visitors: <span id="visitorCount">0</span>
+</div>
+
+<div style="display: flex;
+justify-content: center;
+margin-top: 80px;">
+
+<div class="badge-base LI-profile-badge"
+data-version="v1"
+data-size="large"
+data-locale="en_US"
+data-type="HORIZONTAL"
+data-theme="dark"
+data-vanity="vermaritik">
+
+<a class="badge-base__link LI-simple-link"
+href="https://in.linkedin.com/in/vermaritik?trk=profile-badge">
+</a>
+
+</div>
+</div>
+
+<!-- EDUCATION SECTION -->
+<section class="section fade education-section" id="education">
+    <div class="education-card">
+        <div class="education-icon">🎓</div>
+        <div class="education-content">
+            <h2>Education</h2>
+            <p class="education-title">B.Tech Computer Science Engineering</p>
+            <p class="education-institute">PSIT Kanpur</p>
+            <p class="education-status">1st Year Student</p>
+        </div>
+    </div>
+</section>
+
+
+<section class="counter-section">
+
+    <div class="counter-box">
+        <h2 id="yearsCounter">0</h2>
+        <p>Years Coding</p>
+    </div>
+
+    <div class="counter-box">
+        <h2 id="projectCounter">0</h2>
+<p>Projects Completed</p>
+    </div>
+
+    <div class="counter-box">
+        <h2 id="timeCounter">0</h2>
+        <p>Hours on Website</p>
+    </div>
+
+    <div class="counter-box">
+        <h2 class="counter" data-target="500">0</h2>
+        <p>Problems Solved</p>
+    </div>
+
+</section>
+
+
+<!-- SKILLS SECTION -->
+<section class="section fade">
+    <h2>My Skills</h2>
+    <div class="skills">
+        <span>C</span>
+        <span>C++</span>
+        <span>Data Structures</span>
+        <span>Problem Solving</span>
+        <span>Git</span>
+    </div>
+</section>
+
+<!-- ===== Skills Section ===== -->
+<section class="skills-section">
+
+    <h2 class="section-title">Skills Progress</h2>
+
+    <div class="skill">
+        <div class="skill-info">
+            <span>C</span>
+            <span>100%</span>
+        </div>
+        <div class="skill-bar">
+            <div class="skill-progress" data-progress="100"></div>
+        </div>
+    </div>
+
+    <div class="skill">
+        <div class="skill-info">
+            <span>C++</span>
+            <span>80%</span>
+        </div>
+        <div class="skill-bar">
+            <div class="skill-progress" data-progress="80"></div>
+        </div>
+    </div>
+
+    <div class="skill">
+        <div class="skill-info">
+            <span>Data Structures</span>
+            <span>75%</span>
+        </div>
+        <div class="skill-bar">
+            <div class="skill-progress" data-progress="75"></div>
+        </div>
+    </div>
+
+</section>
+
+<section class="donation-section">
+
+    <div class="support-grid">
+    <div class="support-panel">
+        <h2>Support My Work 💙</h2>
+
+    <input type="text" id="donorName" placeholder="Your Name" required>
+    <input type="email" id="donorEmail" placeholder="Your Email" required>
+
+    <div class="amount-buttons">
+        <button onclick="startPayment(10)">₹10</button>
+        <button onclick="startPayment(50)">₹50</button>
+        <button onclick="startPayment(100)">₹100</button>
+        <button onclick="startPayment(200)">₹200</button>
+    </div>
+
+    <input type="number" id="customAmount" placeholder="Enter custom amount">
+    <button onclick="payCustom()">Donate Now</button>
+
+    </div>
+    <div class="leaderboard">
+    <div class="support-stats">
+        <div class="support-stat">
+            <span class="support-stat-label">Total Raised</span>
+            <strong>₹<span id="totalAmount">0</span></strong>
+        </div>
+        <div class="support-stat">
+            <span class="support-stat-label">Total Supporters</span>
+            <strong><span id="totalDonors">0</span></strong>
+        </div>
+    </div>
+    <h2>🏆 Top Supporters</h2>
+    <ul id="leaderboardList"></ul>
+    </div>
+</div>
+<div class="milestone-container">
+    <h2>🎯 Support Goal</h2>
+
+    <div class="goal-text">
+        ₹<span id="currentAmount">0</span> / ₹10000
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div id="percentageText">0%</div>
+</div>
+<div id="liveFeedContainer"></div>
+</section>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+let portfolioToastTimer;
+function showPortfolioToast(message) {
+    const toast = document.getElementById("portfolioToast");
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(portfolioToastTimer);
+    portfolioToastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+}
+
+async function startPayment(amount) {
+
+    const name = document.getElementById("donorName").value;
+    const email = document.getElementById("donorEmail").value;
+
+    if (!name || !email) {
+        showPortfolioToast("Please enter your name and email.");
+        return;
+    }
+
+    try {
+        const orderResponse = await fetch("/create-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount })
+        });
+        if (!orderResponse.ok) throw new Error("Order creation failed");
+        const order = await orderResponse.json();
+
+    const options = {
+        key: "rzp_live_SMRtlqLQXtRgwj",
+        amount: order.amount,
+        currency: "INR",
+        name: "Ritik Verma",
+        description: "Portfolio Donation",
+        order_id: order.id,
+        handler: async function (response) {
+
+            const verify = await fetch("/verify-payment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    amount: order.amount,
+                    name,
+                    email
+                })
+            });
+
+            const result = await verify.json();
+
+            if (result.success) {
+
+    showPopup(name, order.amount / 100);
+
+    loadDonationStats();
+    updateMilestone();
+    loadLeaderboard();
+
+} else {
+    showPortfolioToast("Payment verification failed. Please try again.");
+}
+        }
+    };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+    } catch (error) {
+        console.error("Payment start failed:", error);
+        showPortfolioToast("Unable to start payment right now. Please try again.");
+    }
+}
+
+function payCustom() {
+    const amount = document.getElementById("customAmount").value;
+    if (amount > 0) {
+        startPayment(amount);
+    } else {
+        showPortfolioToast("Please enter a valid donation amount.");
+    }
+}
+
+async function loadDonationStats() {
+    const res = await fetch("/donation-stats");
+    const data = await res.json();
+
+    animateValue("totalAmount", data.totalAmount);
+    animateValue("totalDonors", data.totalDonors);
+}
+
+function animateValue(id, end) {
+    let start = 0;
+    const duration = 800;
+    const increment = end / (duration / 16);
+
+    const counter = setInterval(() => {
+        start += increment;
+        if (start >= end) {
+            document.getElementById(id).innerText = end;
+            clearInterval(counter);
+        } else {
+            document.getElementById(id).innerText = Math.floor(start);
+        }
+    }, 16);
+}
+
+loadDonationStats();
+
+async function loadLeaderboard() {
+
+    const res = await fetch("/donation-stats");
+    const data = await res.json();
+
+    const sorted = data.donations
+        .sort((a, b) => b.amount - a.amount)
+        .slice(0, 5);
+
+    const list = document.getElementById("leaderboardList");
+    list.innerHTML = "";
+
+    sorted.forEach((donor, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <span class="rank">#${index + 1}</span>
+            <span class="name">${donor.name}</span>
+            <span class="amount">₹${donor.amount}</span>
+        `;
+        list.appendChild(li);
+    });
+}
+
+loadLeaderboard();
+
+async function updateMilestone() {
+
+    const goal =
+    window.portfolioDonationGoal ||
+    10000;
+
+    const res = await fetch("/donation-stats");
+    const data = await res.json();
+
+    const total = data.totalAmount;
+
+    const percentage = Math.min((total / goal) * 100, 100);
+
+    // Animate number
+    animateValue("currentAmount", total);
+
+    // Animate bar
+    document.getElementById("progressFill").style.width = percentage + "%";
+
+    document.getElementById("percentageText").innerText =
+        percentage.toFixed(1) + "% Completed";
+}
+
+updateMilestone();
+
+function showPopup(name, amount) {
+
+    const popup = document.getElementById("donationPopup");
+    const popupText = document.getElementById("popupText");
+    const sound = document.getElementById("popupSound");
+
+    popupText.innerHTML = `🔥 ${name} donated ₹${amount}! Thank you! 💙`;
+
+    popup.classList.add("active");
+
+    // play sound
+    if(sound){
+   sound.currentTime = 0;
+   sound.play().catch(err => console.log(err));
+}
+
+    // auto close after 3 sec
+    setTimeout(() => {
+        popup.classList.remove("active");
+    }, 2500);
+}
+
+</script>
+
+<section class="section fade">
+    <h2>About Me</h2>
+    <p style="max-width:1000px; margin:auto; line-height:1.7; color:#cbd5e1; font-size: 30px;">
+        I'm a passionate B.Tech Computer Science student who loves building
+        real-world projects and solving problems using C and C++.
+        Currently exploring Data Structures, Algorithms, and Backend Development.
+    </p>
+</section>
+<section class="section fade">
+    <h2>THANK YOU FOR VISITING</h2>
+</section>
+<section class="portfolio-rating-section fade" id="portfolio-rating">
+    <div class="portfolio-rating-card">
+
+        <div id="ratingFormView">
+            <div class="portfolio-rating-eyebrow">Your Feedback Matters</div>
+
+            <h2 class="portfolio-rating-title">
+                How would you rate my portfolio?
+            </h2>
+
+            <p class="portfolio-rating-subtitle">
+                If you enjoyed exploring my work, take a second to leave a rating.
+                Your feedback helps me improve the experience.
+            </p>
+
+            <div class="rating-stars"
+                 id="ratingStars"
+                 role="radiogroup"
+                 aria-label="Portfolio rating">
+                <button class="rating-star" type="button" data-rating="1" aria-label="1 star">★</button>
+                <button class="rating-star" type="button" data-rating="2" aria-label="2 stars">★</button>
+                <button class="rating-star" type="button" data-rating="3" aria-label="3 stars">★</button>
+                <button class="rating-star" type="button" data-rating="4" aria-label="4 stars">★</button>
+                <button class="rating-star" type="button" data-rating="5" aria-label="5 stars">★</button>
+            </div>
+
+            <div class="rating-selected" id="ratingSelected">
+                Select a rating
+            </div>
+
+            <textarea
+                id="ratingFeedback"
+                class="rating-feedback"
+                maxlength="500"
+                placeholder="Optional: What did you like, or what could I improve?"></textarea>
+
+            <button id="ratingSubmit"
+                    class="rating-submit"
+                    type="button"
+                    disabled>
+                Submit Rating
+            </button>
+
+            <div class="rating-message" id="ratingMessage"></div>
+        </div>
+
+        <div class="rating-thanks" id="ratingThanks">
+            <div class="rating-thanks-icon">✓</div>
+            <h3>Thank you for your feedback!</h3>
+            <p>Your rating has been recorded. I really appreciate it.</p>
+        </div>
+
+        <div class="rating-summary" id="ratingSummary">
+            <span>
+                <span class="rating-average" id="ratingAverage">—</span>
+                average rating
+            </span>
+            <span>•</span>
+            <span id="ratingCount">0 ratings</span>
+        </div>
+
+    </div>
+</section>
+
+
+
+<script>
+/* =====================================================
+   PORTFOLIO RATING
+===================================================== */
+
+(function initPortfolioRating(){
+
+    const stars =
+        document.querySelectorAll(".rating-star");
+
+    const submit =
+        document.getElementById("ratingSubmit");
+
+    const selected =
+        document.getElementById("ratingSelected");
+
+    const feedback =
+        document.getElementById("ratingFeedback");
+
+    const message =
+        document.getElementById("ratingMessage");
+
+    const formView =
+        document.getElementById("ratingFormView");
+
+    const thanks =
+        document.getElementById("ratingThanks");
+
+    const average =
+        document.getElementById("ratingAverage");
+
+    const count =
+        document.getElementById("ratingCount");
+
+    if (!stars.length || !submit) return;
+
+    let selectedRating = 0;
+
+    function updateStars(value){
+
+        stars.forEach(star => {
+
+            const rating =
+                Number(star.dataset.rating);
+
+            star.classList.toggle(
+                "active",
+                rating <= value
+            );
+
+        });
+
+        selected.textContent =
+            value
+                ? `${value} out of 5 stars`
+                : "Select a rating";
+
+        submit.disabled = !value;
+    }
+
+    stars.forEach(star => {
+
+        star.addEventListener(
+            "mouseenter",
+            () => updateStars(
+                Number(star.dataset.rating)
+            )
+        );
+
+        star.addEventListener(
+            "focus",
+            () => updateStars(
+                Number(star.dataset.rating)
+            )
+        );
+
+        star.addEventListener(
+            "click",
+            () => {
+
+                selectedRating =
+                    Number(star.dataset.rating);
+
+                updateStars(
+                    selectedRating
+                );
+
+            }
+        );
+
+    });
+
+    document
+        .getElementById("ratingStars")
+        .addEventListener(
+            "mouseleave",
+            () => updateStars(
+                selectedRating
+            )
+        );
+
+    function renderSummary(data){
+
+        if (!data) return;
+
+        average.textContent =
+            data.average
+                ? `${data.average} ★`
+                : "—";
+
+        count.textContent =
+            `${data.count || 0} ${
+                data.count === 1
+                    ? "rating"
+                    : "ratings"
+            }`;
+    }
+
+    fetch("/api/portfolio-rating")
+        .then(response => response.json())
+        .then(data => {
+
+            renderSummary(data);
+
+            if (data.hasRated) {
+
+                formView.style.display =
+                    "none";
+
+                thanks.classList.add(
+                    "show"
+                );
+
+            }
+
+        })
+        .catch(() => {});
+
+    submit.addEventListener(
+        "click",
+        async () => {
+
+            if (!selectedRating) return;
+
+            submit.disabled = true;
+
+            message.textContent =
+                "Saving your rating...";
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/portfolio-rating",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+                            body: JSON.stringify({
+                                rating:
+                                    selectedRating,
+                                feedback:
+                                    feedback.value
+                            })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (
+                    response.status === 409 ||
+                    data.alreadyRated
+                ) {
+
+                    formView.style.display =
+                        "none";
+
+                    thanks.classList.add(
+                        "show"
+                    );
+
+                    message.textContent = "";
+
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message ||
+                        "Unable to save rating."
+                    );
+                }
+
+                renderSummary(data);
+
+                formView.style.display =
+                    "none";
+
+                thanks.classList.add(
+                    "show"
+                );
+
+            }
+            catch (error) {
+
+                message.textContent =
+                    error.message ||
+                    "Something went wrong.";
+
+                submit.disabled = false;
+
+            }
+
+        }
+    );
+
+})();
+</script>
+
+<section class="contact-section">
+  <h2>Send Me a Message</h2>
+
+  <form id="contact-form" class="contact-form">
+  <input type="text" name="from_name" placeholder="Your Name" required>
+  <input type="email" name="from_email" placeholder="Your Email" required>
+  <textarea name="message" placeholder="Your Message" required></textarea>
+  <button type="submit">Send Message</button>
+</form>
+</section>
+
+
+<script>
+    // Typing animation
+    /* ================= DYNAMIC TYPING ================= */
+
+let typingStarted = false;
+
+function startDynamicTyping() {
+
+    if (typingStarted) return;
+
+    typingStarted = true;
+
+    const typingElement =
+        document.getElementById("typing");
+
+    if (!typingElement) return;
+
+    const text =
+        window.portfolioTypingText ||
+        "B.Tech CSE Student | Future Software Developer 🚀";
+
+    typingElement.innerHTML = "";
+
+    let i = 0;
+
+    function typeEffect() {
+
+        if (i < text.length) {
+
+            typingElement.innerHTML +=
+                text.charAt(i);
+
+            i++;
+
+            setTimeout(
+                typeEffect,
+                40
+            );
+
+        }
+
+    }
+
+    typeEffect();
+
+}
+
+
+/* Wait for Website Builder data */
+
+if (
+    window.portfolioTypingText
+) {
+
+    startDynamicTyping();
+
+} else {
+
+    window.addEventListener(
+        "portfolioContentLoaded",
+        startDynamicTyping
+    );
+
+}
+
+    // Scroll fade animation
+    window.addEventListener("scroll", function(){
+        document.querySelectorAll(".fade").forEach(el=>{
+            if(el.getBoundingClientRect().top < window.innerHeight - 100){
+                el.classList.add("show");
+            }
+        });
+    });
+
+    // Particle background
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    for(let i=0;i<80;i++){
+        particles.push({
+            x:Math.random()*canvas.width,
+            y:Math.random()*canvas.height,
+            size:Math.random()*2
+        });
+    }
+
+    function animate(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle="#00f7ff";
+
+        particles.forEach(p=>{
+            ctx.beginPath();
+            ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+            ctx.fill();
+
+            p.y+=0.5;
+            if(p.y>canvas.height){
+                p.y=0;
+            }
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+    function startCounters() {
+    const counters = document.querySelectorAll(".counter");
+
+    counters.forEach(counter => {
+        const target = +counter.getAttribute("data-target");
+        let count = 0;
+
+        const update = () => {
+            const speed = 30;
+            const increment = Math.ceil(target / speed);
+
+            if (count < target) {
+                count += increment;
+                counter.innerText = count;
+                setTimeout(update, 30);
+            } else {
+                counter.innerText = target + "+";
+            }
+        };
+
+        update();
+    });
+}
+
+const section = document.querySelector(".counter-section");
+
+if (section) {
+    const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+            startCounters();
+            observer.disconnect();
+        }
+    }, { threshold: 0.5 });
+
+    observer.observe(section);
+}
+const startDate = new Date(
+    window.portfolioStartDate ||
+    "2024-05-01"
+);
+const now = new Date();
+
+const diffYears = (now - startDate) / (1000 * 60 * 60 * 24 * 365);
+
+document.getElementById("yearsCounter").innerText = diffYears.toFixed(1) + "+";
+
+// Keep the portfolio project counter independent from compiler-saved projects.
+// Update this number whenever a new project is added to projects.html.
+document.getElementById("projectCounter").innerText = "4+";
+let totalTime = localStorage.getItem("siteTime") || 0;
+
+setInterval(() => {
+    totalTime++;
+    localStorage.setItem("siteTime", totalTime);
+}, 1000);
+
+const hours = Math.floor(totalTime / 3600);
+document.getElementById("timeCounter").innerText = hours + "h+";
+
+
+// Scroll Progress Bar
+window.addEventListener("scroll", function () {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+
+    const progress = (scrollTop / scrollHeight) * 100;
+
+    document.getElementById("progress-bar").style.width = progress + "%";
+});
+// ===== Skills Animation on Scroll =====
+
+function animateSkills() {
+    const skills = document.querySelectorAll(".skill-progress");
+
+    skills.forEach(skill => {
+        const rect = skill.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+            const progress = skill.getAttribute("data-progress");
+            skill.style.width = progress + "%";
+        }
+    });
+}
+
+window.addEventListener("scroll", animateSkills);
+
+fetch("/visitor-count")
+.then(res => res.json())
+.then(data => {
+    document.getElementById("visitorCount").innerText = data.count;
+});
+
+
+/* =====================================================
+   DYNAMIC PORTFOLIO CONTENT
+===================================================== */
+
+async function loadPortfolioContent() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/portfolio-content"
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            console.error(
+                "Portfolio content failed to load"
+            );
+
+            return;
+
+        }
+
+        const content =
+            data.content;
+
+            /* ================= PROFILE IMAGE ================= */
+
+if (content.profileImage) {
+
+    const profileImages =
+        document.querySelectorAll(
+            ".profile-pic"
+        );
+
+    profileImages.forEach(image => {
+
+        image.src =
+            content.profileImage +
+            "?v=" +
+            Date.now();
+
+    });
+
+    // Keep the splash image identical to the current Hero profile image.
+    const splashLogo = document.getElementById("splashLogo");
+    if (splashLogo) {
+        splashLogo.src =
+            content.profileImage +
+            "?v=" +
+            Date.now();
+    }
+
+}
+
+
+        /* ================= HERO ================= */
+
+        if (content.hero) {
+
+            const heroName =
+                document.querySelector(
+                    ".container h1 .highlight"
+                );
+
+            if (heroName) {
+
+                heroName.textContent =
+                    content.hero.name;
+
+            }
+
+
+            const tagline =
+                document.querySelector(
+                    ".container > p[style]"
+                );
+
+            if (tagline) {
+
+                tagline.textContent =
+                    content.hero.tagline;
+
+            }
+
+
+            window.portfolioTypingText =
+                content.hero.typing;
+
+                window.dispatchEvent(
+    new Event(
+        "portfolioContentLoaded"
+    )
+);
+
+        }
+
+
+        /* ================= EDUCATION ================= */
+
+        if (
+            Array.isArray(
+                content.education
+            )
+        ) {
+
+            const educationSection =
+                document.querySelector(
+                    ".section.fade:nth-of-type(1)"
+                );
+
+            if (educationSection) {
+
+                const heading =
+                    educationSection.querySelector(
+                        "h2"
+                    );
+
+                if (heading) {
+
+                    heading.textContent =
+                        "Education";
+
+                }
+
+
+                const educationContent =
+                    educationSection.querySelector(".education-content");
+
+                if (educationContent) {
+                    educationContent
+                        .querySelectorAll("p")
+                        .forEach(p => p.remove());
+                }
+
+
+                content.education
+                    .forEach(item => {
+
+                        const title =
+                            document.createElement(
+                                "p"
+                            );
+
+                        title.textContent =
+                            item.title || "";
+
+                        const institute =
+                            document.createElement(
+                                "p"
+                            );
+
+                        institute.textContent =
+                            item.institute || "";
+
+                        const status =
+                            document.createElement(
+                                "p"
+                            );
+
+                        status.textContent =
+                            item.status || "";
+
+
+                        if (educationContent) {
+                            educationContent.appendChild(title);
+                            educationContent.appendChild(institute);
+                            educationContent.appendChild(status);
+                        }
+
+                    });
+
+            }
+
+        }
+
+
+        /* ================= COUNTERS ================= */
+
+        if (content.counters) {
+
+            const counters =
+                content.counters;
+
+
+            const counterBoxes =
+                document.querySelectorAll(
+                    ".counter-box"
+                );
+
+
+            if (counterBoxes.length >= 4) {
+
+                counterBoxes[0]
+                    .querySelector("p")
+                    .textContent =
+                    counters.yearsLabel ||
+                    "Years Coding";
+
+
+                counterBoxes[1]
+                    .querySelector("p")
+                    .textContent =
+                    counters.projectsLabel ||
+                    "Projects Completed";
+
+
+                counterBoxes[2]
+                    .querySelector("p")
+                    .textContent =
+                    counters.hoursLabel ||
+                    "Hours on Website";
+
+
+                counterBoxes[3]
+                    .querySelector("p")
+                    .textContent =
+                    counters.problemsLabel ||
+                    "Problems Solved";
+
+
+                const problemCounter =
+                    counterBoxes[3]
+                        .querySelector(
+                            ".counter"
+                        );
+
+
+                if (problemCounter) {
+
+                    problemCounter
+                        .setAttribute(
+                            "data-target",
+                            counters.problemsSolved || 0
+                        );
+
+                    problemCounter.textContent =
+                        "0";
+
+                }
+
+            }
+
+
+            if (
+                counters.startDate
+            ) {
+
+                window.portfolioStartDate =
+                    counters.startDate;
+
+            }
+
+        }
+
+
+        /* ================= SKILLS ================= */
+
+        if (
+            Array.isArray(
+                content.skills
+            )
+        ) {
+
+            const skillsContainer =
+                document.querySelector(
+                    ".skills-section"
+                );
+
+
+            const normalSkills =
+                document.querySelector(
+                    ".skills"
+                );
+
+
+            if (normalSkills) {
+
+                normalSkills.innerHTML =
+                    "";
+
+
+                content.skills
+                    .forEach(skill => {
+
+                        const span =
+                            document.createElement(
+                                "span"
+                            );
+
+                        span.textContent =
+                            skill;
+
+                        normalSkills
+                            .appendChild(span);
+
+                    });
+
+            }
+
+        }
+
+
+        /* ================= SKILL PROGRESS ================= */
+
+        if (
+            Array.isArray(
+                content.progressSkills
+            )
+        ) {
+
+            const progressSection =
+                document.querySelector(
+                    ".skills-section"
+                );
+
+
+            if (progressSection) {
+
+                const title =
+                    progressSection
+                        .querySelector(
+                            ".section-title"
+                        );
+
+
+                progressSection.innerHTML =
+                    "";
+
+
+                if (title) {
+
+                    progressSection
+                        .appendChild(title);
+
+                }
+
+
+                content.progressSkills
+                    .forEach(skill => {
+
+                        const skillBox =
+                            document.createElement(
+                                "div"
+                            );
+
+                        skillBox.className =
+                            "skill";
+
+
+                        const info =
+                            document.createElement(
+                                "div"
+                            );
+
+                        info.className =
+                            "skill-info";
+
+
+                        const name =
+                            document.createElement(
+                                "span"
+                            );
+
+                        name.textContent =
+                            skill.name;
+
+
+                        const percentage =
+                            document.createElement(
+                                "span"
+                            );
+
+                        percentage.textContent =
+                            skill.percentage + "%";
+
+
+                        info.appendChild(name);
+
+                        info.appendChild(
+                            percentage
+                        );
+
+
+                        const bar =
+                            document.createElement(
+                                "div"
+                            );
+
+                        bar.className =
+                            "skill-bar";
+
+
+                        const progress =
+                            document.createElement(
+                                "div"
+                            );
+
+                        progress.className =
+                            "skill-progress";
+
+
+                        progress.setAttribute(
+                            "data-progress",
+                            skill.percentage
+                        );
+
+
+                        bar.appendChild(
+                            progress
+                        );
+
+
+                        skillBox.appendChild(
+                            info
+                        );
+
+                        skillBox.appendChild(
+                            bar
+                        );
+
+
+                        progressSection
+                            .appendChild(
+                                skillBox
+                            );
+
+                    });
+
+
+                animateSkills();
+
+            }
+
+        }
+
+
+        /* ================= DONATION ================= */
+
+        if (content.donation) {
+
+            const donation =
+                content.donation;
+
+
+            const donationSection =
+                document.querySelector(
+                    ".donation-section"
+                );
+
+
+            if (donationSection) {
+
+                const heading =
+                    donationSection
+                        .querySelector("h2");
+
+                if (heading) {
+
+                    heading.textContent =
+                        donation.title;
+
+                }
+
+
+                const donorName =
+                    document.getElementById(
+                        "donorName"
+                    );
+
+                if (donorName) {
+
+                    donorName.placeholder =
+                        donation.donorNamePlaceholder;
+
+                }
+
+
+                const donorEmail =
+                    document.getElementById(
+                        "donorEmail"
+                    );
+
+                if (donorEmail) {
+
+                    donorEmail.placeholder =
+                        donation.donorEmailPlaceholder;
+
+                }
+
+
+                const customAmount =
+                    document.getElementById(
+                        "customAmount"
+                    );
+
+                if (customAmount) {
+
+                    customAmount.placeholder =
+                        donation.customAmountPlaceholder;
+
+                }
+
+
+                const donateButton =
+                    document.querySelector(
+                        ".donation-section button[onclick='payCustom()']"
+                    );
+
+                if (donateButton) {
+
+                    donateButton.textContent =
+                        donation.buttonText;
+
+                }
+
+
+                const leaderboard =
+                    donationSection
+                        .querySelector(
+                            ".leaderboard h2"
+                        );
+
+                if (leaderboard) {
+
+                    leaderboard.textContent =
+                        donation.leaderboardTitle;
+
+                }
+
+
+                const milestone =
+                    donationSection
+                        .querySelector(
+                            ".milestone-container h2"
+                        );
+
+                if (milestone) {
+
+                    milestone.textContent =
+                        donation.milestoneTitle;
+
+                }
+
+
+                window.portfolioDonationGoal =
+                    donation.goal || 10000;
+
+                    if (
+    typeof updateMilestone ===
+    "function"
+) {
+
+    updateMilestone();
+
+}
+
+            }
+
+        }
+
+
+        /* ================= ABOUT ================= */
+
+        if (content.about) {
+
+            const sections =
+                document.querySelectorAll(
+                    ".section.fade"
+                );
+
+
+            sections.forEach(section => {
+
+                const heading =
+                    section.querySelector("h2");
+
+
+                if (
+                    heading &&
+                    heading.textContent
+                        .trim()
+                        .toLowerCase()
+                        === "about me"
+                ) {
+
+                    heading.textContent =
+                        content.about.title;
+
+
+                    const paragraph =
+                        section.querySelector(
+                            "p"
+                        );
+
+
+                    if (paragraph) {
+
+                        paragraph.textContent =
+                            content.about.text;
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+        /* ================= THANK YOU ================= */
+
+        if (content.thankYou) {
+
+            const sections =
+                document.querySelectorAll(
+                    ".section.fade"
+                );
+
+
+            sections.forEach(section => {
+
+                const heading =
+                    section.querySelector("h2");
+
+
+                if (
+                    heading &&
+                    heading.textContent
+                        .trim()
+                        .toLowerCase()
+                        === "thank you for visiting"
+                ) {
+
+                    heading.textContent =
+                        content
+                            .thankYou
+                            .title;
+
+                }
+
+            });
+
+        }
+
+
+        /* ================= CONTACT ================= */
+
+        if (content.contact) {
+
+            const contact =
+                content.contact;
+
+
+            const contactSection =
+                document.querySelector(
+                    ".contact-section"
+                );
+
+
+            if (contactSection) {
+
+                const heading =
+                    contactSection
+                        .querySelector("h2");
+
+                if (heading) {
+
+                    heading.textContent =
+                        contact.title;
+
+                }
+
+
+                const name =
+                    contactSection
+                        .querySelector(
+                            '[name="from_name"]'
+                        );
+
+                if (name) {
+
+                    name.placeholder =
+                        contact.namePlaceholder;
+
+                }
+
+
+                const email =
+                    contactSection
+                        .querySelector(
+                            '[name="from_email"]'
+                        );
+
+                if (email) {
+
+                    email.placeholder =
+                        contact.emailPlaceholder;
+
+                }
+
+
+                const message =
+                    contactSection
+                        .querySelector(
+                            '[name="message"]'
+                        );
+
+                if (message) {
+
+                    message.placeholder =
+                        contact.messagePlaceholder;
+
+                }
+
+
+                const button =
+                    contactSection
+                        .querySelector(
+                            "button"
+                        );
+
+                if (button) {
+
+                    button.textContent =
+                        contact.buttonText;
+
+                }
+
+            }
+
+        }
+
+
+        console.log(
+            "Portfolio content loaded successfully."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Portfolio Content Error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* LOAD CONTENT */
+
+loadPortfolioContent();
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+(function(){
+  emailjs.init("YdF3cIidCNShSf1pj");
+})();
+
+document.getElementById("contact-form").addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const form = this;
+
+    const name = form.querySelector('[name="from_name"]').value.trim();
+    const email = form.querySelector('[name="from_email"]').value.trim();
+    const message = form.querySelector('[name="message"]').value.trim();
+
+    if (!name || !email || !message) {
+
+    await siteNotice({
+
+        title:
+            "Missing Information",
+
+        subtitle:
+            "Please complete the contact form.",
+
+        message:
+            "Name, email and message are required.",
+
+        icon:
+            "⚠️"
+
+    });
+
+    return;
+}
+
+    try {
+
+        // Save message to MongoDB
+        const dbResponse = await fetch("/api/messages", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                message: message
+            })
+        });
+
+        const dbResult = await dbResponse.json();
+
+        if (
+    !dbResponse.ok ||
+    !dbResult.success
+) {
+
+    console.error(
+        "MongoDB Error:",
+        dbResult
+    );
+
+    await siteNotice({
+
+        title:
+            "Message Not Sent",
+
+        subtitle:
+            "We couldn't save your message.",
+
+        message:
+            "Please try again in a moment.",
+
+        icon:
+            "❌",
+
+        type:
+            "danger"
+
+    });
+
+    return;
+}
+
+        // Send message to your email using EmailJS
+        await emailjs.sendForm(
+            "service_mr5m3i3",
+            "template_9zywgyh",
+            form
+        );
+
+        await siteNotice({
+
+    title:
+        "Message Sent",
+
+    subtitle:
+        "Thank you for contacting me.",
+
+    message:
+        "Your message has been sent successfully. I'll get back to you soon.",
+
+    icon:
+        "🚀"
+
+});
+
+        form.reset();
+
+    } catch (error) {
+
+        console.error("Contact Form Error:", error);
+
+        await siteNotice({
+
+    title:
+        "Something Went Wrong",
+
+    subtitle:
+        "Your message could not be sent.",
+
+    message:
+        "Please try again later.",
+
+    icon:
+        "❌",
+
+    type:
+        "danger"
+
+});
+    }
+
+});
+</script>
+
+<!-- Donation Popup -->
+<div id="donationPopup" class="popup">
+  <div class="popup-box">
+    <h2 id="popupText"></h2>
+  </div>
+</div>
+<audio id="popupSound" preload="auto">
+  <source src="/sounds/faaah.mp3" type="audio/mpeg">
+</audio>
+
+<!-- =====================================================
+     PROFESSIONAL WEBSITE MODAL
+===================================================== -->
+
+<div
+    id="siteModalOverlay"
+    class="site-modal-overlay"
+>
+
+    <div
+        id="siteModal"
+        class="site-modal"
+    >
+
+        <div class="site-modal-header">
+
+            <div class="site-modal-title-area">
+
+                <div
+                    id="siteModalIcon"
+                    class="site-modal-icon"
+                >
+                    ✨
+                </div>
+
+                <div>
+
+                    <h3 id="siteModalTitle">
+                        Information
+                    </h3>
+
+                    <p id="siteModalSubtitle">
+                        Please enter the required information.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="siteModalClose"
+                class="site-modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            id="siteModalBody"
+            class="site-modal-body"
+        ></div>
+
+        <div
+            id="siteModalActions"
+            class="site-modal-actions"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+
+<script src="/site-shell.js"></script>
+</body>
+</html>

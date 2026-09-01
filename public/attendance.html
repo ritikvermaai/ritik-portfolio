@@ -1,0 +1,2822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance Calculator | Ritik Verma</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+
+            background: #0f172a;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .brand img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .menu-btn {
+            width: 35px;
+            height: 28px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .menu-btn span {
+            width: 100%;
+            height: 3px;
+
+            background: #00f7ff;
+            border-radius: 5px;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+
+            width: 280px;
+            height: 100vh;
+
+            padding: 90px 30px 30px;
+
+            background: #111827;
+
+            z-index: 2000;
+
+            transition: 0.4s;
+
+            box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar a {
+            display: block;
+
+            color: white;
+            text-decoration: none;
+
+            padding: 15px 5px;
+
+            font-size: 17px;
+
+            transition: 0.25s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: #00f7ff;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+
+            background: transparent;
+            color: #00f7ff;
+
+            border: none;
+
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        /* ================= PAGE ================= */
+
+        .page {
+            width: 100%;
+            max-width: 1200px;
+
+            margin: auto;
+
+            padding: 110px 20px 70px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            color: #00f7ff;
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #94a3b8;
+        }
+
+        /* ================= CARD ================= */
+
+        .card {
+            background: #111827;
+
+            border: 1px solid rgba(0,247,255,0.18);
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 0 25px rgba(0,247,255,0.05);
+        }
+
+        .card h2 {
+            color: #00f7ff;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+
+        /* ================= INPUTS ================= */
+
+        .input-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+        }
+
+        .input-group label {
+            display: block;
+
+            color: #cbd5e1;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+        .input-group input,
+        select {
+            width: 100%;
+
+            padding: 13px;
+
+            background: #0f172a;
+
+            color: white;
+
+            border: 1px solid #334155;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+        }
+
+        .input-group input:focus,
+        select:focus {
+            outline: none;
+
+            border-color: #00f7ff;
+
+            box-shadow:
+                0 0 10px rgba(0,247,255,0.15);
+        }
+
+        /* ================= BUTTON ================= */
+
+        .btn {
+            margin-top: 22px;
+
+            padding: 13px 22px;
+
+            background: #00f7ff;
+
+            color: #0f172a;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 20px rgba(0,247,255,0.35);
+        }
+
+        /* ================= CURRENT RESULT ================= */
+
+        .result {
+            margin-top: 25px;
+
+            padding: 25px;
+
+            background: #0b1220;
+
+            border-radius: 14px;
+
+            text-align: center;
+        }
+
+        .percentage {
+            font-size: 55px;
+
+            font-weight: bold;
+
+            color: #00f7ff;
+        }
+
+        .status {
+            font-size: 22px;
+
+            font-weight: bold;
+
+            margin: 10px 0 20px;
+        }
+
+        .excellent {
+            color: #22c55e;
+        }
+
+        .very-good {
+            color: #38bdf8;
+        }
+
+        .good {
+            color: #4ade80;
+        }
+
+        .satisfactory {
+            color: #a3e635;
+        }
+
+        .average {
+            color: #facc15;
+        }
+
+        .low {
+            color: #fb923c;
+        }
+
+        .critical {
+            color: #ef4444;
+        }
+
+        /* ================= PROGRESS ================= */
+
+        .progress {
+            width: 100%;
+
+            height: 14px;
+
+            background: #1e293b;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+
+            background: #00f7ff;
+
+            border-radius: 20px;
+
+            transition: 0.6s;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 12px;
+
+            margin-top: 20px;
+        }
+
+        .stat {
+            background: #111827;
+
+            border: 1px solid #164e63;
+
+            padding: 15px;
+
+            border-radius: 10px;
+        }
+
+        .stat strong {
+            display: block;
+
+            color: #00f7ff;
+
+            font-size: 23px;
+        }
+
+        .stat span {
+            color: #94a3b8;
+
+            font-size: 12px;
+        }
+
+        /* ================= SAFETY ================= */
+
+        .safety {
+            margin-top: 20px;
+
+            padding: 15px;
+
+            background: #111827;
+
+            border-radius: 10px;
+
+            color: #cbd5e1;
+        }
+
+        /* ================= FUTURE ================= */
+
+        .future-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-top: 20px;
+        }
+
+        .future-box {
+            background: #0b1220;
+
+            border: 1px solid #164e63;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            text-align: center;
+        }
+
+        .future-box span {
+            display: block;
+
+            color: #94a3b8;
+
+            margin-bottom: 10px;
+        }
+
+        .future-box strong {
+            display: block;
+
+            color: #00f7ff;
+
+            font-size: 28px;
+        }
+
+        .future-box small {
+            display: block;
+
+            margin-top: 8px;
+
+            color: #cbd5e1;
+        }
+
+        /* ================= TARGET ================= */
+
+        .target-row {
+            display: flex;
+
+            gap: 15px;
+
+            align-items: end;
+        }
+
+        .target-row .input-group {
+            flex: 1;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            padding: 14px;
+
+            text-align: center;
+
+            border-bottom: 1px solid #1e293b;
+        }
+
+        th {
+            color: #00f7ff;
+        }
+
+        td {
+            color: #cbd5e1;
+        }
+
+        /* ================= QUICK WHAT-IF ================= */
+
+.what-if {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.what-if button {
+    width: 100%;
+    min-height: 48px;
+
+    padding: 12px 18px;
+
+    border: 1px solid rgba(0, 247, 255, 0.35);
+    border-radius: 10px;
+
+    background: #0b1220;
+    color: #00f7ff;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.what-if button:hover {
+    background: rgba(0, 247, 255, 0.08);
+
+    border-color: #00f7ff;
+
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 0 15px rgba(0, 247, 255, 0.15);
+}
+
+.what-if button:active {
+    transform: translateY(0);
+
+    box-shadow:
+        0 0 8px rgba(0, 247, 255, 0.1);
+}
+
+        /* ================= SAFE MISS ================= */
+
+        .safe-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 12px;
+        }
+
+        .safe-card {
+            background: #0b1220;
+
+            border: 1px solid #164e63;
+
+            border-radius: 10px;
+
+            padding: 17px;
+
+            text-align: center;
+        }
+
+        .safe-card strong {
+            display: block;
+
+            color: #00f7ff;
+
+            font-size: 20px;
+
+            margin-bottom: 7px;
+        }
+
+        .safe-card span {
+            color: #cbd5e1;
+
+            font-size: 13px;
+        }
+
+        /* ================= SUBJECTS ================= */
+
+        .subject-form {
+            display: grid;
+
+            grid-template-columns:
+                1.5fr 1fr 1fr auto;
+
+            gap: 12px;
+
+            align-items: end;
+        }
+
+        .subjects {
+            margin-top: 20px;
+        }
+
+        .subject {
+            display: grid;
+
+            grid-template-columns:
+                1.5fr 1fr 1fr 1fr auto;
+
+            gap: 10px;
+
+            align-items: center;
+
+            background: #0b1220;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            margin-bottom: 10px;
+        }
+
+        .subject-name {
+            color: white;
+        }
+
+        .subject-percent {
+            color: #00f7ff;
+
+            font-weight: bold;
+        }
+
+        .delete {
+            background: #7f1d1d;
+
+            color: white;
+
+            padding: 8px 12px;
+
+            margin: 0;
+        }
+
+        /* ================= RESET ================= */
+
+        .reset {
+            display: block;
+
+            margin: 25px auto 0;
+
+            background: transparent;
+
+            color: #f87171;
+
+            border: 1px solid #7f1d1d;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media(max-width: 800px) {
+
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .future-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .safe-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .what-if {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .subject-form {
+                grid-template-columns: 1fr;
+            }
+
+            .subject {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .target-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        @media(max-width: 500px) {
+
+            .top-bar {
+                padding: 0 18px;
+            }
+
+            .page {
+                padding:
+                    100px 14px 50px;
+            }
+
+            .header h1 {
+                font-size: 30px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .safe-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    
+/* ================= PROFESSIONAL NOTICE ================= */
+
+.attendance-notice-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.attendance-notice-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.attendance-notice {
+    width: min(460px, 100%);
+    background: linear-gradient(145deg, #111827, #0f172a);
+    border: 1px solid rgba(0, 247, 255, 0.25);
+    border-radius: 18px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.65);
+    overflow: hidden;
+    transform: translateY(15px) scale(0.97);
+    transition: transform 0.2s ease;
+}
+
+.attendance-notice-overlay.active .attendance-notice {
+    transform: translateY(0) scale(1);
+}
+
+.attendance-notice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.attendance-notice-title-area {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.attendance-notice-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(0, 247, 255, 0.10);
+    font-size: 21px;
+}
+
+.attendance-notice h3 {
+    margin: 0;
+    color: white;
+    font-size: 18px;
+}
+
+.attendance-notice-header p {
+    margin: 4px 0 0;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.attendance-notice-close {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    font-size: 23px;
+    cursor: pointer;
+}
+
+.attendance-notice-close:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: white;
+}
+
+.attendance-notice-message {
+    padding: 22px;
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.attendance-notice-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 22px 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.attendance-notice-btn {
+    min-width: 90px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 9px;
+    background: #00e5f5;
+    color: #06121a;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.attendance-notice-btn:hover {
+    opacity: 0.9;
+}
+
+    </style>
+<link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="/site-shell.css">
+</head>
+
+<body>
+
+<!-- ================= TOP BAR ================= -->
+
+<div class="top-bar">
+
+    <div class="brand">
+
+        <img
+            src="images/main.png"
+            alt="Ritik Verma"
+        >
+
+        <span>
+            Ritik Verma
+        </span>
+
+    </div>
+
+    <button class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span></span><span></span><span></span></button>
+
+</div>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<div class="sidebar" id="sidebar" aria-label="Main navigation">
+  <button class="close-btn" type="button" aria-label="Close navigation">×</button>
+  <a href="/" data-nav="/" id="nav-home">Home</a>
+  <a href="/coding.html" data-nav="coding.html" id="nav-coding">Compiler</a>
+  <a href="/projects.html" data-nav="projects.html" id="nav-projects">Projects</a>
+  <a href="/gallery.html" data-nav="gallery.html" id="nav-gallery">Gallery</a>
+  <a href="/attendance.html" data-nav="attendance.html" id="nav-attendance">Attendance Calculator</a>
+  <a href="/resume.html" data-nav="resume.html" id="nav-resume">Resume</a>
+  <a href="/contact.html" data-nav="contact.html" id="nav-contact">Contact us</a>
+</div>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="page">
+
+    <div class="header">
+
+        <h1>
+            📊 Attendance Calculator
+        </h1>
+
+        <p>
+            Calculate • Predict • Plan • Manage
+        </p>
+
+    </div>
+
+
+    <!-- ================= CURRENT ATTENDANCE ================= -->
+
+    <section class="card">
+
+        <h2>
+            📚 Current Attendance
+        </h2>
+
+        <div class="input-grid">
+
+            <div class="input-group">
+
+                <label>
+                    Total Lectures
+                </label>
+
+                <input
+                    type="number"
+                    id="total"
+                    placeholder="413"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Attended Lectures
+                </label>
+
+                <input
+                    type="number"
+                    id="attended"
+                    placeholder="372"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Absent Lectures
+                </label>
+
+                <input
+                    type="number"
+                    id="absent"
+                    placeholder="41"
+                    min="0"
+                >
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="btn"
+            onclick="calculateAttendance()"
+        >
+            Calculate Attendance
+        </button>
+
+
+        <div
+            id="currentResult"
+            class="result"
+        >
+            Enter your attendance details.
+        </div>
+
+    </section>
+
+
+    <!-- ================= FUTURE SIMULATOR ================= -->
+
+    <section class="card">
+
+        <h2>
+            🔮 Future Attendance Simulator
+        </h2>
+
+        <p class="description">
+            See what your attendance will be after your upcoming lectures.
+        </p>
+
+        <div class="input-grid">
+
+            <div class="input-group">
+
+                <label>
+                    Future Lectures
+                </label>
+
+                <input
+                    type="number"
+                    id="future"
+                    placeholder="10"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Lectures You Will Attend
+                </label>
+
+                <input
+                    type="number"
+                    id="futureAttend"
+                    placeholder="7"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Lectures You Will Miss
+                </label>
+
+                <input
+                    type="number"
+                    id="futureMiss"
+                    placeholder="3"
+                    min="0"
+                >
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="btn"
+            onclick="simulateFuture()"
+        >
+            Simulate Future
+        </button>
+
+
+        <div
+            id="futureResult"
+            class="future-grid"
+        ></div>
+
+    </section>
+
+
+    <!-- ================= TARGET ================= -->
+
+    <section class="card">
+
+        <h2>
+            🎯 Target Attendance
+        </h2>
+
+        <div class="target-row">
+
+            <div class="input-group">
+
+                <label>
+                    Target Percentage
+                </label>
+
+                <select id="target">
+
+                    <option value="75">
+                        75%
+                    </option>
+
+                    <option value="80">
+                        80%
+                    </option>
+
+                    <option value="85">
+                        85%
+                    </option>
+
+                    <option value="90">
+                        90%
+                    </option>
+
+                    <option value="95">
+                        95%
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                class="btn"
+                onclick="calculateTarget()"
+            >
+                Calculate Target
+            </button>
+
+        </div>
+
+
+        <div
+            id="targetResult"
+            class="result"
+        ></div>
+
+    </section>
+
+
+    <!-- ================= FORECAST ================= -->
+
+    <section class="card">
+
+        <h2>
+            📈 Attendance Forecast
+        </h2>
+
+        <p class="description">
+            See your best and worst possible attendance in the future.
+        </p>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Future Lectures
+                        </th>
+
+                        <th>
+                            Attend All
+                        </th>
+
+                        <th>
+                            Miss All
+                        </th>
+
+                        <th>
+                            Best Status
+                        </th>
+
+                        <th>
+                            Worst Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="forecastBody">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= WHAT IF ================= -->
+
+    <section class="card">
+
+        <h2>
+            ⚡ Quick What-If
+        </h2>
+
+        <p class="description">
+            Quickly see what happens if you attend or miss lectures.
+        </p>
+
+        <div class="what-if">
+
+            <button onclick="quickSimulation(1,0)">
+                +1 Attend
+            </button>
+
+            <button onclick="quickSimulation(5,0)">
+                +5 Attend
+            </button>
+
+            <button onclick="quickSimulation(10,0)">
+                +10 Attend
+            </button>
+
+            <button onclick="quickSimulation(0,1)">
+                +1 Miss
+            </button>
+
+            <button onclick="quickSimulation(0,5)">
+                +5 Miss
+            </button>
+
+            <button onclick="quickSimulation(0,10)">
+                +10 Miss
+            </button>
+
+        </div>
+
+
+        <div
+            id="quickResult"
+            class="result"
+        ></div>
+
+    </section>
+
+
+    <!-- ================= SAFE MISS ================= -->
+
+    <section class="card">
+
+        <h2>
+            🛡️ Safe-Miss Planner
+        </h2>
+
+        <p class="description">
+            Find out how many lectures you can miss while maintaining each target.
+        </p>
+
+        <div
+            id="safeMiss"
+            class="safe-grid"
+        ></div>
+
+    </section>
+
+
+    <!-- ================= SEMESTER PLANNER ================= -->
+
+    <section class="card">
+
+        <h2>
+            📅 Semester Planner
+        </h2>
+
+        <p class="description">
+            Estimate your final attendance based on your remaining lectures.
+        </p>
+
+        <div class="input-grid">
+
+            <div class="input-group">
+
+                <label>
+                    Remaining Working Days
+                </label>
+
+                <input
+                    type="number"
+                    id="remainingDays"
+                    placeholder="30"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Lectures Per Day
+                </label>
+
+                <input
+                    type="number"
+                    id="lecturesPerDay"
+                    placeholder="5"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Expected Future Absences
+                </label>
+
+                <input
+                    type="number"
+                    id="plannedAbsences"
+                    placeholder="5"
+                    min="0"
+                >
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="btn"
+            onclick="semesterPlanner()"
+        >
+            Calculate Final Attendance
+        </button>
+
+
+        <div
+            id="semesterResult"
+            class="future-grid"
+        ></div>
+
+    </section>
+
+
+    <!-- ================= SUBJECT TRACKER ================= -->
+
+    <section class="card">
+
+        <h2>
+            📚 Subject Attendance Tracker
+        </h2>
+
+        <p class="description">
+            Track attendance separately for every subject.
+        </p>
+
+
+        <div class="input-grid">
+
+            <div class="input-group">
+
+                <label>
+                    Subject Name
+                </label>
+
+                <input
+                    type="text"
+                    id="subjectName"
+                    placeholder="DSA"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Total Classes
+                </label>
+
+                <input
+                    type="number"
+                    id="subjectTotal"
+                    placeholder="40"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Attended Classes
+                </label>
+
+                <input
+                    type="number"
+                    id="subjectAttended"
+                    placeholder="35"
+                    min="0"
+                >
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="btn"
+            onclick="addSubject()"
+        >
+            + Add Subject
+        </button>
+
+
+        <div
+            id="subjects"
+            style="margin-top:20px;"
+        ></div>
+
+
+        <div
+            id="subjectSummary"
+            class="result"
+        >
+            Add subjects to see your overall subject attendance.
+        </div>
+
+    </section>
+
+
+    <!-- ================= RESET ================= -->
+
+    <button
+        class="btn reset"
+        onclick="resetCalculator()"
+    >
+        🔄 Reset Calculator
+    </button>
+
+</main>
+
+
+
+<!-- ================= PROFESSIONAL NOTICE ================= -->
+
+<div
+    id="attendanceNoticeOverlay"
+    class="attendance-notice-overlay"
+    onclick="if(event.target === this) closeAttendanceNotice()"
+>
+    <div class="attendance-notice">
+        <div class="attendance-notice-header">
+            <div class="attendance-notice-title-area">
+                <div id="attendanceNoticeIcon" class="attendance-notice-icon">⚠️</div>
+                <div>
+                    <h3 id="attendanceNoticeTitle">Notification</h3>
+                    <p id="attendanceNoticeSubtitle">Please review the information.</p>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                class="attendance-notice-close"
+                onclick="closeAttendanceNotice()"
+                aria-label="Close"
+            >×</button>
+        </div>
+
+        <div id="attendanceNoticeMessage" class="attendance-notice-message"></div>
+
+        <div class="attendance-notice-actions">
+            <button
+                type="button"
+                class="attendance-notice-btn"
+                onclick="closeAttendanceNotice()"
+            >OK</button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+/* ================= PROFESSIONAL NOTICE ================= */
+
+function siteNotice({
+    title = "Notification",
+    subtitle = "Please review the information below.",
+    message = "",
+    icon = "ℹ️"
+} = {}) {
+    const overlay = document.getElementById("attendanceNoticeOverlay");
+    if (!overlay) return;
+
+    document.getElementById("attendanceNoticeIcon").textContent = icon;
+    document.getElementById("attendanceNoticeTitle").textContent = title;
+    document.getElementById("attendanceNoticeSubtitle").textContent = subtitle;
+    document.getElementById("attendanceNoticeMessage").textContent = message;
+
+    overlay.classList.add("active");
+}
+
+function closeAttendanceNotice() {
+    const overlay = document.getElementById("attendanceNoticeOverlay");
+    if (overlay) overlay.classList.remove("active");
+}
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        closeAttendanceNotice();
+    }
+});
+
+
+/* ================= GET DATA ================= */
+
+function getAttendanceData() {
+
+    const total =
+        Number(
+            document.getElementById("total").value
+        );
+
+    const attended =
+        Number(
+            document.getElementById("attended").value
+        );
+
+    const absent =
+        Number(
+            document.getElementById("absent").value
+        );
+
+
+    if (total <= 0) {
+
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Please enter total lectures."),
+    icon: "⚠️"
+});;
+
+        return null;
+
+    }
+
+
+    if (
+        attended < 0 ||
+        absent < 0
+    ) {
+
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Values cannot be negative."),
+    icon: "⚠️"
+});;
+
+        return null;
+
+    }
+
+
+    if (
+        attended + absent !== total
+    ) {
+
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Total lectures must equal attended + absent."),
+    icon: "⚠️"
+});;
+
+        return null;
+
+    }
+
+
+    return {
+        total,
+        attended,
+        absent
+    };
+
+}
+
+
+/* ================= STATUS ================= */
+
+function getStatus(percentage) {
+
+    if (percentage >= 95) {
+
+        return {
+            text: "🏆 Excellent",
+            className: "excellent"
+        };
+
+    }
+
+    if (percentage >= 90) {
+
+        return {
+            text: "🌟 Very Good",
+            className: "very-good"
+        };
+
+    }
+
+    if (percentage >= 85) {
+
+        return {
+            text: "🟢 Good",
+            className: "good"
+        };
+
+    }
+
+    if (percentage >= 80) {
+
+        return {
+            text: "🙂 Satisfactory",
+            className: "satisfactory"
+        };
+
+    }
+
+    if (percentage >= 75) {
+
+        return {
+            text: "🟡 Average",
+            className: "average"
+        };
+
+    }
+
+    if (percentage >= 65) {
+
+        return {
+            text: "🟠 Low",
+            className: "low"
+        };
+
+    }
+
+    return {
+        text: "🔴 Critical",
+        className: "critical"
+    };
+
+}
+
+
+/* ================= CURRENT ================= */
+
+function calculateAttendance() {
+
+    const data =
+        getAttendanceData();
+
+    if (!data) return;
+
+
+    const percentage =
+        (
+            data.attended /
+            data.total
+        ) * 100;
+
+
+    const status =
+        getStatus(percentage);
+
+
+    let safetyMessage;
+
+
+    if (percentage >= 75) {
+
+        const canMiss =
+            Math.floor(
+                (
+                    data.attended -
+                    (0.75 * data.total)
+                ) / 0.75
+            );
+
+
+        safetyMessage = `
+            🛡️ You can miss
+            <strong>
+                ${Math.max(0, canMiss)}
+            </strong>
+            more lecture(s) and remain at 75%.
+        `;
+
+    } else {
+
+        const required =
+            Math.ceil(
+                (
+                    (0.75 * data.total) -
+                    data.attended
+                ) / 0.25
+            );
+
+
+        safetyMessage = `
+            ⚠️ You need to attend
+            <strong>
+                ${required}
+            </strong>
+            consecutive lecture(s) to reach 75%.
+        `;
+
+    }
+
+
+    document.getElementById(
+        "currentResult"
+    ).innerHTML = `
+
+        <div class="percentage">
+            ${percentage.toFixed(2)}%
+        </div>
+
+        <div class="status ${status.className}">
+            ${status.text}
+        </div>
+
+        <div class="progress">
+
+            <div
+                class="progress-bar"
+                style="width:${Math.min(
+                    percentage,
+                    100
+                )}%"
+            ></div>
+
+        </div>
+
+
+        <div class="stats">
+
+            <div class="stat">
+                <strong>
+                    ${data.total}
+                </strong>
+                <span>Total</span>
+            </div>
+
+            <div class="stat">
+                <strong>
+                    ${data.attended}
+                </strong>
+                <span>Attended</span>
+            </div>
+
+            <div class="stat">
+                <strong>
+                    ${data.absent}
+                </strong>
+                <span>Absent</span>
+            </div>
+
+            <div class="stat">
+                <strong>
+                    ${(100 - percentage).toFixed(2)}%
+                </strong>
+                <span>Absence Rate</span>
+            </div>
+
+        </div>
+
+
+        <div class="safety">
+            ${safetyMessage}
+        </div>
+
+    `;
+
+
+    generateForecast(data);
+
+    generateSafeMiss(data);
+
+    saveCurrentData(data);
+
+}
+
+
+/* ================= FUTURE ================= */
+
+function simulateFuture() {
+
+    const data =
+        getAttendanceData();
+
+    if (!data) return;
+
+
+    const future =
+        Number(
+            document.getElementById(
+                "future"
+            ).value
+        );
+
+
+    const futureAttend =
+        Number(
+            document.getElementById(
+                "futureAttend"
+            ).value
+        );
+
+
+    const futureMiss =
+        Number(
+            document.getElementById(
+                "futureMiss"
+            ).value
+        );
+
+
+    if (future < 0) {
+
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Invalid future lectures."),
+    icon: "⚠️"
+});;
+
+        return;
+
+    }
+
+
+    if (
+        futureAttend < 0 ||
+        futureMiss < 0
+    ) {
+
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Future values cannot be negative."),
+    icon: "⚠️"
+});;
+
+        return;
+
+    }
+
+
+    if (
+        futureAttend + futureMiss !== future
+    ) {
+
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Future Lectures must equal Attend + Miss."),
+    icon: "⚠️"
+});;
+
+        return;
+
+    }
+
+
+    const plannedPercentage =
+        (
+            data.attended +
+            futureAttend
+        ) /
+        (
+            data.total +
+            future
+        ) * 100;
+
+
+    const attendAll =
+        (
+            data.attended +
+            future
+        ) /
+        (
+            data.total +
+            future
+        ) * 100;
+
+
+    const missAll =
+        data.attended /
+        (
+            data.total +
+            future
+        ) * 100;
+
+
+    const plannedStatus =
+        getStatus(plannedPercentage);
+
+
+    document.getElementById(
+        "futureResult"
+    ).innerHTML = `
+
+        <div class="future-box">
+
+            <span>
+                📊 Your Plan
+            </span>
+
+            <strong>
+                ${plannedPercentage.toFixed(2)}%
+            </strong>
+
+            <small class="${plannedStatus.className}">
+                ${plannedStatus.text}
+            </small>
+
+        </div>
+
+
+        <div class="future-box">
+
+            <span>
+                🟢 Attend All
+            </span>
+
+            <strong>
+                ${attendAll.toFixed(2)}%
+            </strong>
+
+            <small>
+                ${future} future lectures
+            </small>
+
+        </div>
+
+
+        <div class="future-box">
+
+            <span>
+                🔴 Miss All
+            </span>
+
+            <strong>
+                ${missAll.toFixed(2)}%
+            </strong>
+
+            <small>
+                ${future} future lectures
+            </small>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ================= TARGET ================= */
+
+function calculateTarget() {
+
+    const data =
+        getAttendanceData();
+
+    if (!data) return;
+
+
+    const target =
+        Number(
+            document.getElementById(
+                "target"
+            ).value
+        ) / 100;
+
+
+    const current =
+        data.attended /
+        data.total;
+
+
+    if (current >= target) {
+
+        const canMiss =
+            Math.floor(
+                (
+                    data.attended -
+                    target * data.total
+                ) / target
+            );
+
+
+        document.getElementById(
+            "targetResult"
+        ).innerHTML = `
+
+            🎉 You have already reached
+            <strong>
+                ${target * 100}%
+            </strong>.
+
+            <br><br>
+
+            You can miss approximately
+            <strong>
+                ${Math.max(
+                    0,
+                    canMiss
+                )}
+            </strong>
+            more lecture(s).
+
+        `;
+
+    } else {
+
+        const required =
+            Math.ceil(
+                (
+                    target * data.total -
+                    data.attended
+                ) /
+                (1 - target)
+            );
+
+
+        document.getElementById(
+            "targetResult"
+        ).innerHTML = `
+
+            🎯 To reach
+            <strong>
+                ${target * 100}%
+            </strong>
+
+            <br><br>
+
+            You need to attend
+            <strong>
+                ${required}
+            </strong>
+            consecutive lecture(s).
+
+        `;
+
+    }
+
+}
+
+
+/* ================= FORECAST ================= */
+
+function generateForecast(data) {
+
+    const futureNumbers =
+        [5, 10, 20, 30, 50, 100];
+
+
+    let html = "";
+
+
+    futureNumbers.forEach(
+        function (future) {
+
+            const attendAll =
+                (
+                    data.attended +
+                    future
+                ) /
+                (
+                    data.total +
+                    future
+                ) * 100;
+
+
+            const missAll =
+                data.attended /
+                (
+                    data.total +
+                    future
+                ) * 100;
+
+
+            const bestStatus =
+                getStatus(attendAll);
+
+            const worstStatus =
+                getStatus(missAll);
+
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${future}
+                    </td>
+
+                    <td class="success">
+                        ${attendAll.toFixed(2)}%
+                    </td>
+
+                    <td class="danger">
+                        ${missAll.toFixed(2)}%
+                    </td>
+
+                    <td class="${bestStatus.className}">
+                        ${bestStatus.text}
+                    </td>
+
+                    <td class="${worstStatus.className}">
+                        ${worstStatus.text}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    document.getElementById(
+        "forecastBody"
+    ).innerHTML = html;
+
+}
+
+
+/* ================= QUICK ================= */
+
+function quickSimulation(
+    attend,
+    miss
+) {
+
+    const data =
+        getAttendanceData();
+
+    if (!data) return;
+
+
+    const newAttendance =
+        data.attended +
+        attend;
+
+
+    const newTotal =
+        data.total +
+        attend +
+        miss;
+
+
+    const percentage =
+        newAttendance /
+        newTotal *
+        100;
+
+
+    const status =
+        getStatus(percentage);
+
+
+    document.getElementById(
+        "quickResult"
+    ).innerHTML = `
+
+        <div class="percentage">
+            ${percentage.toFixed(2)}%
+        </div>
+
+        <div class="status ${status.className}">
+            ${status.text}
+        </div>
+
+        <p>
+            After
+            ${attend + miss}
+            future lecture(s).
+        </p>
+
+    `;
+
+}
+
+
+/* ================= SAFE MISS ================= */
+
+function generateSafeMiss(data) {
+
+    const targets =
+        [75, 80, 85, 90, 95];
+
+
+    let html = "";
+
+
+    targets.forEach(
+        function (target) {
+
+            const targetDecimal =
+                target / 100;
+
+
+            const current =
+                data.attended /
+                data.total;
+
+
+            if (current >= targetDecimal) {
+
+                const canMiss =
+                    Math.floor(
+                        (
+                            data.attended -
+                            targetDecimal *
+                            data.total
+                        ) /
+                        targetDecimal
+                    );
+
+
+                html += `
+
+                    <div class="safe-card">
+
+                        <strong>
+                            ${target}%
+                        </strong>
+
+                        <span>
+                            Can miss
+                            ${Math.max(
+                                0,
+                                canMiss
+                            )}
+                            lectures
+                        </span>
+
+                    </div>
+
+                `;
+
+            } else {
+
+                const required =
+                    Math.ceil(
+                        (
+                            targetDecimal *
+                            data.total -
+                            data.attended
+                        ) /
+                        (1 - targetDecimal)
+                    );
+
+
+                html += `
+
+                    <div class="safe-card">
+
+                        <strong>
+                            ${target}%
+                        </strong>
+
+                        <span>
+                            Need
+                            ${required}
+                            attends
+                        </span>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "safeMiss"
+    ).innerHTML = html;
+
+}
+
+
+/* ================= SEMESTER PLANNER ================= */
+
+function semesterPlanner() {
+
+    const data =
+        getAttendanceData();
+
+    if (!data) return;
+
+
+    const days =
+        Number(
+            document.getElementById(
+                "remainingDays"
+            ).value
+        );
+
+
+    const lecturesPerDay =
+        Number(
+            document.getElementById(
+                "lecturesPerDay"
+            ).value
+        );
+
+
+    const absences =
+        Number(
+            document.getElementById(
+                "plannedAbsences"
+            ).value
+        );
+
+
+    if (
+        days < 0 ||
+        lecturesPerDay < 0 ||
+        absences < 0
+    ) {
+
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Enter valid values."),
+    icon: "⚠️"
+});;
+
+        return;
+
+    }
+
+
+    const remainingLectures =
+        days *
+        lecturesPerDay;
+
+
+    if (absences > remainingLectures) {
+
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Future absences cannot exceed future lectures."),
+    icon: "⚠️"
+});;
+
+        return;
+
+    }
+
+
+    const futureAttended =
+        remainingLectures -
+        absences;
+
+
+    const finalPercentage =
+        (
+            data.attended +
+            futureAttended
+        ) /
+        (
+            data.total +
+            remainingLectures
+        ) * 100;
+
+
+    const status =
+        getStatus(finalPercentage);
+
+
+    document.getElementById(
+        "semesterResult"
+    ).innerHTML = `
+
+        <div class="future-box">
+
+            <span>
+                Future Lectures
+            </span>
+
+            <strong>
+                ${remainingLectures}
+            </strong>
+
+        </div>
+
+
+        <div class="future-box">
+
+            <span>
+                Future Attended
+            </span>
+
+            <strong>
+                ${futureAttended}
+            </strong>
+
+        </div>
+
+
+        <div class="future-box">
+
+            <span>
+                Projected Final
+            </span>
+
+            <strong>
+                ${finalPercentage.toFixed(2)}%
+            </strong>
+
+            <small class="${status.className}">
+                ${status.text}
+            </small>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ================= SUBJECTS ================= */
+
+let subjects =
+    JSON.parse(
+        localStorage.getItem(
+            "attendanceSubjects"
+        ) || "[]"
+    );
+
+
+function addSubject() {
+
+    const name =
+        document.getElementById(
+            "subjectName"
+        ).value.trim();
+
+
+    const total =
+        Number(
+            document.getElementById(
+                "subjectTotal"
+            ).value
+        );
+
+
+    const attended =
+        Number(
+            document.getElementById(
+                "subjectAttended"
+            ).value
+        );
+
+
+    if (!name) {
+
+    siteNotice({
+
+    title:
+        "Subject Name Required",
+
+    subtitle:
+        "Please enter a subject name.",
+
+    message:
+        "Enter subject name before adding the subject.",
+
+    icon:
+        "⚠️"
+
+});
+
+        return;
+
+    }
+
+
+    if (
+        total <= 0 ||
+        attended < 0 ||
+        attended > total
+    ) {
+
+        siteNotice({
+    title: "Attendance Notice",
+    subtitle: "Please review the information below.",
+    message: String("Enter valid subject attendance."),
+    icon: "⚠️"
+});;
+
+        return;
+
+    }
+
+
+    subjects.push({
+        name: name,
+        total: total,
+        attended: attended
+    });
+
+
+    localStorage.setItem(
+        "attendanceSubjects",
+        JSON.stringify(subjects)
+    );
+
+
+    document.getElementById(
+        "subjectName"
+    ).value = "";
+
+    document.getElementById(
+        "subjectTotal"
+    ).value = "";
+
+    document.getElementById(
+        "subjectAttended"
+    ).value = "";
+
+
+    showSubjects();
+
+}
+
+
+function deleteSubject(index) {
+
+    subjects.splice(
+        index,
+        1
+    );
+
+
+    localStorage.setItem(
+        "attendanceSubjects",
+        JSON.stringify(subjects)
+    );
+
+
+    showSubjects();
+
+}
+
+
+function showSubjects() {
+
+    const container =
+        document.getElementById(
+            "subjects"
+        );
+
+
+    if (subjects.length === 0) {
+
+        container.innerHTML =
+            "<p style='color:#94a3b8;'>No subjects added yet.</p>";
+
+        document.getElementById(
+            "subjectSummary"
+        ).innerHTML =
+            "Add subjects to see your overall subject attendance.";
+
+        return;
+
+    }
+
+
+    let html = "";
+
+
+    let totalClasses = 0;
+
+    let totalAttended = 0;
+
+
+    subjects.forEach(
+        function (subject, index) {
+
+            const percentage =
+                subject.attended /
+                subject.total *
+                100;
+
+
+            const status =
+                getStatus(percentage);
+
+
+            totalClasses +=
+                subject.total;
+
+
+            totalAttended +=
+                subject.attended;
+
+
+            html += `
+
+                <div class="subject">
+
+                    <div class="subject-name">
+                        ${subject.name}
+                    </div>
+
+                    <div>
+                        ${subject.attended}
+                        /
+                        ${subject.total}
+                    </div>
+
+                    <div class="subject-percent ${status.className}">
+                        ${percentage.toFixed(2)}%
+                    </div>
+
+                    <div class="${status.className}">
+                        ${status.text}
+                    </div>
+
+                    <button
+                        class="delete"
+                        onclick="deleteSubject(${index})"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    container.innerHTML =
+        html;
+
+
+    const overall =
+        totalAttended /
+        totalClasses *
+        100;
+
+
+    const overallStatus =
+        getStatus(overall);
+
+
+    document.getElementById(
+        "subjectSummary"
+    ).innerHTML = `
+
+        Overall Subject Attendance:
+
+        <strong>
+            ${overall.toFixed(2)}%
+        </strong>
+
+        <br><br>
+
+        <span class="${overallStatus.className}">
+            ${overallStatus.text}
+        </span>
+
+    `;
+
+}
+
+
+/* ================= LOCAL STORAGE ================= */
+
+function saveCurrentData(data) {
+
+    localStorage.setItem(
+        "attendanceData",
+        JSON.stringify(data)
+    );
+
+}
+
+
+function loadSavedData() {
+
+    const saved =
+        localStorage.getItem(
+            "attendanceData"
+        );
+
+
+    if (!saved) return;
+
+
+    const data =
+        JSON.parse(saved);
+
+
+    document.getElementById(
+        "total"
+    ).value = data.total;
+
+
+    document.getElementById(
+        "attended"
+    ).value = data.attended;
+
+
+    document.getElementById(
+        "absent"
+    ).value = data.absent;
+
+
+    calculateAttendance();
+
+}
+
+
+/* ================= RESET ================= */
+
+function resetCalculator() {
+
+    document.getElementById(
+        "total"
+    ).value = "";
+
+    document.getElementById(
+        "attended"
+    ).value = "";
+
+    document.getElementById(
+        "absent"
+    ).value = "";
+
+
+    document.getElementById(
+        "future"
+    ).value = "";
+
+    document.getElementById(
+        "futureAttend"
+    ).value = "";
+
+    document.getElementById(
+        "futureMiss"
+    ).value = "";
+
+
+    document.getElementById(
+        "remainingDays"
+    ).value = "";
+
+    document.getElementById(
+        "lecturesPerDay"
+    ).value = "";
+
+    document.getElementById(
+        "plannedAbsences"
+    ).value = "";
+
+
+    document.getElementById(
+        "currentResult"
+    ).innerHTML =
+        "Enter your attendance details.";
+
+
+    document.getElementById(
+        "futureResult"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "targetResult"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "forecastBody"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "safeMiss"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "semesterResult"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "quickResult"
+    ).innerHTML = "";
+
+
+    localStorage.removeItem(
+        "attendanceData"
+    );
+
+}
+
+
+/* ================= START ================= */
+
+showSubjects();
+
+loadSavedData();
+
+</script>
+
+<script src="/site-shell.js"></script>
+</body>
+</html>

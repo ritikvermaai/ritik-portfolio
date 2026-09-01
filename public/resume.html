@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Resume</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+/* NAVBAR + SIDEBAR (same as your working file) */
+
+.menu-btn{
+position:fixed;
+top:0px;
+left:730px;
+font-size:28px;
+cursor:pointer;
+z-index:1100;
+color:#00f7ff;
+background:none;
+border:none;
+}
+
+.sidebar{
+position:fixed;
+top:0;
+right:-270px;
+width:200px;
+height:100%;
+background:#111827;
+padding:60px 20px;
+transition:0.4s ease;
+z-index:1050;
+}
+
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+margin:20px 0;
+font-size:18px;
+transition:0.3s;
+}
+
+.sidebar a:hover{
+color:#00f7ff;
+}
+
+.sidebar.active{
+right:0;
+}
+
+/* Top bar */
+
+.top-bar{
+position:fixed;
+top:0;
+left:-19px;
+width:100%;
+height:70px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 30px;
+background:#0f172a;
+z-index:3000;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:10px;
+font-weight:600;
+font-size:18px;
+}
+
+.brand img{
+width:35px;
+height:35px;
+border-radius:50%;
+border:2px solid #b8b8b8;
+}
+
+/* PAGE */
+
+body{
+margin:0;
+font-family:Poppins;
+background:#0f172a;
+color:white;
+padding-top:120px;
+}
+
+.title{
+text-align:center;
+font-size:36px;
+color:#00f7ff;
+margin-bottom:40px;
+}
+
+/* LAYOUT */
+
+.container{
+max-width:1200px;
+margin:auto;
+display:grid;
+grid-template-columns:420px 1fr;
+gap:40px;
+padding:20px;
+}
+
+/* FORM */
+
+.form-box{
+background:#111827;
+padding:25px;
+border-radius:10px;
+}
+
+input,textarea{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+border-radius:6px;
+border:none;
+background:#1f2937;
+color:white;
+}
+
+textarea{
+height:80px;
+}
+
+/* BUTTONS */
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:6px;
+margin-top:10px;
+cursor:pointer;
+font-weight:600;
+}
+
+.generate{
+background:#06b6d4;
+}
+
+.save{
+background:#22c55e;
+}
+
+.download{
+background:#6366f1;
+}
+
+/* PREVIEW */
+
+.preview{
+background:white;
+color:black;
+padding:40px;
+border-radius:10px;
+}
+
+.profile{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+margin-bottom:10px;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+.container{
+grid-template-columns:1fr;
+}
+
+}
+
+
+/* =====================================================
+   RESUME PROFESSIONAL MODAL
+===================================================== */
+
+.resume-modal-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 999999;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.72);
+
+    backdrop-filter: blur(8px);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease;
+}
+
+
+.resume-modal-overlay.active {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
+}
+
+
+.resume-modal {
+
+    width: min(480px, 100%);
+
+    background:
+        linear-gradient(
+            145deg,
+            #111827,
+            #0f172a
+        );
+
+    border:
+        1px solid
+        rgba(0, 247, 255, 0.22);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 25px 80px
+        rgba(0, 0, 0, 0.6);
+
+    transform:
+        translateY(15px)
+        scale(0.97);
+
+    transition:
+        transform 0.2s ease;
+
+    overflow: hidden;
+}
+
+
+.resume-modal-overlay.active
+.resume-modal {
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+.resume-modal-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    padding: 20px;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.resume-modal-title-area {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+}
+
+
+.resume-modal-icon {
+
+    width: 44px;
+
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(0, 247, 255, 0.10);
+
+    color: #00f7ff;
+
+    font-size: 21px;
+}
+
+
+.resume-modal h3 {
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 18px;
+}
+
+
+.resume-modal-header p {
+
+    margin: 4px 0 0;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+
+.resume-modal-close {
+
+    width: 34px;
+
+    height: 34px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background:
+        rgba(255, 255, 255, 0.06);
+
+    color: #94a3b8;
+
+    font-size: 23px;
+
+    cursor: pointer;
+}
+
+
+.resume-modal-close:hover {
+
+    background:
+        rgba(239, 68, 68, 0.15);
+
+    color: #ffffff;
+}
+
+
+.resume-modal-body {
+
+    padding: 22px;
+
+    color: #cbd5e1;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+.resume-modal-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    padding: 16px 22px 22px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.resume-modal-btn {
+
+    min-width: 90px;
+
+    padding: 10px 20px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #00e5f5;
+
+    color: #06121a;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.resume-modal-btn:hover {
+
+    opacity: 0.9;
+
+}
+
+</style>
+
+<link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="/site-shell.css">
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+
+<div class="top-bar">
+
+<div class="brand">
+<img src="images/main.png">
+<span>Ritik Verma</span>
+</div>
+
+<button class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span></span><span></span><span></span></button>
+
+</div>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar" id="sidebar" aria-label="Main navigation">
+  <button class="close-btn" type="button" aria-label="Close navigation">×</button>
+  <a href="/" data-nav="/" id="nav-home">Home</a>
+  <a href="/coding.html" data-nav="coding.html" id="nav-coding">Compiler</a>
+  <a href="/projects.html" data-nav="projects.html" id="nav-projects">Projects</a>
+  <a href="/gallery.html" data-nav="gallery.html" id="nav-gallery">Gallery</a>
+  <a href="/attendance.html" data-nav="attendance.html" id="nav-attendance">Attendance Calculator</a>
+  <a href="/resume.html" data-nav="resume.html" id="nav-resume">Resume</a>
+  <a href="/contact.html" data-nav="contact.html" id="nav-contact">Contact us</a>
+</div>
+
+<h1 class="title">Professional Resume Builder</h1>
+
+<div class="container">
+
+<!-- FORM -->
+
+<div class="form-box">
+
+<input id="name" placeholder="Full Name">
+
+<input id="title" placeholder="Job Title">
+
+<input id="email" placeholder="Email">
+
+<input id="phone" placeholder="Phone">
+
+<input type="file" id="photo">
+
+<textarea id="about" placeholder="About"></textarea>
+
+<textarea id="skills" placeholder="Skills (comma separated)"></textarea>
+
+<textarea id="education" placeholder="Education"></textarea>
+
+<textarea id="projects" placeholder="Projects"></textarea>
+
+<button class="generate" onclick="generate()">Generate Resume</button>
+
+<button class="save" onclick="saveResume()">Save</button>
+
+<button class="download" onclick="download()">Download PDF</button>
+
+</div>
+
+<!-- PREVIEW -->
+
+<div id="preview" class="preview">
+
+<h2>Your Resume Preview</h2>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     RESUME PROFESSIONAL MODAL
+===================================================== -->
+
+<div
+    id="resumeModalOverlay"
+    class="resume-modal-overlay"
+>
+
+    <div class="resume-modal">
+
+        <div class="resume-modal-header">
+
+            <div class="resume-modal-title-area">
+
+                <div
+                    id="resumeModalIcon"
+                    class="resume-modal-icon"
+                >
+                    📄
+                </div>
+
+                <div>
+
+                    <h3 id="resumeModalTitle">
+                        Resume Saved
+                    </h3>
+
+                    <p id="resumeModalSubtitle">
+                        Your resume has been saved.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="resumeModalClose"
+                class="resume-modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            id="resumeModalBody"
+            class="resume-modal-body"
+        ></div>
+
+        <div class="resume-modal-actions">
+
+            <button
+                type="button"
+                id="resumeModalOK"
+                class="resume-modal-btn"
+            >
+                OK
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+
+/* =====================================================
+   RESUME PROFESSIONAL NOTICE
+===================================================== */
+
+function resumeNotice({
+
+    title = "Notification",
+
+    subtitle = "",
+
+    message = "",
+
+    icon = "📄"
+
+} = {}) {
+
+    const overlay =
+        document.getElementById(
+            "resumeModalOverlay"
+        );
+
+    const titleElement =
+        document.getElementById(
+            "resumeModalTitle"
+        );
+
+    const subtitleElement =
+        document.getElementById(
+            "resumeModalSubtitle"
+        );
+
+    const messageElement =
+        document.getElementById(
+            "resumeModalBody"
+        );
+
+    const iconElement =
+        document.getElementById(
+            "resumeModalIcon"
+        );
+
+    const okButton =
+        document.getElementById(
+            "resumeModalOK"
+        );
+
+    const closeButton =
+        document.getElementById(
+            "resumeModalClose"
+        );
+
+
+    titleElement.textContent =
+        title;
+
+    subtitleElement.textContent =
+        subtitle;
+
+    messageElement.textContent =
+        message;
+
+    iconElement.textContent =
+        icon;
+
+
+    overlay.classList.add(
+        "active"
+    );
+
+
+    const close = () => {
+
+        overlay.classList.remove(
+            "active"
+        );
+
+    };
+
+
+    okButton.onclick =
+        close;
+
+    closeButton.onclick =
+        close;
+
+}
+
+function generate(){
+
+const name=document.getElementById("name").value
+const title=document.getElementById("title").value
+const email=document.getElementById("email").value
+const phone=document.getElementById("phone").value
+const about=document.getElementById("about").value
+const skills=document.getElementById("skills").value.split(",")
+const education=document.getElementById("education").value
+const projects=document.getElementById("projects").value
+
+let skillHTML=""
+
+skills.forEach(s=>{
+skillHTML+=`<li>${s}</li>`
+})
+
+let photoURL=""
+
+const file=document.getElementById("photo").files[0]
+
+if(file){
+photoURL=URL.createObjectURL(file)
+}
+
+document.getElementById("preview").innerHTML=`
+
+<img src="${photoURL}" class="profile">
+
+<h2>${name}</h2>
+
+<h4>${title}</h4>
+
+<p>${email} | ${phone}</p>
+
+<h3>About</h3>
+<p>${about}</p>
+
+<h3>Skills</h3>
+<ul>${skillHTML}</ul>
+
+<h3>Education</h3>
+<p>${education}</p>
+
+<h3>Projects</h3>
+<p>${projects}</p>
+
+`
+
+}
+
+async function saveResume(){
+
+    const data = {
+
+        name:
+            name.value,
+
+        title:
+            title.value,
+
+        email:
+            email.value,
+
+        phone:
+            phone.value,
+
+        about:
+            about.value,
+
+        skills:
+            skills.value,
+
+        education:
+            education.value,
+
+        projects:
+            projects.value
+
+    };
+
+
+    localStorage.setItem(
+        "resumeData",
+        JSON.stringify(data)
+    );
+
+
+    resumeNotice({
+
+        title:
+            "Resume Saved",
+
+        subtitle:
+            "Your resume has been saved successfully.",
+
+        message:
+            "Your resume information is now stored in your browser.",
+
+        icon:
+            "📄"
+
+    });
+
+}
+
+window.onload=function(){
+
+const data=JSON.parse(localStorage.getItem("resumeData"))
+
+if(!data) return
+
+name.value=data.name
+title.value=data.title
+email.value=data.email
+phone.value=data.phone
+about.value=data.about
+skills.value=data.skills
+education.value=data.education
+projects.value=data.projects
+
+}
+
+function download(){
+
+const content=document.getElementById("preview").innerHTML
+
+const win=window.open("","","width=900,height=700")
+
+win.document.write(`
+
+<html>
+
+<head>
+
+<style>
+
+body{
+font-family:Poppins;
+padding:40px;
+}
+
+.profile{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+}
+
+</style>
+
+</head>
+
+<body>
+
+${content}
+
+</body>
+
+</html>
+
+`)
+
+win.document.close()
+
+win.print()
+
+}
+
+</script>
+
+<script src="/site-shell.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Gallery</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins';
+            background: #0f172a;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 80px 0;
+            color: #00f7ff;
+        }
+
+        .gallery {
+            padding: 0 10%;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 150px;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 1s ease;
+        }
+
+        .row.reverse {
+            flex-direction: row-reverse;
+            transform: translateX(-100px);
+        }
+
+        .row.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .text {
+            width: 45%;
+        }
+
+        .text h2 {
+            color: #00f7ff;
+            margin-bottom: 15px;
+        }
+
+        .text p {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .image {
+            width: 45%;
+        }
+
+        .dummy-img {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #00f7ff, #007acc);
+            border-radius: 12px;
+        }
+
+        /* Just to ensure scroll exists */
+        body::after {
+            content: "";
+            display: block;
+            height: 200px;
+        }
+        /* ===== NAVBAR ===== */
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #0f172a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    box-sizing: border-box;   /* IMPORTANT */
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+}
+
+.nav-pic {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid #00f7ff;
+}
+
+.menu-btn{
+position:fixed;
+top:20px;
+right:20px;
+font-size:28px;
+color:#12c3c3;
+cursor:pointer;
+background:transparent;
+border:none;
+outline:none;
+padding:0;
+box-shadow:none;
+}
+
+/* ===== SIDEBAR ===== */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -250px;
+    width: 250px;
+    height: 100%;
+    background: #111827;
+    padding-top: 100px;
+    transition: 0.4s ease;
+    z-index: 1001;
+}
+
+.sidebar a {
+    display: block;
+    padding: 15px 30px;
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #00f7ff;
+    color: black;
+}
+
+.sidebar.show {
+    right: 0;
+}
+
+/* Overlay */
+
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 1000;
+}
+
+.overlay.show {
+    display: block;
+}
+body {
+    padding-top: 80px;
+}
+.image {
+    width: 45%;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.image img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    transition: transform 0.5s ease;
+}
+
+.image:hover img {
+    transform: scale(1.08);
+}
+    </style>
+<link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="/site-shell.css">
+</head>
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="logo">
+        <img src="images/main.png" class="nav-pic">
+        <span>Ritik Verma</span>
+    </div>
+
+    <button class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><span></span><span></span><span></span></button>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar" aria-label="Main navigation">
+  <button class="close-btn" type="button" aria-label="Close navigation">×</button>
+  <a href="/" data-nav="/" id="nav-home">Home</a>
+  <a href="/coding.html" data-nav="coding.html" id="nav-coding">Compiler</a>
+  <a href="/projects.html" data-nav="projects.html" id="nav-projects">Projects</a>
+  <a href="/gallery.html" data-nav="gallery.html" id="nav-gallery">Gallery</a>
+  <a href="/attendance.html" data-nav="attendance.html" id="nav-attendance">Attendance Calculator</a>
+  <a href="/resume.html" data-nav="resume.html" id="nav-resume">Resume</a>
+  <a href="/contact.html" data-nav="contact.html" id="nav-contact">Contact us</a>
+</div>
+<body>
+
+<h1>My Gallery</h1>
+
+<section class="gallery" id="galleryContainer">
+    <div class="row">
+        <div class="text">
+            <h2>Loading gallery...</h2>
+            <p>Please wait...</p>
+        </div>
+        <div class="image">
+            <div class="dummy-img"></div>
+        </div>
+    </div>
+</section>
+
+<script>
+async function loadPublicGallery() {
+    const container =
+        document.getElementById(
+            "galleryContainer"
+        );
+
+    try {
+        const response =
+            await fetch("/api/gallery");
+
+        const data =
+            await response.json();
+
+        if (!data.success ||
+            !data.images ||
+            !data.images.length) {
+            container.innerHTML = `
+                <div class="row show">
+                    <div class="text">
+                        <h2>No gallery images yet</h2>
+                        <p>New images will appear here.</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML =
+            data.images.map(
+                (image, index) => `
+                    <div class="
+                        row
+                        ${index % 2
+                            ? "reverse"
+                            : ""}
+                    ">
+                        <div class="text">
+                            <h2>
+                                ${escapeHTML(
+                                    image.title
+                                )}
+                            </h2>
+                            <p>
+                                ${escapeHTML(
+                                    image.description ||
+                                    ""
+                                )}
+                            </p>
+                        </div>
+
+                        <div class="image">
+                            <img
+                                src="${escapeHTML(
+                                    image.imageUrl
+                                )}"
+                                alt="${escapeHTML(
+                                    image.title
+                                )}"
+                                loading="lazy"
+                            >
+                        </div>
+                    </div>
+                `
+            ).join("");
+
+        reveal();
+
+    } catch (error) {
+        console.error(
+            "Public gallery error:",
+            error
+        );
+
+        container.innerHTML = `
+            <div class="row show">
+                <div class="text">
+                    <h2>Gallery unavailable</h2>
+                    <p>Please try again later.</p>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function reveal() {
+    const rows =
+        document.querySelectorAll(
+            ".row"
+        );
+
+    rows.forEach(row => {
+        const rect =
+            row.getBoundingClientRect();
+
+        if (
+            rect.top <
+            window.innerHeight - 100
+        ) {
+            row.classList.add("show");
+        }
+    });
+}
+
+window.addEventListener(
+    "scroll",
+    reveal
+);
+
+window.addEventListener(
+    "load",
+    () => {
+        loadPublicGallery();
+    }
+);
+
+</script>
+
+<script src="/site-shell.js"></script>
+</body>
+</html>

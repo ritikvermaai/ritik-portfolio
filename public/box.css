@@ -1,0 +1,366 @@
+/* =====================================================
+   PROFESSIONAL WEBSITE MODAL
+===================================================== */
+
+.site-modal-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 99999;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        rgba(2, 6, 23, .78);
+
+    backdrop-filter:
+        blur(8px);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+        opacity .2s ease,
+        visibility .2s ease;
+}
+
+
+.site-modal-overlay.active {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
+
+}
+
+
+.site-modal {
+
+    width: min(500px, 100%);
+
+    background:
+        linear-gradient(
+            145deg,
+            #111827,
+            #0f172a
+        );
+
+    border:
+        1px solid
+        rgba(0,247,255,.25);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 25px 80px
+        rgba(0,0,0,.55),
+
+        0 0 35px
+        rgba(0,247,255,.08);
+
+    transform:
+        translateY(15px)
+        scale(.97);
+
+    transition:
+        transform .2s ease;
+
+}
+
+
+.site-modal-overlay.active
+.site-modal {
+
+    transform:
+        translateY(0)
+        scale(1);
+
+}
+
+
+/* HEADER */
+
+.site-modal-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 15px;
+
+    padding: 20px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.08);
+}
+
+
+.site-modal-title-area {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.site-modal-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background:
+        rgba(0,247,255,.10);
+
+    border:
+        1px solid
+        rgba(0,247,255,.20);
+
+    font-size: 20px;
+}
+
+
+.site-modal-header h3 {
+
+    margin: 0;
+
+    color: #f8fafc;
+
+    font-size: 18px;
+}
+
+
+.site-modal-header p {
+
+    margin: 4px 0 0;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+
+.site-modal-close {
+
+    width: 34px;
+
+    height: 34px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    color: #94a3b8;
+
+    font-size: 23px;
+
+    cursor: pointer;
+}
+
+
+.site-modal-close:hover {
+
+    background:
+        rgba(239,68,68,.15);
+
+    color: #f87171;
+}
+
+
+/* BODY */
+
+.site-modal-body {
+
+    padding: 22px;
+}
+
+
+.site-modal-field {
+
+    margin-bottom: 17px;
+}
+
+
+.site-modal-field label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #cbd5e1;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+.site-modal-field input,
+.site-modal-field textarea {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px 13px;
+
+    background: #080f1d;
+
+    color: #f8fafc;
+
+    border:
+        1px solid
+        rgba(148,163,184,.22);
+
+    border-radius: 9px;
+
+    outline: none;
+
+    font-size: 14px;
+
+    transition: .2s;
+}
+
+
+.site-modal-field input:focus,
+.site-modal-field textarea:focus {
+
+    border-color: #00f7ff;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(0,247,255,.08);
+}
+
+
+.site-modal-field textarea {
+
+    min-height: 100px;
+
+    resize: vertical;
+}
+
+
+.site-modal-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 16px 22px 22px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.08);
+}
+
+
+.site-modal-btn {
+
+    width: auto !important;
+
+    min-width: 100px;
+
+    padding: 10px 17px;
+
+    border-radius: 9px;
+
+    border: none;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    font-size: 13px;
+}
+
+
+.site-modal-btn.cancel {
+
+    background:
+        rgba(255,255,255,.07);
+
+    color: #cbd5e1;
+}
+
+
+.site-modal-btn.primary {
+
+    background: #00e5f5;
+
+    color: #06121a;
+}
+
+
+.site-modal-btn.danger {
+
+    background: #ef4444;
+
+    color: white;
+}
+
+
+.site-modal-message {
+
+    color: #cbd5e1;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+@media (max-width:600px) {
+
+    .site-modal {
+
+        width: 100%;
+
+        border-radius: 15px;
+
+    }
+
+    .site-modal-actions {
+
+        flex-direction: column;
+
+    }
+
+    .site-modal-btn {
+
+        width: 100% !important;
+
+    }
+
+}

@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Dashboard | Ritik Verma</title>
+
+    <link
+        rel="stylesheet"
+        href="/admin/dashboard.css"
+    >
+
+    <link rel="stylesheet" href="/box.css">
+
+</head>
+
+<body>
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+
+            <img
+                src="/images/main.png"
+                alt="Ritik Verma"
+            >
+
+            <div>
+
+                <h2>Ritik Verma</h2>
+
+                <span>ADMIN PANEL</span>
+
+            </div>
+
+        </div>
+
+
+        <nav>
+
+            <button
+                class="nav-item active"
+                data-section="dashboard"
+            >
+                🏠
+                <span>Dashboard</span>
+            </button>
+
+            <button
+                class="nav-item"
+                data-section="projects"
+            >
+                📁
+                <span>Projects</span>
+            </button>
+
+            <button
+                class="nav-item"
+                data-section="gallery"
+            >
+                🖼️
+                <span>Gallery</span>
+            </button>
+
+            <button
+                class="nav-item"
+                data-section="donations"
+            >
+                💰
+                <span>Donations</span>
+            </button>
+
+            <button
+                class="nav-item"
+                data-section="visitors"
+            >
+                👁️
+                <span>Visitors</span>
+            </button>
+
+            <button
+                class="nav-item"
+                data-section="messages"
+            >
+                ✉️
+                <span>Messages</span>
+            </button>
+
+            <button
+                class="nav-item"
+                data-section="resume"
+            >
+                📄
+                <span>Resume</span>
+            </button>
+
+            <button
+    class="nav-item"
+    data-section="website-builder"
+>
+    🎨
+    <span>Website Builder</span>
+</button>
+
+            <button
+                class="nav-item"
+                data-section="settings"
+            >
+                ⚙️
+                <span>Settings</span>
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="/" target="_blank">
+                🌐 View Website
+            </a>
+
+            <button id="logout">
+                🚪 Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <button id="menuButton">
+                ☰
+            </button>
+
+            <div>
+
+                <h1>Admin Dashboard</h1>
+
+                <p>
+                    Manage your portfolio
+                </p>
+
+            </div>
+
+            <div class="status">
+
+                <span></span>
+
+                Online
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= DASHBOARD ================= -->
+
+        <section
+            id="dashboard"
+            class="section active-section"
+        >
+
+            <div class="welcome">
+
+                <div>
+
+                    <h2>
+                        Welcome back,
+                        <span>Ritik</span> 🚀
+                    </h2>
+
+                    <p>
+                        Manage your portfolio from one place.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon cyan">
+                        👁️
+                    </div>
+
+                    <div>
+
+                        <p>Visitors</p>
+
+                        <h3 id="visitorStat">
+                            0
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon pink">
+                        📁
+                    </div>
+
+                    <div>
+
+                        <p>Projects</p>
+
+                        <h3 id="projectStat">
+                            0
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon cyan">
+                        🖼️
+                    </div>
+
+                    <div>
+
+                        <p>Gallery</p>
+
+                        <h3 id="galleryStat">
+                            0
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon pink">
+                        💰
+                    </div>
+
+                    <div>
+
+                        <p>Donations</p>
+
+                        <h3>
+                            ₹<span id="donationStat">0</span>
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="content-grid">
+
+                <div class="panel">
+
+                    <div class="panel-title">
+
+                        <h2>
+                            Quick Actions
+                        </h2>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+                        <button
+                            data-section="gallery"
+                            class="quick-btn"
+                        >
+                            🖼️
+                            <span>
+                                Manage Gallery
+                            </span>
+                        </button>
+
+
+                        <button
+                            data-section="projects"
+                            class="quick-btn"
+                        >
+                            📁
+                            <span>
+                                Manage Projects
+                            </span>
+                        </button>
+
+
+                        <button
+                            data-section="donations"
+                            class="quick-btn"
+                        >
+                            💰
+                            <span>
+                                View Donations
+                            </span>
+                        </button>
+
+
+                        <button
+                            data-section="settings"
+                            class="quick-btn"
+                        >
+                            ⚙️
+                            <span>
+                                Website Settings
+                            </span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-title">
+
+                        <h2>
+                            System
+                        </h2>
+
+                    </div>
+
+                    <div class="system-list">
+
+                        <div>
+
+                            <span>
+                                Website
+                            </span>
+
+                            <strong class="good">
+                                ● Online
+                            </strong>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                MongoDB
+                            </span>
+
+                            <strong class="good">
+                                ● Connected
+                            </strong>
+
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Server
+                            </span>
+
+                            <strong class="good">
+                                ● Running
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= OTHER SECTIONS ================= -->
+
+        <section id="projects" class="section">
+
+    <div class="page-title">
+
+        <div class="page-heading-row">
+
+            <div>
+
+                <h2>Project Manager</h2>
+
+                <p>
+                    Manage the projects shown on your public portfolio. Add, edit, preview and delete projects anytime.
+                </p>
+
+            </div>
+
+            <button
+                class="primary-btn"
+                id="addProjectBtn"
+            >
+                + Add Project
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="project-toolbar">
+
+        <div class="search-box">
+
+            <span>🔍</span>
+
+            <input
+                type="text"
+                id="projectSearch"
+                placeholder="Search projects..."
+            >
+
+        </div>
+
+
+        <select id="projectFilter">
+            <option value="all">All Categories</option>
+            <option value="Web Development">Web Development</option>
+            <option value="College Project">College Project</option>
+            <option value="Programming Tool">Programming Tool</option>
+            <option value="Utility">Utility</option>
+        </select>
+
+    </div>
+
+
+    <div
+        id="projectsContent"
+        class="projects-grid"
+    >
+
+        <div class="loading-box">
+
+            Loading projects...
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= PROJECT MODAL ================= -->
+
+<div
+    class="modal"
+    id="projectModal"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2 id="projectModalTitle">
+                    Add Project
+                </h2>
+
+                <p>
+                    Manage project information
+                </p>
+
+            </div>
+
+            <button
+                class="close-modal"
+                id="closeProjectModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="projectForm">
+
+            <input
+                type="hidden"
+                id="projectId"
+            >
+
+
+            <div class="project-form-grid">
+                <div>
+                    <label>Project Title</label>
+                    <input type="text" id="projectTitle" placeholder="CampusFind — Lost & Found Portal" required>
+                </div>
+                <div>
+                    <label>Category</label>
+                    <select id="projectCategory">
+                        <option>Web Development</option>
+                        <option>College Project</option>
+                        <option>Programming Tool</option>
+                        <option>Utility</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>Description</label>
+            <textarea id="projectDescription" placeholder="Write a short professional description of the project..." required></textarea>
+
+            <label>Technologies <span class="field-hint">comma separated</span></label>
+            <input type="text" id="projectTechnologies" placeholder="React, Node.js, Express, MongoDB">
+
+            <div class="project-form-grid">
+                <div>
+                    <label>Live Project URL</label>
+                    <input type="url" id="projectLiveUrl" placeholder="https://example.com">
+                </div>
+                <div>
+                    <label>GitHub URL</label>
+                    <input type="url" id="projectGithubUrl" placeholder="https://github.com/username/project">
+                </div>
+            </div>
+
+            <div class="project-image-upload-block">
+                <label>Project Photos <span class="field-hint">up to 5 photos</span></label>
+                <div class="project-upload-box" id="projectUploadBox">
+                    <input type="file" id="projectImages" accept="image/*" multiple hidden>
+                    <button type="button" class="secondary-btn" id="chooseProjectImages">📷 Choose Photos</button>
+                    <span id="projectUploadHint">Add up to 5 project screenshots or photos.</span>
+                </div>
+                <div id="projectImagePreview" class="project-image-preview"></div>
+            </div>
+
+            <label class="project-check">
+                <input type="checkbox" id="projectFeatured">
+                <span>Feature this project at the top of My Projects</span>
+            </label>
+
+
+            <div
+                id="projectFormError"
+                class="form-error"
+            ></div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    id="cancelProjectBtn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Save Project
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================= CODE VIEW MODAL ================= -->
+
+<div
+    class="modal"
+    id="codeModal"
+>
+
+    <div class="modal-box code-modal-box">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2 id="codeModalTitle">
+                    Project Code
+                </h2>
+
+                <p id="codeModalLanguage">
+                    Project Details
+                </p>
+
+            </div>
+
+            <button
+                class="close-modal"
+                id="closeCodeModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div id="projectPreviewContent" class="project-preview-content"></div>
+
+    </div>
+
+</div>
+
+
+        <section id="gallery" class="section">
+
+    <div class="page-title">
+
+        <h2>Gallery</h2>
+
+        <p>
+            Upload and manage your portfolio images.
+        </p>
+
+    </div>
+
+
+    <!-- UPLOAD PANEL -->
+
+    <div class="panel">
+
+        <h3
+            style="
+                color:#00f7ff;
+                margin-bottom:20px;
+            "
+        >
+            Upload New Image
+        </h3>
+
+
+        <form
+            id="galleryUploadForm"
+            enctype="multipart/form-data"
+        >
+
+            <input
+                type="text"
+                id="galleryTitle"
+                name="title"
+                placeholder="Image title"
+                required
+                style="
+                    width:100%;
+                    padding:12px;
+                    margin-bottom:12px;
+                    background:#0f172a;
+                    color:white;
+                    border:1px solid rgba(0,247,255,.2);
+                    border-radius:8px;
+                "
+            >
+
+
+            <textarea
+                id="galleryDescription"
+                name="description"
+                placeholder="Image description"
+                rows="3"
+                style="
+                    width:100%;
+                    padding:12px;
+                    margin-bottom:12px;
+                    background:#0f172a;
+                    color:white;
+                    border:1px solid rgba(0,247,255,.2);
+                    border-radius:8px;
+                    resize:vertical;
+                    box-sizing:border-box;
+                "
+            ></textarea>
+
+
+            <input
+                type="file"
+                id="galleryImage"
+                name="image"
+                accept="image/*"
+                required
+                style="
+                    width:100%;
+                    padding:12px;
+                    margin-bottom:15px;
+                    background:#0f172a;
+                    color:white;
+                    border:1px solid rgba(0,247,255,.2);
+                    border-radius:8px;
+                "
+            >
+
+
+            <button
+                type="submit"
+                class="primary-btn"
+            >
+                ☁️ Upload Image
+            </button>
+
+
+        </form>
+
+
+        <p
+            id="galleryMessage"
+            class="coming"
+            style="margin-top:15px;"
+        ></p>
+
+    </div>
+
+
+    <!-- GALLERY IMAGES -->
+
+    <div
+        id="galleryContent"
+        class="panel"
+        style="margin-top:20px;"
+    >
+
+        Loading gallery...
+
+    </div>
+
+</section>
+
+
+        <section id="donations" class="section">
+
+            <div
+    class="page-title"
+    style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:20px;
+    "
+>
+    <div>
+        <h2>Donations</h2>
+
+        <p>
+            Manage your donations.
+        </p>
+    </div>
+
+    <button
+        id="addDonationBtn"
+        class="quick-btn"
+        style="
+            width:auto;
+            padding:12px 20px;
+            cursor:pointer;
+        "
+    >
+        ➕ Add New Donation
+    </button>
+</div>
+
+            <div
+                id="donationsContent"
+                class="panel"
+            >
+
+                Loading donations...
+
+            </div>
+
+        </section>
+
+
+        <section id="visitors" class="section">
+
+            <div class="page-title">
+
+                <h2>Visitors</h2>
+
+                <p>
+                    Website visitor statistics.
+                </p>
+
+            </div>
+
+            <div class="panel">
+
+                <h3 id="visitorBig">
+                    0
+                </h3>
+
+                <p>
+                    Total visitors
+                </p>
+
+            </div>
+
+            <!-- =====================================================
+     EDIT VISITOR COUNT
+===================================================== -->
+
+<div style="
+    margin-top:25px;
+    padding:22px;
+    background:#0f172a;
+    border:1px solid rgba(0,247,255,.15);
+    border-radius:14px;
+">
+
+    <h3 style="
+        color:#00f7ff;
+        margin:0 0 8px 0;
+    ">
+        ✏️ Edit Visitor Count
+    </h3>
+
+    <p style="
+        color:#94a3b8;
+        margin-bottom:18px;
+        font-size:14px;
+    ">
+        Change the total visitor count shown on your website.
+    </p>
+
+
+    <div style="
+        display:flex;
+        gap:10px;
+        align-items:center;
+        flex-wrap:wrap;
+    ">
+
+        <input
+            type="number"
+            id="visitorCountInput"
+            min="0"
+            step="1"
+            placeholder="Visitor count"
+            style="
+                width:180px;
+                height:42px;
+                padding:0 12px;
+                box-sizing:border-box;
+                background:#111827;
+                color:#e2e8f0;
+                border:1px solid rgba(0,247,255,.25);
+                border-radius:8px;
+                outline:none;
+                font-size:14px;
+            "
+        >
+
+
+        <button
+            type="button"
+            id="saveVisitorCountBtn"
+            style="
+                width:auto;
+                min-width:0;
+                padding:10px 16px;
+                background:#00f7ff;
+                color:#0f172a;
+                border:none;
+                border-radius:8px;
+                cursor:pointer;
+                font-weight:700;
+                font-size:14px;
+            "
+        >
+            💾 Save Count
+        </button>
+
+    </div>
+
+
+    <p
+        id="visitorEditMessage"
+        style="
+            margin-top:14px;
+            font-size:14px;
+            font-weight:600;
+        "
+    ></p>
+
+</div>
+
+        </section>
+
+
+        <section id="messages" class="section">
+
+    <div class="page-title">
+
+        <h2>
+    Messages
+    <span
+        id="unreadMessagesCount"
+        style="
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-width:24px;
+            height:24px;
+            padding:0 7px;
+            margin-left:8px;
+            border-radius:20px;
+            background:#ef4444;
+            color:white;
+            font-size:12px;
+            font-weight:700;
+            vertical-align:middle;
+        "
+    >
+        0
+    </span>
+</h2>
+
+        <p>
+            Manage contact form messages.
+        </p>
+        <input
+    type="text"
+    id="messageSearch"
+    placeholder="🔍 Search messages..."
+    class="message-search"
+/>
+
+        <button
+    id="refreshMessagesBtn"
+    class="primary-btn"
+    onclick="loadMessages()"
+>
+    🔄 Refresh
+</button>
+
+    </div>
+
+    <div
+        id="messagesContent"
+        class="panel"
+    >
+
+        <div class="loading-box">
+            Loading messages...
+        </div>
+
+    </div>
+
+</section>
+
+
+        <section id="resume" class="section">
+
+            <div class="page-title">
+
+                <h2>Resume</h2>
+
+                <p>
+                    Manage your resume.
+                </p>
+
+            </div>
+
+            <div class="panel">
+
+                <a
+                    href="/resume.html"
+                    target="_blank"
+                    class="primary-btn"
+                >
+                    Open Resume Builder
+                </a>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+     WEBSITE BUILDER
+===================================================== -->
+
+<section
+    id="website-builder"
+    class="section"
+>
+
+    <div class="page-title">
+
+        <h2>🎨 Website Builder</h2>
+
+        <p>
+            Edit your website without touching HTML.
+        </p>
+
+    </div>
+
+
+    <!-- ================= HERO ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>🏠 Hero Section</h3>
+
+        <label>Your Name</label>
+
+        <input
+            id="builderHeroName"
+            type="text"
+        >
+
+        <label>Typing Text</label>
+
+        <input
+            id="builderHeroTyping"
+            type="text"
+        >
+
+        <label>Tagline</label>
+
+        <input
+            id="builderHeroTagline"
+            type="text"
+        >
+
+    </div>
+
+
+    <!-- ================= EDUCATION ================= -->
+
+    <div class="panel builder-panel">
+
+        <div class="builder-heading">
+
+            <h3>🎓 Education</h3>
+
+            <button
+                type="button"
+                class="primary-btn"
+                id="addEducationBtn"
+            >
+                + Add Education
+            </button>
+
+        </div>
+
+        <div
+            id="educationEditor"
+        ></div>
+
+    </div>
+
+
+    <!-- ================= COUNTERS ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>📊 Counters</h3>
+
+        <label>Problems Solved</label>
+
+        <input
+            id="builderProblemsSolved"
+            type="number"
+            min="0"
+        >
+
+        <label>Problems Label</label>
+
+        <input
+            id="builderProblemsLabel"
+            type="text"
+        >
+
+        <label>Years Coding Label</label>
+
+        <input
+            id="builderYearsLabel"
+            type="text"
+        >
+
+        <label>Projects Label</label>
+
+        <input
+            id="builderProjectsLabel"
+            type="text"
+        >
+
+        <label>Hours Label</label>
+
+        <input
+            id="builderHoursLabel"
+            type="text"
+        >
+
+        <label>Coding Start Date</label>
+
+        <input
+            id="builderStartDate"
+            type="date"
+        >
+
+    </div>
+
+
+    <!-- ================= SKILLS ================= -->
+
+    <div class="panel builder-panel">
+
+        <div class="builder-heading">
+
+            <h3>🧩 Skills</h3>
+
+            <button
+                type="button"
+                class="primary-btn"
+                id="addSkillBtn"
+            >
+                + Add Skill
+            </button>
+
+        </div>
+
+        <div
+            id="skillsEditor"
+        ></div>
+
+    </div>
+
+
+    <!-- ================= SKILL PROGRESS ================= -->
+
+    <div class="panel builder-panel">
+
+        <div class="builder-heading">
+
+            <h3>📈 Skills Progress</h3>
+
+            <button
+                type="button"
+                class="primary-btn"
+                id="addProgressSkillBtn"
+            >
+                + Add Skill
+            </button>
+
+        </div>
+
+        <div
+            id="progressSkillsEditor"
+        ></div>
+
+    </div>
+
+
+    <!-- ================= ABOUT ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>👤 About Me</h3>
+
+        <label>Heading</label>
+
+        <input
+            id="builderAboutTitle"
+            type="text"
+        >
+
+        <label>About Text</label>
+
+        <textarea
+            id="builderAboutText"
+            rows="6"
+        ></textarea>
+
+    </div>
+
+
+    <!-- ================= DONATION ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>💙 Donation Section</h3>
+
+        <label>Title</label>
+
+        <input
+            id="builderDonationTitle"
+            type="text"
+        >
+
+        <label>Support Goal ₹</label>
+
+        <input
+            id="builderDonationGoal"
+            type="number"
+            min="1"
+        >
+
+        <label>Donor Name Placeholder</label>
+
+        <input
+            id="builderDonationName"
+            type="text"
+        >
+
+        <label>Donor Email Placeholder</label>
+
+        <input
+            id="builderDonationEmail"
+            type="text"
+        >
+
+        <label>Custom Amount Placeholder</label>
+
+        <input
+            id="builderDonationCustom"
+            type="text"
+        >
+
+        <label>Donate Button Text</label>
+
+        <input
+            id="builderDonationButton"
+            type="text"
+        >
+
+        <label>Leaderboard Title</label>
+
+        <input
+            id="builderLeaderboardTitle"
+            type="text"
+        >
+
+        <label>Support Goal Title</label>
+
+        <input
+            id="builderMilestoneTitle"
+            type="text"
+        >
+
+    </div>
+
+
+    <!-- ================= CONTACT ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>✉️ Contact Section</h3>
+
+        <label>Heading</label>
+
+        <input
+            id="builderContactTitle"
+            type="text"
+        >
+
+        <label>Name Placeholder</label>
+
+        <input
+            id="builderContactName"
+            type="text"
+        >
+
+        <label>Email Placeholder</label>
+
+        <input
+            id="builderContactEmail"
+            type="text"
+        >
+
+        <label>Message Placeholder</label>
+
+        <input
+            id="builderContactMessage"
+            type="text"
+        >
+
+        <label>Button Text</label>
+
+        <input
+            id="builderContactButton"
+            type="text"
+        >
+
+    </div>
+
+
+    <!-- ================= THANK YOU ================= -->
+
+    <div class="panel builder-panel">
+
+        <h3>🙏 Thank You Section</h3>
+
+        <label>Heading</label>
+
+        <input
+            id="builderThankYouTitle"
+            type="text"
+        >
+
+    </div>
+
+
+    <!-- ================= SAVE ================= -->
+
+    <div
+        class="panel"
+        style="
+            position:sticky;
+            bottom:20px;
+            z-index:10;
+        "
+    >
+
+        <button
+            type="button"
+            class="primary-btn"
+            id="saveWebsiteBuilderBtn"
+            style="
+                width:100%;
+                font-size:18px;
+                padding:16px;
+            "
+        >
+            💾 SAVE ALL WEBSITE CHANGES
+        </button>
+
+        <p
+            id="websiteBuilderMessage"
+            style="
+                text-align:center;
+                margin-top:12px;
+                font-weight:600;
+            "
+        ></p>
+
+    </div>
+
+</section>
+
+
+        <section id="settings" class="section">
+
+            <div class="page-title">
+
+                <h2>Settings</h2>
+
+                <p>
+                    Website settings.
+                </p>
+
+            </div>
+
+            <div class="panel">
+
+                <h3>
+        MR. RITIK VERMA 
+    </h3> <br>
+    <h3>Website Settings</h3>
+
+    <div class="settings-form">
+
+        <!-- =====================================================
+     PROFILE PICTURE
+===================================================== -->
+
+<div style="
+    margin-bottom:28px;
+    padding:22px;
+    border:1px solid rgba(0,247,255,.14);
+    border-radius:14px;
+    background:rgba(255,255,255,.02);
+">
+
+    <h3 style="
+        margin-bottom:8px;
+        color:#00f7ff;
+    ">
+        🖼️ Profile Picture
+    </h3>
+
+    <p style="
+        margin-bottom:18px;
+        color:#94a3b8;
+    ">
+        This picture is used on your portfolio homepage.
+    </p>
+
+
+    <img
+        id="profileImagePreview"
+        src="/images/photoweb.jpg"
+        alt="Profile preview"
+        style="
+            width:140px;
+            height:140px;
+            object-fit:cover;
+            border-radius:50%;
+            display:block;
+            margin-bottom:18px;
+            border:3px solid rgba(0,247,255,.35);
+        "
+    >
+
+
+    <input
+        type="file"
+        id="profileImageInput"
+        accept="image/png,image/jpeg,image/webp"
+        style="
+            margin-bottom:12px;
+            display:block;
+        "
+    >
+
+
+    <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+    ">
+
+       <div style="
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+">
+
+    <button
+        type="button"
+        class="primary-btn"
+        id="uploadProfileImageBtn"
+        style="
+            width:auto;
+            min-width:0;
+            padding:10px 16px;
+            margin:0;
+            font-size:14px;
+        "
+    >
+        📤 Upload New Picture
+    </button>
+
+
+    <button
+        type="button"
+        id="deleteProfileImageBtn"
+        style="
+            width:auto;
+            min-width:0;
+            padding:10px 16px;
+            margin:0;
+            background:#ef4444;
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:600;
+            font-size:14px;
+        "
+    >
+        🗑️ Delete Picture
+    </button>
+
+</div>
+
+    </div>
+
+
+    <p
+        id="profileImageMessage"
+        style="
+            margin-top:14px;
+            font-weight:600;
+        "
+    ></p>
+
+</div>
+
+        <label>
+            Website Title
+        </label>
+
+        <input
+            type="text"
+            id="settingSiteTitle"
+            placeholder="Ritik Verma Portfolio"
+        >
+
+
+        <label>
+            Website Description
+        </label>
+
+        <textarea
+            id="settingSiteDescription"
+            rows="4"
+            placeholder="My personal portfolio website"
+        ></textarea>
+
+
+        <label>
+            Contact Email
+        </label>
+
+        <input
+            type="email"
+            id="settingContactEmail"
+            placeholder="your@email.com"
+        >
+
+
+        <label>
+            Instagram
+        </label>
+
+        <input
+            type="text"
+            id="settingInstagram"
+            placeholder="https://instagram.com/..."
+        >
+
+
+        <label>
+            GitHub
+        </label>
+
+        <input
+            type="text"
+            id="settingGithub"
+            placeholder="https://github.com/..."
+        >
+
+
+        <label>
+            LinkedIn
+        </label>
+
+        <input
+            type="text"
+            id="settingLinkedin"
+            placeholder="https://linkedin.com/in/..."
+        >
+
+
+        <button
+            type="button"
+            class="primary-btn"
+            id="saveSettingsBtn"
+        >
+            💾 Save Settings
+        </button>
+
+    </div>
+
+</div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- PROFESSIONAL SITE MODAL -->
+<div id="siteModalOverlay" class="site-modal-overlay">
+
+    <div class="site-modal">
+
+        <div class="site-modal-header">
+
+            <div class="site-modal-title-area">
+
+                <div id="siteModalIcon" class="site-modal-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <h3 id="siteModalTitle">
+                        Success
+                    </h3>
+
+                    <p id="siteModalSubtitle">
+                        Operation completed successfully.
+                    </p>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                id="siteModalClose"
+                class="site-modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            id="siteModalBody"
+            class="site-modal-body"
+        ></div>
+
+        <div
+            id="siteModalActions"
+            class="site-modal-actions"
+        ></div>
+
+    </div>
+
+</div>
+
+    <script src="/admin/dashboard.js"></script>
+
+
+
+    <!-- =====================================================
+     PROFESSIONAL MODAL
+===================================================== -->
+
+<div
+    id="appModalOverlay"
+    class="app-modal-overlay"
+    aria-hidden="true"
+>
+
+    <div
+        id="appModal"
+        class="app-modal"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <div class="app-modal-header">
+
+            <div class="app-modal-title-wrap">
+
+                <div
+                    id="appModalIcon"
+                    class="app-modal-icon"
+                >
+                    ✨
+                </div>
+
+                <div>
+
+                    <h3 id="appModalTitle">
+                        Confirmation
+                    </h3>
+
+                    <p id="appModalSubtitle">
+                        Please review your action.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="appModalClose"
+                class="app-modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="appModalBody"
+            class="app-modal-body"
+        >
+        </div>
+
+
+        <div
+            id="appModalActions"
+            class="app-modal-actions"
+        >
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

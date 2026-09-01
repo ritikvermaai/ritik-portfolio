@@ -1,0 +1,23 @@
+/* Admin companion theme — same professional multi-colour palette */
+:root{
+  --a-bg:#0d0b12;
+  --a-surface:#181320;
+  --a-surface-2:#211a2c;
+  --a-text:#f8f5fb;
+  --a-muted:#c9c2d2;
+  --a-pink:#ff4d8d;
+  --a-violet:#a855f7;
+  --a-amber:#f59e0b;
+  --a-green:#22c55e;
+  --a-gradient:linear-gradient(135deg,#ff4d8d 0%,#a855f7 52%,#f59e0b 100%);
+}
+html,body{background:var(--a-bg)!important;color:var(--a-text)!important;}
+body{background-image:radial-gradient(circle at 12% 15%,rgba(255,77,141,.08),transparent 28%),radial-gradient(circle at 88% 18%,rgba(168,85,247,.10),transparent 30%),radial-gradient(circle at 75% 88%,rgba(245,158,11,.06),transparent 26%)!important;}
+button,.btn,[type=submit]{background:var(--a-gradient)!important;color:#170f1b!important;border:none!important;box-shadow:0 10px 25px rgba(168,85,247,.16)!important;}
+button:hover,.btn:hover,[type=submit]:hover{transform:translateY(-1px);filter:brightness(1.05);}
+input,textarea,select{background:#120f18!important;color:var(--a-text)!important;border-color:rgba(168,85,247,.28)!important;}
+input:focus,textarea:focus,select:focus{border-color:rgba(255,77,141,.6)!important;box-shadow:0 0 0 3px rgba(255,77,141,.08)!important;outline:none!important;}
+.card,.panel,.box,.stat-card,.modal-content,.dashboard-card{background:linear-gradient(145deg,rgba(32,25,43,.96),rgba(18,14,24,.96))!important;border-color:rgba(168,85,247,.22)!important;}
+h1,h2,h3,.title,.brand{color:var(--a-text)!important;}
+a,.accent,.active{color:var(--a-pink)!important;}
+.progress,.progress-bar,.fill{background:var(--a-gradient)!important;}
