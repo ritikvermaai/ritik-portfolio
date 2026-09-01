@@ -1,0 +1,23 @@
+{
+  "name": "ritik-portfolio-reimagined",
+  "version": "3.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build:frontend": "npm install --prefix frontend && npm run build --prefix frontend",
+    "build": "npm run build:frontend"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "cloudinary": "^2.10.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongoose": "^9.9.2",
+    "multer": "^2.2.0",
+    "razorpay": "^2.9.6"
+  }
+}

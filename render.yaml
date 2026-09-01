@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: ritik-portfolio
+    env: node
+    buildCommand: npm install && npm install --prefix frontend && npm run build --prefix frontend
+    startCommand: npm start
+    autoDeploy: true
