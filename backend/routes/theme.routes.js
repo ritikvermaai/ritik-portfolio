@@ -1,0 +1,1 @@
+const router=require("express").Router();const c=require("../controllers/theme.controller");module.exports=({requireAdmin})=>{router.get("/admin/api/theme",requireAdmin,c.adminGet);router.put("/admin/api/theme",requireAdmin,c.save);router.get("/api/theme",c.publicGet);return router;};
