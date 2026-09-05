@@ -676,7 +676,7 @@ app.post(
             await AdminCredential.findByIdAndUpdate("main", {
                 $set: { lastLoginAt: new Date(), failedLoginAttempts: 0, updatedAt: new Date() },
                 $push: { activeSessions: { sessionId: req.session.id, createdAt: new Date(), lastSeenAt: new Date(), ip: String(req.ip || ""), userAgent: String(req.get("user-agent") || "").slice(0, 300) } }
-            }, { upsert: true, returnDocument: "after", setDefaultsOnInsert: true });
+            }, { upsert: true, new: true, setDefaultsOnInsert: true });
 
             await writeAudit(req, "Admin logged in");
             res.json({ success: true, loginAt: req.session.loginAt });
@@ -1617,6 +1617,12 @@ function normalizeProjectPayload(body) {
         title: String(body.title || "").trim(),
         category: String(body.category || "Web Development").trim(),
         description: String(body.description || "").trim(),
+        overview: String(body.overview || "").trim(),
+        role: String(body.role || "").trim(),
+        challenge: String(body.challenge || "").trim(),
+        solution: String(body.solution || "").trim(),
+        results: String(body.results || "").trim(),
+        videoUrl: String(body.videoUrl || "").trim(),
         technologies,
         liveUrl: String(body.liveUrl || "").trim(),
         githubUrl: String(body.githubUrl || "").trim(),
