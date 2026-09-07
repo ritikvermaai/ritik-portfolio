@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="gold" x1="14" y1="14" x2="48" y2="50" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF0B5"/>
+      <stop offset="1" stop-color="#E5B33D"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#090A12"/>
+  <text x="11" y="45" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="url(#gold)">R</text>
+  <text x="34" y="45" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#F4F4F7">V</text>
+</svg>
