@@ -1760,11 +1760,16 @@ app.get(
 
         try {
 
-            const projects = await Project.find({ portfolioProject: true }).select("title category description technologies liveUrl githubUrl imageUrl images featured createdAt").sort({ featured:-1, createdAt:-1 });
+            const projects = await Project.find({ portfolioProject: true }).select("title category description overview role challenge solution results videoUrl technologies liveUrl githubUrl imageUrl images featured createdAt updatedAt").sort({ featured:-1, createdAt:-1 });
 
 
+
+            // Project case-study content is edited from the admin panel, so
+            // never let a browser/proxy serve an older project payload.
+            res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+            res.set("Pragma", "no-cache");
+            res.set("Expires", "0");
             res.json(projects);
-
         }
 
         catch (error) {
