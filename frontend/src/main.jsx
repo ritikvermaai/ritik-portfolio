@@ -6,7 +6,7 @@ import {
   Activity, ArrowRight, BarChart3, BookOpen, CalendarDays, Check, ChevronLeft, ChevronRight, Database, Cloud, CreditCard,
   Code2, Download, ExternalLink, Eye, FileText, FolderKanban, Globe2, Heart,
   Image as ImageIcon, Instagram, LayoutDashboard, Linkedin, Loader2, LogOut, Mail,
-  Menu, MessageSquare, Pencil, Plus, RefreshCw, Save, Search, Settings, Sparkles, Sun, Moon, Clock,
+  Menu, MessageSquare, Pencil, Plus, RefreshCw, Save, Search, Settings, Sparkles, Sun, Moon, Clock, Phone, BriefcaseBusiness, Send,
   Star, Trash2, Upload, Users, WalletCards, X, Zap, Palette, ShieldCheck, LockKeyhole, History, Bell, UserRoundCheck, Maximize2, Minimize2, Keyboard, Terminal, Play, Square, Minus, Plus as PlusIcon
 } from 'lucide-react';
 import { api } from './api';
@@ -188,7 +188,7 @@ function AppShell({ children }) {
       </motion.aside>
     </>}</AnimatePresence>
     <main>{children}</main>
-    <footer className="site-footer"><div><strong>Ritik Verma</strong><span>Computer Science Student · Developer</span></div><span>© {new Date().getFullYear()} Ritik Verma. All rights reserved.</span></footer>
+    <footer className="site-footer"><div><strong>Ritik Verma</strong><span>Computer Science Student · Developer</span></div><span>© {new Date().getFullYear()} Ritik Verma. All rights reserved.</span></footer><PortfolioAssistant />
   </div>
 }
 
@@ -500,7 +500,103 @@ function Resume(){
   </div>
  </Page>;
 }
-function Contact(){const [form,setForm]=useState({name:'',email:'',message:''});const [state,setState]=useState('');const submit=async e=>{e.preventDefault();setState('Sending…');try{await api.send('/api/messages','POST',form);setState("Message sent — I'll get back to you soon.");setForm({name:'',email:'',message:''})}catch(err){setState(err.message)}};return <Page eyebrow="Get in touch" title={<>Have an idea? <span className="gradient-text">Let's talk.</span></>} subtitle="Send me a message about a project, collaboration, internship, or anything you'd like to discuss."><div className="contact-layout"><div className="contact-copy"><div className="glass contact-card"><h2>Let's talk.</h2><p>Have a project in mind, want to work together, or just want to say hello? Drop me a message.</p><div className="contact-links"><a href="mailto:vermaritik9911@gmail.com"><Mail/>vermaritik9911@gmail.com</a><a href="https://www.linkedin.com/in/vermaritik/" target="_blank" rel="noreferrer"><Linkedin/>LinkedIn</a><a href="https://github.com/ritikvermaai" target="_blank" rel="noreferrer"><GithubIcon/>GitHub</a><a href="https://www.instagram.com/its__ritikverma/" target="_blank" rel="noreferrer"><Instagram/>Instagram</a></div></div></div><form className="glass contact-form" onSubmit={submit}><Field label="Your name"><input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Enter your name"/></Field><Field label="Email address"><input required type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="you@example.com"/></Field><Field label="Message"><textarea required value={form.message} onChange={e=>setForm({...form,message:e.target.value})} placeholder="Write your message here..."/></Field><button className="btn btn-primary" type="submit"><Mail size={16}/>Send message</button>{state&&<small className="form-msg">{state}</small>}</form></div></Page>}
+function PortfolioAssistant(){
+  const [open,setOpen]=useState(false);
+  const [input,setInput]=useState('');
+  const [busy,setBusy]=useState(false);
+  const [messages,setMessages]=useState([{role:'assistant',content:"Hi! I'm Ritik's portfolio assistant. Ask me about his projects, skills, education, experience, or how to get in touch."}]);
+  const listRef=React.useRef(null);
+  useEffect(()=>{ if(open) setTimeout(()=>listRef.current?.scrollTo({top:listRef.current.scrollHeight,behavior:'smooth'}),30); },[messages,open]);
+  useEffect(()=>{ const onKey=e=>{if(e.key==='Escape')setOpen(false)}; window.addEventListener('keydown',onKey); return()=>window.removeEventListener('keydown',onKey)},[]);
+  const ask=async(text=input)=>{
+    const question=String(text||'').trim();
+    if(!question||busy)return;
+    const next=[...messages,{role:'user',content:question}];
+    setMessages(next);setInput('');setBusy(true);
+    try{
+      const history=next.slice(-8).map(m=>({role:m.role,content:m.content}));
+      const data=await api.send('/api/assistant','POST',{message:question,history});
+      setMessages(prev=>[...prev,{role:'assistant',content:data.answer||'I could not find that in the portfolio.'}]);
+    }catch(err){
+      setMessages(prev=>[...prev,{role:'assistant',content:err.message||'The assistant is temporarily unavailable. You can use the Contact page instead.'}]);
+    }finally{setBusy(false)}
+  };
+  const suggestions=['What projects has Ritik built?','What technologies does he use?','Tell me about CampusFind.','How can I contact Ritik?'];
+  return <>
+    <AnimatePresence>
+      {open&&<motion.div className="portfolio-ai-panel glass" initial={{opacity:0,y:18,scale:.97}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:18,scale:.97}} transition={{duration:.2}}>
+        <div className="portfolio-ai-head">
+          <div className="portfolio-ai-title"><span className="portfolio-ai-icon"><Sparkles size={16}/></span><div><strong>Ask Ritik's Portfolio</strong><small>AI-powered assistant</small></div></div>
+          <button className="icon-btn small" onClick={()=>setOpen(false)} aria-label="Close assistant"><X size={16}/></button>
+        </div>
+        <div className="portfolio-ai-messages" ref={listRef}>
+          {messages.map((m,i)=><div className={`portfolio-ai-message ${m.role}`} key={i}><span>{m.content}</span></div>)}
+          {busy&&<div className="portfolio-ai-message assistant"><span className="portfolio-ai-typing"><i></i><i></i><i></i></span></div>}
+          {messages.length===1&&!busy&&<div className="portfolio-ai-suggestions">{suggestions.map(q=><button key={q} onClick={()=>ask(q)}>{q}<ArrowRight size={13}/></button>)}</div>}
+        </div>
+        <form className="portfolio-ai-input" onSubmit={e=>{e.preventDefault();ask()}}>
+          <input value={input} onChange={e=>setInput(e.target.value)} maxLength={1200} placeholder="Ask about Ritik…" aria-label="Ask about Ritik" disabled={busy}/>
+          <button type="submit" disabled={busy||!input.trim()} aria-label="Send question"><Send size={16}/></button>
+        </form>
+        <div className="portfolio-ai-note">Answers are based on information published on this portfolio.</div>
+      </motion.div>}
+    </AnimatePresence>
+    <button className={`portfolio-ai-fab ${open?'active':''}`} onClick={()=>setOpen(v=>!v)} aria-label={open?'Close portfolio assistant':'Open portfolio assistant'}><span><Sparkles size={19}/></span><b>{open?'Close':'Ask AI'}</b></button>
+  </>;
+}
+
+function Contact(){
+  const [form,setForm]=useState({name:'',email:'',phone:'',company:'',subject:'',inquiryType:'Project enquiry',message:'',website:''});
+  const [state,setState]=useState({type:'',text:''});
+  const [busy,setBusy]=useState(false);
+  const update=(key,value)=>setForm(prev=>({...prev,[key]:value}));
+  const submit=async e=>{
+    e.preventDefault();
+    if(form.message.trim().length<10){setState({type:'error',text:'Please write at least 10 characters so I have enough context to help.'});return;}
+    setBusy(true);setState({type:'sending',text:'Sending your message…'});
+    try{
+      await api.send('/api/messages','POST',form);
+      setState({type:'success',text:"Thanks! Your message is in my inbox. I'll get back to you soon."});
+      setForm({name:'',email:'',phone:'',company:'',subject:'',inquiryType:'Project enquiry',message:'',website:''});
+    }catch(err){setState({type:'error',text:err.message||'Something went wrong. Please try again.'});}
+    finally{setBusy(false);}
+  };
+  return <Page eyebrow="Get in touch" title={<>Have an idea? <span className="gradient-text">Let's talk.</span></>} subtitle="Tell me a little about what you need. I'll review your message and get back to you as soon as I can.">
+    <div className="contact-layout">
+      <div className="contact-copy">
+        <div className="glass contact-card">
+          <span className="contact-status"><i></i> Open to new conversations</span>
+          <h2>Let's build something useful.</h2>
+          <p>Whether you have a project idea, collaboration opportunity, internship opening, or a simple question, send the details below.</p>
+          <div className="contact-links">
+            <a href="mailto:vermaritik9911@gmail.com"><Mail/>vermaritik9911@gmail.com</a>
+            <a href="https://www.linkedin.com/in/vermaritik/" target="_blank" rel="noreferrer"><Linkedin/>LinkedIn</a>
+            <a href="https://github.com/ritikvermaai" target="_blank" rel="noreferrer"><GithubIcon/>GitHub</a>
+            <a href="https://www.instagram.com/its__ritikverma/" target="_blank" rel="noreferrer"><Instagram/>Instagram</a>
+          </div>
+          <div className="contact-note"><Check size={15}/><span>Your details are only used to respond to your enquiry.</span></div>
+        </div>
+      </div>
+      <form className="glass contact-form contact-form-pro" onSubmit={submit}>
+        <div className="contact-form-heading"><div><span className="eyebrow">Contact form</span><h2>Start a conversation</h2></div><MessageSquare size={20}/></div>
+        <div className="form-grid two">
+          <Field label="Your name"><input required minLength="2" maxLength="100" value={form.name} onChange={e=>update('name',e.target.value)} placeholder="Ritik's visitor" autoComplete="name"/></Field>
+          <Field label="Email address"><input required type="email" maxLength="180" value={form.email} onChange={e=>update('email',e.target.value)} placeholder="you@example.com" autoComplete="email"/></Field>
+          <Field label="Phone (optional)"><input type="tel" maxLength="30" value={form.phone} onChange={e=>update('phone',e.target.value)} placeholder="+91 …" autoComplete="tel"/></Field>
+          <Field label="Company / college (optional)"><input maxLength="120" value={form.company} onChange={e=>update('company',e.target.value)} placeholder="Your organisation" autoComplete="organization"/></Field>
+        </div>
+        <div className="form-grid two">
+          <Field label="What are you reaching out about?"><select required value={form.inquiryType} onChange={e=>update('inquiryType',e.target.value)}><option>Project enquiry</option><option>Collaboration</option><option>Internship</option><option>Freelance</option><option>General enquiry</option></select></Field>
+          <Field label="Subject"><input required minLength="2" maxLength="180" value={form.subject} onChange={e=>update('subject',e.target.value)} placeholder="How can I help?"/></Field>
+        </div>
+        <Field label="Message"><textarea required minLength="10" maxLength="5000" rows="7" value={form.message} onChange={e=>update('message',e.target.value)} placeholder="Tell me about your idea, requirements, timeline, or question…"/><small className="field-count">{form.message.length}/5000</small></Field>
+        <input className="contact-honeypot" tabIndex="-1" autoComplete="off" aria-hidden="true" value={form.website} onChange={e=>update('website',e.target.value)} />
+        <div className="contact-submit-row"><span>Usually replied to personally.</span><button className="btn btn-primary" type="submit" disabled={busy}>{busy?<Loader2 className="spin"/>:<Send size={16}/>} {busy?'Sending…':'Send message'}</button></div>
+        {state.text&&<div className={`contact-feedback ${state.type}`} role="status">{state.type==='success'?<Check size={17}/>:state.type==='error'?<X size={17}/>:<Loader2 size={17} className="spin"/>}<span>{state.text}</span></div>}
+      </form>
+    </div>
+  </Page>
+}
 
 function Field({label,children}){return <label className="field"><span>{label}</span>{children}</label>}
 function EmptyState({icon:Icon,text}){return <div className="empty glass"><Icon size={30}/><strong>{text}</strong></div>}
@@ -623,7 +719,27 @@ function DonationEditor({donation,onClose,onSaved}){const [f,setF]=useState({nam
 
 function AdminVisitors({onChanged}){const [count,setCount]=useState(0);const load=()=>api.get('/admin/visitor-stats').then(d=>setCount(d.count||0));useEffect(()=>{ load(); },[]);const save=async()=>{const r=await api.send('/admin/visitor-count','PUT',{count:Number(count)});setCount(r.count);onChanged()};return <AdminSection title="Visitors" subtitle="View and manually adjust the persistent visitor counter used on the website."><div className="visitor-admin glass"><div className="visitor-big"><Eye/><strong>{Number(count).toLocaleString('en-IN')}</strong><span>Total visitors</span></div><div><Field label="Set visitor count"><input type="number" min="0" value={count} onChange={e=>setCount(e.target.value)}/></Field><button className="btn btn-primary" onClick={save}><Save size={16}/>Save count</button></div></div></AdminSection>}
 
-function AdminMessages({onChanged}){const [items,setItems]=useState([]);const [q,setQ]=useState('');const load=()=>api.get('/admin/api/messages').then(d=>setItems(d.messages||[]));useEffect(()=>{ load(); },[]);const toggle=async id=>{await api.send(`/admin/api/messages/${id}/read`,'PUT',{});load();onChanged()};const remove=async id=>{if(!(await uiConfirm('Delete this message?','Delete message?')))return;await api.send(`/admin/api/messages/${id}`,'DELETE',{});load();onChanged()};const filtered=items.filter(m=>`${m.name} ${m.email} ${m.message}`.toLowerCase().includes(q.toLowerCase()));return <AdminSection title="Message inbox" subtitle="Messages saved from the new contact form appear here with read/unread controls."><div className="admin-toolbar"><div className="search"><Search size={17}/><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search messages..."/></div><button className="btn btn-ghost" onClick={load}><RefreshCw size={16}/>Refresh</button></div><div className="message-list">{filtered.map(m=><article className={`message-card glass ${m.read?'':'unread'}`} key={m._id}><div className="message-avatar">{m.name?.slice(0,1).toUpperCase()}</div><div className="message-main"><div className="message-top"><div><strong>{m.name}</strong><span>{m.email}</span></div><time>{new Date(m.createdAt).toLocaleString('en-IN')}</time></div><p>{m.message}</p><div className="admin-actions"><button onClick={()=>toggle(m._id)}>{m.read?'Mark unread':'Mark read'}</button><button className="danger" onClick={()=>remove(m._id)}><Trash2/>Delete</button></div></div></article>)}{!filtered.length&&<EmptyState icon={Mail} text="No messages found."/>}</div></AdminSection>}
+function AdminMessages({onChanged}){
+  const [items,setItems]=useState([]);const [q,setQ]=useState('');const [filter,setFilter]=useState('all');
+  const load=()=>api.get('/admin/api/messages').then(d=>setItems(d.messages||[]));useEffect(()=>{load()},[]);
+  const setStatus=async(id,status)=>{try{await api.send(`/admin/api/messages/${id}/status`,'PUT',{status});await load();onChanged()}catch(e){uiAlert(e.message)}};
+  const remove=async id=>{if(!(await uiConfirm('Delete this message? This cannot be undone.','Delete message?')))return;await api.send(`/admin/api/messages/${id}`,'DELETE',{});load();onChanged()};
+  const filtered=items.filter(m=>(filter==='all'||m.status===filter)&&`${m.name} ${m.email} ${m.subject} ${m.company} ${m.inquiryType} ${m.message}`.toLowerCase().includes(q.toLowerCase()));
+  const counts={all:items.length,new:items.filter(m=>m.status==='new'||(!m.status&&!m.read)).length,read:items.filter(m=>m.status==='read'||(!m.status&&m.read)).length,replied:items.filter(m=>m.status==='replied').length,archived:items.filter(m=>m.status==='archived').length};
+  return <AdminSection title="Message inbox" subtitle="A professional enquiry inbox with context, status tracking and one-click replies.">
+    <div className="message-summary"><div><strong>{counts.new}</strong><span>New</span></div><div><strong>{counts.read}</strong><span>Read</span></div><div><strong>{counts.replied}</strong><span>Replied</span></div><div><strong>{counts.all}</strong><span>Total</span></div></div>
+    <div className="admin-toolbar"><div className="search"><Search size={17}/><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search messages, subjects or people..."/></div><button className="btn btn-ghost" onClick={load}><RefreshCw size={16}/>Refresh</button></div>
+    <div className="message-filters">{[['all','All'],['new','New'],['read','Read'],['replied','Replied'],['archived','Archived']].map(([id,label])=><button key={id} className={filter===id?'active':''} onClick={()=>setFilter(id)}>{label}<b>{counts[id]}</b></button>)}</div>
+    <div className="message-list">{filtered.map(m=>{const status=m.status|| (m.read?'read':'new');return <article className={`message-card glass ${status==='new'?'unread':''}`} key={m._id}>
+      <div className="message-avatar">{m.name?.slice(0,1).toUpperCase()}</div><div className="message-main">
+        <div className="message-top"><div><strong>{m.name}</strong><span>{m.email}</span></div><time>{new Date(m.createdAt).toLocaleString('en-IN')}</time></div>
+        <div className="message-meta"><span>{m.inquiryType||'General enquiry'}</span>{m.company&&<span>{m.company}</span>}{m.phone&&<span>{m.phone}</span>}<strong className={`message-status ${status}`}>{status}</strong></div>
+        {m.subject&&<h3 className="message-subject">{m.subject}</h3>}<p>{m.message}</p>
+        <div className="admin-actions"><a href={`mailto:${encodeURIComponent(m.email)}?subject=${encodeURIComponent(`Re: ${m.subject||'Your enquiry'}`)}`}><Mail size={14}/>Reply</a><button onClick={()=>setStatus(m._id,status==='new'?'read':'new')}>{status==='new'?'Mark read':'Mark new'}</button>{status!=='replied'&&<button onClick={()=>setStatus(m._id,'replied')}>Mark replied</button>}{status!=='archived'&&<button onClick={()=>setStatus(m._id,'archived')}>Archive</button>}<button className="danger" onClick={()=>remove(m._id)}><Trash2/>Delete</button></div>
+      </div></article>})}{!filtered.length&&<EmptyState icon={Mail} text="No messages match this filter."/>}</div>
+  </AdminSection>
+}
+
 function AdminRatings(){
   const [items,setItems]=useState([]);
   const [loading,setLoading]=useState(true);
